@@ -3,10 +3,11 @@
   "description": "Back end server to support our angular app",
   "version": "0.0.1",
   "private": true,
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "grunt": "*",
-    "grunt-node-webkit-builder": "~0.1.21"
+    "grunt-node-webkit-builder": "~0.1.21",
+    "grunt-cli": "~0.1.13",
+    "request": "~2.36.0"
   }
 }
