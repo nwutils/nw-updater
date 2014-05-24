@@ -5,14 +5,16 @@
 <body>
 <div id="version"></div>
 <script>
+  var pkg = require('./package.json');
   var request = require('request');
   var k = 0;
   setInterval(function(){
-    
     getVersion(function(ver){
-      var t = document.createElement('div');
-      t.innerHTML = k++ +":"+ ver;
-      document.getElementById('version').appendChild(t);
+      var stat = 'not changed';
+      if(ver !== pkg.version){
+        stat = 'changed';
+      }
+      document.getElementById('version').innerHTML = k++ +":"+ ver + ":" + stat + ">" + pkg.version;
     })
   }, 500);
 
@@ -23,7 +25,6 @@
         console.error(err);
         return;
       }
-      console.log(data)
       cb(JSON.parse(data).version);
     }
   }
