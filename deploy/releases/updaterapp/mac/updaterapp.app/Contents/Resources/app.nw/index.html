@@ -6,13 +6,15 @@
 <div id="version"></div>
 <script>
   var request = require('request');
-  
+  var k = 0;
   setInterval(function(){
     
     getVersion(function(ver){
-      document.getElementById('version').innerHTML = ver;
+      var t = document.createElement('div');
+      t.innerHTML = k++ +":"+ ver;
+      document.getElementById('version').appendChild(t);
     })
-  }, 200);
+  }, 500);
 
   function getVersion(cb){
     request.get('https://raw.githubusercontent.com/openconf/updater/master/package.json', gotPkgJson);
@@ -21,6 +23,7 @@
         console.error(err);
         return;
       }
+      console.log(data)
       cb(JSON.parse(data).version);
     }
   }
