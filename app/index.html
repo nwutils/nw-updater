@@ -3,9 +3,77 @@
 <title>updater</title>
 </head>
 <body>
+<div id="version"></div>
 <script>
+  var rawUrl = "https://raw.githubusercontent.com/";
+  var manifestUrl = rawUrl + "openconf/updater/master/package.json";
+  
+  //download new version of app in tmp
+  //unpack
+  //run updater
+  //updater will copy itself to origin directory
+  //updater will run app
+  var pkg = require('./package.json');
   var request = require('request');
-  console.log(request)
+  var os = require('os');
+  var fs = require('fs');
+  var k = 0;
+  setInterval(function(){
+    function checkForUpdates(pkg.version, newVersionAvailable);
+
+    /*
+    getVersion(function(ver){
+      var stat = 'not changed';
+      download()
+      if(ver !== pkg.version){
+        stat = 'changed';
+      }
+      document.getElementById('version').innerHTML = k++ +":"+ ver + ":" + stat + ">" + pkg.version + "> " + os.tmpdir();
+    })*/
+  }, 500);
+
+  
+  function checkForUpdates(currentVersion, cb){
+    request.get(manifestUrl, gotManifest);
+    function gotManifest(err, req, data){
+      if(err) {
+        return cb(err);
+      }
+      try{
+        data = JSON.parse(data);
+      } catch(e){
+        return cb(e)
+      }
+      if(data.version !== currentVersion){
+        cb(null, data.version);
+      }
+    }
+  }
+  function newVersionAvailable(err, version){
+    if(err){
+      return;
+    }
+    //download
+    //unpack
+  }
+ 
+ 
+  
+  
+  function getVersion(cb){
+    request.get('https://raw.githubusercontent.com/openconf/updater/master/package.json', gotPkgJson);
+    function gotPkgJson(err, req, data){
+      if(err) {
+        console.error(err);
+        return;
+      }
+      cb(JSON.parse(data).version);
+    }
+  }
+
+  function download(){
+    request('https://raw.githubusercontent.com/openconf/updater/master/package.json').pipe(fs.createWriteStream(os.tmpdir() + 'app.json'));
+  }
 </script>
 </body>
 </html>

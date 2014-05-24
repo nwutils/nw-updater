@@ -1,0 +1,11 @@
+{
+  "name": "updapp",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "license": "MIT",
+  "window": {
+    "toolbar": true
+  },
+  "main": "app://updapp/index.html"
+}

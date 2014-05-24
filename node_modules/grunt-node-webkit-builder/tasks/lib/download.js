@@ -65,7 +65,7 @@ module.exports = function(grunt) {
           downloadAndUnpackDone.resolve(plattform);
           return downloadAndUnpackDone.promise;
         }
-/*
+
         // We should also check, if the zip archive already exists
         exists = grunt.file.exists(path.resolve(plattform.dest, plattform.filename));
 
@@ -83,7 +83,7 @@ module.exports = function(grunt) {
           return downloadAndUnpackDone.promise;
         }
 
-*/
+
         // Files do not exists, so we download them
         var downloadDone = exports.download(plattform.url, plattform.dest, indicator);
         downloadDone.done(function(data) {
