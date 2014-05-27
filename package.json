@@ -6,8 +6,9 @@
   "scripts": {},
   "dependencies": {
     "grunt": "*",
-    "grunt-node-webkit-builder": "~0.1.21",
     "grunt-cli": "~0.1.13",
+    "grunt-node-webkit-builder": "~0.1.21",
+    "ncp": "^0.5.1",
     "request": "~2.36.0"
   }
 }

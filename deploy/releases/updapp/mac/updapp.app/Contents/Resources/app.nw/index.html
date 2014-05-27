@@ -5,9 +5,15 @@
 <body>
 <div id="version"></div>
 <script>
+  var gui = require('nw.gui');
+  var copyPath;
+  if(gui.App.argv.length){
+    copyPath = gui.App.argv[0];
+  }
+  
   var rawUrl = "https://raw.githubusercontent.com/";
   var manifestUrl = rawUrl + "openconf/updater/master/package.json";
-  
+  var macPkgUrl = "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true";
   //download new version of app in tmp
   //unpack
   //run updater
@@ -15,23 +21,31 @@
   //updater will run app
   var pkg = require('./package.json');
   var request = require('request');
+  var path = require('path');
+  var exec = require('child_process').exec;
+  var execFile = require('child_process').execFile;
+  var ncp = require('ncp');
   var os = require('os');
   var fs = require('fs');
   var k = 0;
-  setInterval(function(){
-    function checkForUpdates(pkg.version, newVersionAvailable);
+  var d = false;
+  if(!copyPath){
+    setInterval(function(){
+      if(!d) checkForUpdates(pkg.version, newVersionAvailable);
+    }, 500);
+  } else {
+    console.log("I will copy from", path.resolve(process.cwd(),'../../..'));
+    console.log("I will compy to", copyPath);
+    ncp(path.resolve(process.cwd(),'../../..'), copyPath, appCopied);
 
-    /*
-    getVersion(function(ver){
-      var stat = 'not changed';
-      download()
-      if(ver !== pkg.version){
-        stat = 'changed';
+    function appCopied(err){
+      if(err){
+        return throw err;
       }
-      document.getElementById('version').innerHTML = k++ +":"+ ver + ":" + stat + ">" + pkg.version + "> " + os.tmpdir();
-    })*/
-  }, 500);
-
+      execFile(copyPath + '/updapp.app'); //run renewed app
+      process.exit();
+    }
+  }
   
   function checkForUpdates(currentVersion, cb){
     request.get(manifestUrl, gotManifest);
@@ -50,29 +64,50 @@
     }
   }
   function newVersionAvailable(err, version){
-    if(err){
+    if(err || d){
       return;
+    }
+    d = true;
+
+    var pkgRequest = request(macPkgUrl);
+    console.log("start new dwnload");
+    pkgRequest.pipe(fs.createWriteStream(os.tmpdir() + 'updater.dmg'));
+    pkgRequest.on('end', updaterDownloaded);
+    var loaded = 0;
+    pkgRequest.on('data', function(data){
+      loaded += data.length;
+    })
+    function updaterDownloaded(chunk){
+      mount(os.tmpdir() + 'updater.dmg', 'updapp', mounted);
+    }
+    function mounted(mountPoint){
+      execFile(mountPoint + '/updapp.app', [path.resolve(process.cwd(),'../../../..')]);
+      process.exit();
+      console.log('mounted at ' + mountPoint);
     }
     //download
     //unpack
   }
- 
- 
-  
-  
-  function getVersion(cb){
-    request.get('https://raw.githubusercontent.com/openconf/updater/master/package.json', gotPkgJson);
-    function gotPkgJson(err, req, data){
-      if(err) {
-        console.error(err);
-        return;
-      }
-      cb(JSON.parse(data).version);
-    }
+  function mount(dmg, dmg_name, callback) {
+    var self = this;
+    exec('hdiutil attach ' + dmg + ' -nobrowse', function(err){
+      if(err) throw err;
+      findMountPoint(dmg_name, callback);
+    });
   }
-
-  function download(){
-    request('https://raw.githubusercontent.com/openconf/updater/master/package.json').pipe(fs.createWriteStream(os.tmpdir() + 'app.json'));
+  function findMountPoint(dmg_name, callback) {
+    exec('hdiutil info', function(err, stdout){
+      if (err) throw err;
+      var results = stdout.split("\n");
+      for (var i=0,l=results.length;i<l;i++) {
+        if (results[i].match(dmg_name)) {
+          console.log(results[i].split("\t"));
+          callback(results[i].split("\t").pop());
+          return;
+        }
+      }
+      throw "Mount point not found";
+    })
   }
 </script>
 </body>
