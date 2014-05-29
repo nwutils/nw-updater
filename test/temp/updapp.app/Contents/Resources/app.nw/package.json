@@ -1,0 +1,16 @@
+{
+    "name": "updapp",
+    "version": "0.0.1",
+    "description": "",
+    "author": "Eldar Djafarov <djkojb@gmail.com>",
+    "license": "MIT",
+    "manifestUrl": "http://localhost:3000/package.json",
+    "packages": {
+        "mac": "http://localhost:3000/updapp.dmg"
+    },
+    "window": {
+        "toolbar": true
+    },
+    "main": "app://updapp/index.html",
+    "updated": false
+}

@@ -4,6 +4,7 @@
 </head>
 <body>
 <div id="version"></div>
+<div id="loaded"></div>
 <script>
   var gui = require('nw.gui');
   var copyPath;
@@ -11,10 +12,7 @@
     copyPath = gui.App.argv[0];
   }
   
-  var rawUrl = "https://raw.githubusercontent.com/";
-  var manifestUrl = rawUrl + "openconf/updater/master/package.json";
-  var macPkgUrl = "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true";
-  //download new version of app in tmp
+ //download new version of app in tmp
   //unpack
   //run updater
   //updater will copy itself to origin directory
@@ -29,20 +27,28 @@
   var fs = require('fs');
   var k = 0;
   var d = false;
+
+  var manifestUrl = pkg.manifestUrl;
+  var macPkgUrl = pkg.packages.mac;
+ 
+  
   if(!copyPath){
+    document.getElementById('version').innerHTML = 'current version ' + pkg.version;
     setInterval(function(){
       if(!d) checkForUpdates(pkg.version, newVersionAvailable);
     }, 500);
   } else {
     console.log("I will copy from", path.resolve(process.cwd(),'../../..'));
     console.log("I will compy to", copyPath);
+    document.getElementById('version').innerHTML = 'copying app';
+
     ncp(path.resolve(process.cwd(),'../../..'), copyPath, appCopied);
 
     function appCopied(err){
       if(err){
-        return throw err;
+        return console.log(err);
       }
-      execFile(copyPath + '/updapp.app'); //run renewed app
+      exec('open ' + copyPath);
       process.exit();
     }
   }
@@ -59,6 +65,7 @@
         return cb(e)
       }
       if(data.version !== currentVersion){
+        document.getElementById('loaded').innerHTML = "New version found ";
         cb(null, data.version);
       }
     }
@@ -76,13 +83,18 @@
     var loaded = 0;
     pkgRequest.on('data', function(data){
       loaded += data.length;
+      document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
     })
     function updaterDownloaded(chunk){
       mount(os.tmpdir() + 'updater.dmg', 'updapp', mounted);
     }
     function mounted(mountPoint){
-      execFile(mountPoint + '/updapp.app', [path.resolve(process.cwd(),'../../../..')]);
+      exec('open ' + mountPoint + '/updapp.app --args ' + path.resolve(process.cwd(),'../../..'), function(){
+        console.log(arguments);
+      });
+      
       process.exit();
+
       console.log('mounted at ' + mountPoint);
     }
     //download
