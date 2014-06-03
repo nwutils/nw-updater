@@ -6,6 +6,7 @@
   "scripts": {},
   "dependencies": {
     "chai": "^1.9.1",
+    "chokidar": "^0.8.2",
     "express": "^4.3.1",
     "grunt": "*",
     "grunt-cli": "~0.1.13",

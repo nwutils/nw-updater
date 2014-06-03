@@ -1,39 +1,46 @@
 var exec = require('child_process').exec;
 
+var isWin = /^win/.test(process.platform);
+var isMac = /^darwin/.test(process.platform);
+var isLinux = /^linux/.test(process.platform);
+
 module.exports = function(grunt){
+  var dest = grunt.option('dest') || './deploy';
+  var src = grunt.option('src') || './app';
   grunt.initConfig({
     compress:{
       win:{
         options: {
           mode: 'zip',
-          archive: './deploy/releases/updapp/win/updapp.zip'
+          archive: dest + '/releases/updapp/win/updapp.zip'
         },
         expand: true,
-        cwd: './deploy/releases/updapp/',
+        cwd: dest + '/releases/updapp/',
         src: ['win/updapp/**'],
         dest: 'win/'
       },
       linux:{
         options: {
           mode: 'tgz',
-          archive: './deploy/releases/updapp/linux32/updapp.tar.gz'
+          archive: dest + '/releases/updapp/linux32/updapp.tar.gz'
         },
         expand: true,
-        cwd: './delpoy/releases/updapp/',
+        cwd: dest + '/releases/updapp/',
         src: ['linux32/updapp/**'],
         dest: 'linux32/'
       }
     },
     nodewebkit: {
       options: {
-        build_dir: './deploy/', // Where the build version of my node-webkit app is saved
-        mac: false, // We want to build it for mac
-        win: true,
+        build_dir: dest, // Where the build version of my node-webkit app is saved
+        mac: isMac, // We want to build it for mac
+        win: isWin,
+        linux32: isLinux,
         version: '0.9.1',
         toolbar: false,
         frame: false
       },
-      src: ['./app/**/*'] // Your node-wekit app
+      src: [ src + '/**/*'] // Your node-wekit app
     },
     mochaTest:{
       test:{
@@ -50,8 +57,9 @@ module.exports = function(grunt){
 
   grunt.registerTask('packageMac', function(){
     var done = this.async();
-    console.log('packaging...');
-    exec('hdiutil create -format UDZO -srcfolder ./deploy/releases/updapp/mac/updapp.app ./deploy/releases/updapp/mac/updapp.dmg',function(error, stdout, stderr){
+    console.log('packaging...', 'hdiutil create -format UDZO -srcfolder ' + dest + '/releases/updapp/mac/updapp.app ' + dest + '/releases/updapp/mac/updapp.dmg');
+    
+    exec('hdiutil create -format UDZO -srcfolder ' + dest + '/releases/updapp/mac/updapp.app ' + dest + '/releases/updapp/mac/updapp.dmg',function(error, stdout, stderr){
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);
       if (error !== null) {
