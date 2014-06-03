@@ -27,10 +27,20 @@
   var fs = require('fs');
   var k = 0;
   var d = false;
+  var isWin = /^win/.test(process.platform);
+  var isMac = /^darwin/.test(process.platform);
+  var isLinux = /^linux/.test(process.platform);
+  //npm install unzip
 
   var manifestUrl = pkg.manifestUrl;
   var macPkgUrl = pkg.packages.mac;
- 
+  
+  var pkgUrl;
+  
+  if(isMac) pkgUrl = pkg.packages.mac;
+  if(isWin) pkgUrl = pkg.packages.win;
+  if(isLinux) pkgUrl = pkg.packages.linux;
+
   
   if(!copyPath){
     document.getElementById('version').innerHTML = 'current version ' + pkg.version;
@@ -75,10 +85,14 @@
       return;
     }
     d = true;
-
-    var pkgRequest = request(macPkgUrl);
+    var pkgRequest = request(pkgUrl);
     console.log("start new dwnload");
-    pkgRequest.pipe(fs.createWriteStream(os.tmpdir() + 'updater.dmg'));
+    var filename;
+    if(isMac) filename = 'updater.dmg';
+    if(isWin) filename = 'updater.zip';
+    if(isLinux) filename = 'updater.tar.gz';
+
+    pkgRequest.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
     pkgRequest.on('end', updaterDownloaded);
     var loaded = 0;
     pkgRequest.on('data', function(data){
@@ -86,7 +100,12 @@
       document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
     })
     function updaterDownloaded(chunk){
-      mount(os.tmpdir() + 'updater.dmg', 'updapp', mounted);
+      if(isMac) mount(path.join(os.tmpdir(), 'updater.dmg'), 'updapp', mounted);
+      if(isWin) {
+        console.log(path.join(os.tmpdir(), filename));
+        var zip = new AdmZip(path.join(os.tmpdir(), filename));
+        zip.extractAllTo(path.join(os.tmpdir(), 'updater'));
+      }
     }
     function mounted(mountPoint){
       exec('open ' + mountPoint + '/updapp.app --args ' + path.resolve(process.cwd(),'../../..'), function(){

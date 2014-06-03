@@ -5,11 +5,14 @@
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",
   "manifestUrl": "https://raw.githubusercontent.com/openconf/updater/master/package.json",
-  "packages":{
-    "mac":"https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true"
+  "packages": {
+    "mac": "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true"
   },
   "window": {
     "toolbar": true
   },
-  "main": "app://updapp/index.html"
+  "main": "app://updapp/index.html",
+  "dependencies": {
+    "adm-zip": "^0.4.4"
+  }
 }

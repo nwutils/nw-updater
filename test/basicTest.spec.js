@@ -7,7 +7,7 @@ var chokidar = require('chokidar');
 var isWin = /^win/.test(process.platform);
 var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
-
+var path = require('path');
 var fs = require('fs');
 ncp.limit = 100;
 describe('build app: copy current to temp', function buildApp(){
@@ -46,7 +46,7 @@ describe('build app: copy current to temp', function buildApp(){
         if(isWin) pkgCommand = 'compress:win';
         if(isLinux) pkgCommand = 'compress:linux';
         
-        var pk = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'packageMac', '--dest=./test/deploy0.2','--src=./test/app']);
+        var pk = spawn('node', ['./node_modules/grunt-cli/bin/grunt', pkgCommand, '--dest=./test/deploy0.2','--src=./test/app']);
         
         pk.stdout.on('data', function(data){
           console.log(data.toString());
@@ -86,8 +86,21 @@ describe('build app: copy current to temp', function buildApp(){
             done();
           })
           it('should be updated',function(done){
-            console.log('open ' + __dirname + "/deploy0.1/releases/updapp/mac/updapp.app")
-            var watcher = chokidar.watch(__dirname + '/deploy0.1/releases/updapp/mac/');
+            var os = {
+              mac:{
+                dir: 'mac/',
+                run: 'open ' + __dirname + "/deploy0.1/releases/updapp/mac/updapp.app"
+              },
+              win:{
+                dir: 'win/',
+                run: path.join(__dirname, "/deploy0.1/releases/updapp/win/updapp/updapp.exe")
+              }
+            };
+            if(isMac) os = os.mac;
+            if(isWin) os = os.win;
+            if(isLinux) os = os.linux;
+            console.log(os.run)
+            var watcher = chokidar.watch(__dirname + '/deploy0.1/releases/updapp/' + os.dir);
             var wasDone = false;
             watcher.on('change', function(){
               if(!wasDone) {
@@ -96,7 +109,7 @@ describe('build app: copy current to temp', function buildApp(){
                 done();
               }
             })
-            exec('open ' + __dirname + "/deploy0.1/releases/updapp/mac/updapp.app", function(err, stdo, stder){
+            exec(os.run, function(err, stdo, stder){
               console.log("opened and updated");
             });
           })
