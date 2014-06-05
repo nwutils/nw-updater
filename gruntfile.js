@@ -36,7 +36,7 @@ module.exports = function(grunt){
         mac: isMac, // We want to build it for mac
         win: isWin,
         linux32: isLinux,
-        version: '0.9.1',
+        version: '0.9.2',
         toolbar: false,
         frame: false
       },
@@ -49,11 +49,19 @@ module.exports = function(grunt){
         },
         src: ['test/**/*.spec.js']
       }
+    },
+    copy:{
+      win:{
+        src: 'tools/*',
+        dest: dest + '/releases/updapp/win/updapp/'
+      }
     }
   });
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+
 
   grunt.registerTask('packageMac', function(){
     var done = this.async();
@@ -82,7 +90,12 @@ module.exports = function(grunt){
     }
   });
   
-  grunt.registerTask('buildapp', ['nodewebkit']);
+  var buildFlow = ['nodewebkit'];
+  if(isWin) buildFlow.push('copy:win');
+
+  grunt.registerTask('buildapp', buildFlow);
+
+
 
   grunt.registerTask('default', 'test');
 }

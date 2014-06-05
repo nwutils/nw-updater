@@ -22,6 +22,7 @@
   var path = require('path');
   var exec = require('child_process').exec;
   var execFile = require('child_process').execFile;
+  var spawn = require('child_process').spawn;
   var ncp = require('ncp');
   var os = require('os');
   var fs = require('fs');
@@ -93,7 +94,7 @@
     if(isLinux) filename = 'updater.tar.gz';
 
     pkgRequest.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
-    pkgRequest.on('end', updaterDownloaded);
+    pkgRequest.on('close', updaterDownloaded);
     var loaded = 0;
     pkgRequest.on('data', function(data){
       loaded += data.length;
@@ -102,18 +103,20 @@
     function updaterDownloaded(chunk){
       if(isMac) mount(path.join(os.tmpdir(), 'updater.dmg'), 'updapp', mounted);
       if(isWin) {
-        console.log(path.join(os.tmpdir(), filename));
-        var zip = new AdmZip(path.join(os.tmpdir(), filename));
-        zip.extractAllTo(path.join(os.tmpdir(), 'updater'));
+        exec(path.resolve(path.dirname(process.execPath),'tools/unzip.exe') + " -u -o " + 
+          path.join(os.tmpdir(), filename) + " -d " + os.tmpdir(), mounted);
       }
     }
     function mounted(mountPoint){
-      exec('open ' + mountPoint + '/updapp.app --args ' + path.resolve(process.cwd(),'../../..'), function(){
-        console.log(arguments);
-      });
+      console.log(arguments);
+      if(isMac) exec('open ' + mountPoint + '/updapp.app --args ' + path.resolve(process.cwd(),'../../..'));
+      if(isWin){ 
+        var sp = spawn(path.join(os.tmpdir(), 'win/win/updapp/updapp.exe'), ['--args', path.dirname(process.execPath)]
+        ,{detached: true});
+        sp.unref();
+      }
       
       process.exit();
-
       console.log('mounted at ' + mountPoint);
     }
     //download

@@ -13,6 +13,8 @@
   },
   "main": "app://updapp/index.html",
   "dependencies": {
-    "adm-zip": "^0.4.4"
+    "fstream": "^0.1.25",
+    "ncp": "^0.5.1",
+    "request": "^2.36.0"
   }
 }

@@ -11,7 +11,7 @@ var path = require('path');
 var fs = require('fs');
 ncp.limit = 100;
 describe('build app: copy current to temp', function buildApp(){
-  this.timeout(100000);
+  this.timeout(200000);
   before(function(done){
     ncp('./app', './test/app', done);
   })
