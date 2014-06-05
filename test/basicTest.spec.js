@@ -10,6 +10,7 @@ var isLinux = /^linux/.test(process.platform);
 var path = require('path');
 var fs = require('fs');
 ncp.limit = 100;
+console.log(__dirname);
 describe('build app: copy current to temp', function buildApp(){
   this.timeout(200000);
   before(function(done){
@@ -28,11 +29,16 @@ describe('build app: copy current to temp', function buildApp(){
         version: "0.0.2"
       }
       customizePackageJson(mock, __dirname + '/app/package.json');
-      var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp', '--dest=./test/deploy0.2','--src=./test/app']);
+      var base = path.normalize(__dirname);
+      var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp', 
+        '--dest=' + base + '/deploy0.2',
+        '--src=' + base + '/app']);
       bd.stdout.on('data', function(data){
         console.log(data.toString());
       })
-
+      bd.stderr.on('data', function(data){
+        console.log(data.toString());
+      })
       bd.on('close', function(code){
         expect(code).to.equal(0);
         done();
