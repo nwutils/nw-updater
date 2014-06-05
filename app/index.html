@@ -53,13 +53,21 @@
     console.log("I will compy to", copyPath);
     document.getElementById('version').innerHTML = 'copying app';
 
-    ncp(path.resolve(process.cwd(),'../../..'), copyPath, appCopied);
+    if(isMac) ncp(path.resolve(process.cwd(),'../../..'), copyPath, appCopied);
+    if(isWin) ncp(path.resolve(path.dirname(process.execPath)), copyPath, appCopied);
 
     function appCopied(err){
       if(err){
         return console.log(err);
       }
-      exec('open ' + copyPath);
+      if(isMac) exec('open ' + copyPath);
+      if(isWin) {
+        //need to kill previous updapp process though
+        //http://stackoverflow.com/questions/11276249/how-to-kill-an-open-process-on-node-js
+        var sp = spawn(path.join(copyPath, '/updapp.exe'), []
+        ,{detached: true});
+        sp.unref();
+      }
       process.exit();
     }
   }
@@ -111,7 +119,7 @@
       console.log(arguments);
       if(isMac) exec('open ' + mountPoint + '/updapp.app --args ' + path.resolve(process.cwd(),'../../..'));
       if(isWin){ 
-        var sp = spawn(path.join(os.tmpdir(), 'win/win/updapp/updapp.exe'), ['--args', path.dirname(process.execPath)]
+        var sp = spawn(path.join(os.tmpdir(), 'win/win/updapp/updapp.exe'), [path.dirname(process.execPath)]
         ,{detached: true});
         sp.unref();
       }

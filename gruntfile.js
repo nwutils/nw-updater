@@ -8,6 +8,9 @@ module.exports = function(grunt){
   var dest = grunt.option('dest') || './deploy';
   var src = grunt.option('src') || './app';
   grunt.initConfig({
+    clean:{
+      main: ['test/app']
+    },
     compress:{
       win:{
         options: {
@@ -61,6 +64,7 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
 
   grunt.registerTask('packageMac', function(){
