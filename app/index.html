@@ -21,6 +21,7 @@
   var pkg = require('./package.json');
   var request = require('request');
   var path = require('path');
+  var targz = require('tar.gz');
   var exec = require('child_process').exec;
   var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
@@ -41,7 +42,7 @@
   
   if(isMac) pkgUrl = pkg.packages.mac;
   if(isWin) pkgUrl = pkg.packages.win;
-  if(isLinux) pkgUrl = pkg.packages.linux;
+  if(isLinux) pkgUrl = pkg.packages.linux32;
 
   
   if(!copyPath){
@@ -53,7 +54,7 @@
     console.log("I will copy from", path.resolve(process.cwd(),'../../..'));
     console.log("I will compy to", copyPath);
     document.getElementById('version').innerHTML = 'copying app';
-
+    if(isLinux) ncp(path.dirname(process.execPath), copyPath, appCopied);
     if(isMac) ncp(path.resolve(process.cwd(),'../../..'), copyPath, appCopied);
     if(isWin) {
       deleteApp(appDeleted);
@@ -72,6 +73,9 @@
         return console.log(err);
       }
       if(isMac) exec('open ' + copyPath);
+      if(isLinux) {
+        exec(copyPath + '/updapp', {cwd: copyPath});
+      }
       if(isWin) {
         //need to kill previous updapp process though
         //http://stackoverflow.com/questions/11276249/how-to-kill-an-open-process-on-node-js
@@ -121,6 +125,11 @@
     })
     function updaterDownloaded(chunk){
       if(isMac) mount(path.join(os.tmpdir(), 'updater.dmg'), 'updapp', mounted);
+      if(isLinux){
+        var gzip = new targz();
+        document.getElementById('loaded').innerHTML = "Unpacking... please wait!";
+        return gzip.extract(path.join(os.tmpdir(), filename), path.join(os.tmpdir(), '/updapp'), mounted);
+      }
       if(isWin) {
         exec(path.resolve(path.dirname(process.execPath),'tools/unzip.exe') + " -u -o " + 
           path.join(os.tmpdir(), filename) + " -d " + os.tmpdir(), mounted);
@@ -129,6 +138,17 @@
     function mounted(mountPoint){
       console.log(arguments);
       if(isMac) exec('open ' + mountPoint + '/updapp.app --args ' + path.resolve(process.cwd(),'../../..'));
+      if(isLinux){
+        fs.chmodSync(path.join(os.tmpdir(), 'updapp/linux32/linux32/updapp/updapp'), 0755);
+        /*exec(path.join(os.tmpdir(), 'updapp/linux32/linux32/updapp/updapp') + ' ' + path.dirname(process.execPath), 
+          function(){
+            console.log(arguments)
+          }
+        )*/
+        var sp = spawn(path.join(os.tmpdir(), 'updapp/linux32/linux32/updapp/updapp'), [path.dirname(process.execPath), process.pid]
+        ,{detached: true , cwd: path.join(os.tmpdir(), 'updapp/linux32/linux32/updapp')});
+        sp.unref();
+      }
       if(isWin){ 
         var sp = spawn(path.join(os.tmpdir(), 'win/win/updapp/updapp.exe'), [path.dirname(process.execPath), process.pid]
         ,{detached: true});

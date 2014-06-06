@@ -100,6 +100,10 @@ describe('build app: copy current to temp', function buildApp(){
               win:{
                 dir: 'win/',
                 run: path.join(__dirname, "/deploy0.1/releases/updapp/win/updapp/updapp.exe")
+              },
+              linux: {
+                dir: 'linux32/',
+                run: __dirname + "/deploy0.1/releases/updapp/linux32/updapp/updapp"
               }
             };
             if(isMac) os = os.mac;
