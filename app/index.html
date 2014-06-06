@@ -12,8 +12,24 @@
     copyPath = gui.App.argv[0];
     origPid = gui.App.argv[1];
   }
-  
- //download new version of app in tmp
+
+  //API
+  //updater(manifest)
+  // manifest.url - where to get manifest {version:'ver'}
+  // manifest.pkg.mac/win/linux32/linux64
+  // manifest.currentVersion
+  // -------APP--------
+  // checkNewVersion(cb) - checks new version of app
+  // download(cb) - downloads new version in temp
+  // unpack(cb) - unpacks the version
+  // runInstaller(cb) - is starting the installer
+  // -------INSTALLER---
+  // install(cb) - installs the app in app folder
+  // runApp(cb) - starting the app
+
+
+
+  //download new version of app in tmp
   //unpack
   //run updater
   //updater will copy itself to origin directory
