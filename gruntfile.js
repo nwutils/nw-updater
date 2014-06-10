@@ -3,6 +3,10 @@ var exec = require('child_process').exec;
 var isWin = /^win/.test(process.platform);
 var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
+var is32 = process.arch == 'ia32';
+var is64 = process.arch == 'x64';
+
+///^win/.test(process.platform)?'win':/^darwin/.test(process.platform)?'mac':process.arch == 'ia32'?'linux32':'linux64';
 
 module.exports = function(grunt){
   var dest = grunt.option('dest') || './deploy';
@@ -18,19 +22,29 @@ module.exports = function(grunt){
           archive: dest + '/releases/updapp/win/updapp.zip'
         },
         expand: true,
-        cwd: dest + '/releases/updapp/',
-        src: ['win/updapp/**'],
-        dest: 'win/'
+        cwd: dest + '/releases/updapp/win/updapp',
+        src: ['**/**'],
+        dest: '/updapp'
       },
-      linux:{
+      linux32:{
         options: {
           mode: 'tgz',
           archive: dest + '/releases/updapp/linux32/updapp.tar.gz'
         },
         expand: true,
-        cwd: dest + '/releases/updapp/',
-        src: ['linux32/updapp/**'],
-        dest: 'linux32/'
+        cwd: dest + '/releases/updapp/linux32/updapp',
+        src: ['**/**'],
+        dest: 'updapp/'
+      },
+      linux64:{
+        options: {
+          mode: 'tgz',
+          archive: dest + '/releases/updapp/linux64/updapp.tar.gz'
+        },
+        expand: true,
+        cwd: dest + '/releases/updapp/linux64/updapp',
+        src: ['**/**'],
+        dest: 'updapp/'
       }
     },
     nodewebkit: {
@@ -38,7 +52,8 @@ module.exports = function(grunt){
         build_dir: dest, // Where the build version of my node-webkit app is saved
         mac: isMac, // We want to build it for mac
         win: isWin,
-        linux32: isLinux,
+        linux32: isLinux && is32,
+        linux64: isLinux && is64,
         version: '0.9.2',
         toolbar: false,
         frame: false
@@ -98,8 +113,6 @@ module.exports = function(grunt){
   if(isWin) buildFlow.push('copy:win');
 
   grunt.registerTask('buildapp', buildFlow);
-
-
 
   grunt.registerTask('default', 'test');
 }

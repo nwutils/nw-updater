@@ -10,14 +10,15 @@
   var copyPath, origPid;
   if(gui.App.argv.length){
     copyPath = gui.App.argv[0];
-    origPid = gui.App.argv[1];
+    execPath = gui.App.argv[1];
   }
 
   //API
   //updater(manifest)
-  // manifest.url - where to get manifest {version:'ver'}
+  // manifest.manifest - where to get manifest {version:'ver'}
   // manifest.pkg.mac/win/linux32/linux64
-  // manifest.currentVersion
+  // manifest.version
+  // manifest.name - app name
   // -------APP--------
   // checkNewVersion(cb) - checks new version of app
   // download(cb) - downloads new version in temp
@@ -26,8 +27,185 @@
   // -------INSTALLER---
   // install(cb) - installs the app in app folder
   // runApp(cb) - starting the app
+  var request = require('request');
+  var platform = /^win/.test(process.platform)?'win':/^darwin/.test(process.platform)?'mac':process.arch == 'ia32'?'linux32':'linux64'; //here will be regular exp where we will define platform
 
+  function updater(manifest){
+    this.manifest = manifest;
+  }
+  updater.prototype.checkNewVersion = function(cb){
+    request.get(this.manifest.manifestUrl, gotManifest.bind(this)); //get manifest from url
 
+    function gotManifest(err, req, data){
+      if(err) {
+        return cb(err);
+      }
+      try{
+        data = JSON.parse(data);
+      } catch(e){
+        return cb(e)
+      }
+      if(data.version !== this.manifest.version){
+        cb(null, data);
+      }
+    }
+  }
+  // download the package to template folder
+  updater.prototype.download = function(cb){
+    var pkg = request(this.manifest.packages[platform]);
+    var filename = path.basename(this.manifest.packages[platform]);
+    pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
+    pkg.on('end', appDownloaded);
+
+    function appDownloaded(){
+      cb(null, path.join(os.tmpdir(), filename))
+    }
+    return pkg;
+  }
+
+  updater.prototype.getAppPath = function(){
+    var appPath = {
+      mac: path.join(process.cwd(),'../../..'),
+      win: path.dirname(process.execPath)
+    }
+    appPath.linux32 = appPath.win;
+    appPath.linux64 = appPath.win;
+    return appPath[platform];
+  }
+
+  updater.prototype.getAppExec = function(){
+    var execFolder = this.getAppPath();
+    var exec = {
+      mac:'',
+      win: path.basename(execFolder) + '.exe',
+      linux32: path.basename(execFolder),
+      linux64: path.basename(execFolder)
+    }
+    return path.join(execFolder, exec[platform]);
+  }
+
+  updater.prototype.unpack = function(){
+    pUnpack[platform].apply(this, arguments);
+  }
+
+  var pUnpack = {
+    mac: function(filename, cb){
+      var args = arguments;
+      exec('hdiutil unmount ' + filename, function(err){
+        exec('hdiutil attach ' + filename + ' -nobrowse', function(err){
+          if(err) {
+            if(err.code == 1){
+              pUnpack.mac.apply(this, args);
+            }
+            return cb(err);
+          }
+          findMountPoint(path.basename(filename, '.dmg'), cb);
+        });
+      });
+
+      function findMountPoint(dmg_name, callback) {
+        exec('hdiutil info', function(err, stdout){
+          if (err) return callback(err);
+          var results = stdout.split("\n");
+          var dmgExp = new RegExp(dmg_name + '$');
+          for (var i=0,l=results.length;i<l;i++) {
+            if (results[i].match(dmgExp)) {
+              var fileToRun = path.join(results[i].split("\t").pop(), dmg_name + ".app");
+              return callback(null, fileToRun);
+            }
+          }
+          callback(Error("Mount point not found"));
+        })
+      }
+    },
+    win: function(filename, cb){
+      //TODO: fix to put in proper zip filename
+      exec(path.resolve(path.dirname(process.execPath),'tools/unzip.exe') + " -u -o " +
+        filename + " -d " + os.tmpdir(), function(err){
+          if(err){
+            return cb(err);
+          }
+          var theName = path.basename(filename, path.extname(filename));
+          cb(null, path.join(os.tmpdir(), theName, theName + '.exe'));
+        });
+    },
+    linux32: function(filename, cb){
+      //filename fix
+      var gzip = new targz();
+      return gzip.extract(path.join(os.tmpdir(), filename), path.join(os.tmpdir(), '/updapp'), mounted);
+    },
+    linux64: function(cb){}
+  }
+
+  updater.prototype.runInstaller = function(){
+    return pRun[platform].apply(this, arguments);
+  }
+
+  var pRun = {
+    mac: function(apppath, args, options){
+      //spawn
+      if(args && args.length) {
+        args = [apppath].concat('--args', args);
+      } else {
+        args = [apppath];
+      }
+      return run('open', args, options);
+    },
+    win: function(apppath, args, options, cb){
+      return run(apppath, args, options, cb);
+    },
+    linux32: function(apppath, args, options, cb){
+      fs.chmodSync(apppath, 0755);
+      return run(apppath, args, options, cb);
+    }
+  }
+
+  pRun.linux64 = pRun.linux32;
+
+  function run(path, args, options, cb){
+    var opts = {
+      detached: true
+    }
+    for(var key in options){
+      opts[key] = options[key];
+    }
+    var sp = spawn(path, args, opts);
+    sp.unref();
+    return sp;
+  }
+
+  updater.prototype.install = function(){
+    return pInstall[platform].apply(this, arguments);
+  }
+  var pInstall = {
+    mac: function(to, cb){
+      ncp(this.getAppPath(), to, cb);
+    },
+    win: function(to, cb){
+      deleteApp(appDeleted.bind(this));
+      function appDeleted(err){
+        ncp(this.getAppPath(), to, appCopied.bind(this));
+      }
+      function deleteApp(cb){
+        exec('rd ' + copyPath + '/s /q', cb)
+      }
+      function appCopied(err){
+        if(err){
+          setTimeout(function(){deleteApp(appDeleted.bind(this))}.bind(this), 100);
+          return
+        }
+        cb();
+      }
+    },
+    linux32: function(to, cb){
+      ncp(this.getAppPath(), to, cb);
+    }
+  }
+  pInstall.linux64 = pInstall.linux32;
+
+  updater.prototype.run = function(){
+    pRun[platform].apply(this, arguments);
+  }
 
   //download new version of app in tmp
   //unpack
@@ -55,20 +233,34 @@
   var macPkgUrl = pkg.packages.mac;
   
   var pkgUrl;
-  
+
   if(isMac) pkgUrl = pkg.packages.mac;
   if(isWin) pkgUrl = pkg.packages.win;
   if(isLinux) pkgUrl = pkg.packages.linux32;
-
   
+  var upd = new updater(pkg);
+
   if(!copyPath){
     document.getElementById('version').innerHTML = 'current version ' + pkg.version;
     setInterval(function(){
-      if(!d) checkForUpdates(pkg.version, newVersionAvailable);
+      if(!d) upd.checkNewVersion(newVersionAvailable);
     }, 500);
   } else {
     console.log("I will copy from", path.resolve(process.cwd(),'../../..'));
     console.log("I will compy to", copyPath);
+
+    document.getElementById('version').innerHTML = 'copying app';
+    upd.install(copyPath, newAppInstalled);
+    
+    function newAppInstalled(err){
+      if(err){
+        console.log(err);
+        return;
+      }
+      upd.run(execPath, null, {});
+      process.exit();
+    }
+    /*
     document.getElementById('version').innerHTML = 'copying app';
     if(isLinux) ncp(path.dirname(process.execPath), copyPath, appCopied);
     if(isMac) ncp(path.resolve(process.cwd(),'../../..'), copyPath, appCopied);
@@ -78,12 +270,14 @@
         ncp(path.resolve(path.dirname(process.execPath)), copyPath, appCopied);
       }
     }
+    */
+
 
     function deleteApp(cb){
       exec('rd ' + copyPath + '/s /q', cb)
     }
 
-    function appCopied(err){
+    function adppCopied(err){
       if(err){
         if(isWin) setTimeout(function(){deleteApp(appDeleted);}, 500);
         return console.log(err);
@@ -99,9 +293,47 @@
         ,{detached: true});
         sp.unref();
       }
-      process.exit();
+      //process.exit();
     }
   }
+
+  function newVersionAvailable(err, manifest){
+    if(err || d){
+      console.log(err);
+      return Error(err);
+    }
+    d = true;
+    var loaded = 0;
+    var package = upd.download(newVersionDownloaded);
+    package.on('data', function(chunk){
+      loaded+=chunk.length;
+      document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
+    })
+  }
+
+  function newVersionDownloaded(err, filename){
+    if(err){
+      console.log(err)
+      return Error(err);
+    }
+    upd.unpack(filename, newVersionUnpacked);
+  }
+
+  function newVersionUnpacked(err, newAppPath){
+    if(err){
+      console.log(err)
+      return Error(err);
+    }
+    var runner = upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+    runner.stdout.on('data', function(data){
+      console.log(data.toString())
+    })
+    runner.stderr.on('data', function(data){
+      console.log(data.toString())
+    })
+    process.exit();
+  }
+
   
   function checkForUpdates(currentVersion, cb){
     request.get(manifestUrl, gotManifest);
@@ -120,7 +352,9 @@
       }
     }
   }
-  function newVersionAvailable(err, version){
+
+
+  function newVersionAvailableOld(err, version){
     if(err || d){
       return;
     }
@@ -139,6 +373,7 @@
       loaded += data.length;
       document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
     })
+
     function updaterDownloaded(chunk){
       if(isMac) mount(path.join(os.tmpdir(), 'updater.dmg'), 'updapp', mounted);
       if(isLinux){
@@ -171,33 +406,18 @@
         sp.unref();
       }
       
-      process.exit();
+      //process.exit();
       console.log('mounted at ' + mountPoint);
     }
     //download
     //unpack
   }
-  function mount(dmg, dmg_name, callback) {
-    var self = this;
-    exec('hdiutil attach ' + dmg + ' -nobrowse', function(err){
-      if(err) throw err;
-      findMountPoint(dmg_name, callback);
-    });
+  function unmount(){
+    //implement
   }
-  function findMountPoint(dmg_name, callback) {
-    exec('hdiutil info', function(err, stdout){
-      if (err) throw err;
-      var results = stdout.split("\n");
-      for (var i=0,l=results.length;i<l;i++) {
-        if (results[i].match(dmg_name)) {
-          console.log(results[i].split("\t"));
-          callback(results[i].split("\t").pop());
-          return;
-        }
-      }
-      throw "Mount point not found";
-    })
-  }
+  
+  
+
 </script>
 </body>
 </html>
