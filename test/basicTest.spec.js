@@ -50,7 +50,9 @@ describe('build app: copy current to temp', function buildApp(){
         var pkgCommand;
         if(isMac) pkgCommand = 'packageMac';
         if(isWin) pkgCommand = 'compress:win';
-        if(isLinux) pkgCommand = 'compress:linux';
+        if(isLinux) pkgCommand = 'compress:linux' + (process.arch == 'ia32'?'32':'64');
+        console.log(pkgCommand)
+
         
         var pk = spawn('node', ['./node_modules/grunt-cli/bin/grunt', pkgCommand, '--dest=./test/deploy0.2','--src=./test/app']);
         

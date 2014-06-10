@@ -132,10 +132,16 @@
     linux32: function(filename, cb){
       //filename fix
       var gzip = new targz();
-      return gzip.extract(path.join(os.tmpdir(), filename), path.join(os.tmpdir(), '/updapp'), mounted);
+      return gzip.extract(filename, os.tmpdir(), function(err){
+        if(err){
+          return cb(err);
+        }
+        var theName = path.basename(filename, '.tar.gz');
+        cb(null,path.join(os.tmpdir(), theName, theName));
+      });
     },
-    linux64: function(cb){}
   }
+  pUnpack.linux64 = pUnpack.linux32;
 
   updater.prototype.runInstaller = function(){
     return pRun[platform].apply(this, arguments);
@@ -156,6 +162,8 @@
     },
     linux32: function(apppath, args, options, cb){
       fs.chmodSync(apppath, 0755);
+      if(!options) options = {};
+      options.cwd = path.dirname(apppath);
       return run(apppath, args, options, cb);
     }
   }
@@ -316,6 +324,7 @@
       console.log(err)
       return Error(err);
     }
+    document.getElementById('loaded').innerHTML = "unpacking: " + filename;
     upd.unpack(filename, newVersionUnpacked);
   }
 
