@@ -13,7 +13,6 @@
   },
   "main": "app://updapp/index.html",
   "dependencies": {
-    "fstream": "^0.1.25",
     "ncp": "^0.5.1",
     "request": "^2.36.0",
     "tar.gz": "^0.1.1"
