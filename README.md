@@ -2,6 +2,10 @@ webkit-updater
 =======
 This is node-webkit autoupdater.
 
+```
+npm install webkit-updater
+```
+
 Covered by tests and works for linux, windows and mac.
 
 ##API
