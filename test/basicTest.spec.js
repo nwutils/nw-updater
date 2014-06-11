@@ -23,7 +23,8 @@ describe('build app: copy current to temp', function buildApp(){
         packages: {
           mac: "http://localhost:3000/releases/updapp/mac/updapp.dmg",
           win: "http://localhost:3000/releases/updapp/win/updapp.zip",
-          linux32: "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+          linux32: "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz",
+          linux64: "http://localhost:3000/releases/updapp/linux64/updapp.tar.gz"
         },
         updated: true,
         version: "0.0.2"
@@ -103,14 +104,18 @@ describe('build app: copy current to temp', function buildApp(){
                 dir: 'win/',
                 run: path.join(__dirname, "/deploy0.1/releases/updapp/win/updapp/updapp.exe")
               },
-              linux: {
+              linux32: {
                 dir: 'linux32/',
                 run: __dirname + "/deploy0.1/releases/updapp/linux32/updapp/updapp"
+              },
+              linux64: {
+                dir: 'linux64/',
+                run: __dirname + "/deploy0.1/releases/updapp/linux64/updapp/updapp"
               }
             };
             if(isMac) os = os.mac;
             if(isWin) os = os.win;
-            if(isLinux) os = os.linux;
+            if(isLinux) os = os['linux' + (process.arch == 'ia32'?'32':'64')];
             console.log(os.run)
             var watcher = chokidar.watch(__dirname + '/deploy0.1/releases/updapp/' + os.dir);
             var wasDone = false;
@@ -122,6 +127,7 @@ describe('build app: copy current to temp', function buildApp(){
               }
             })
             exec(os.run, function(err, stdo, stder){
+              console.log(arguments)
               console.log("opened and updated");
             });
           })

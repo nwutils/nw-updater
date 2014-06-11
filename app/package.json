@@ -14,7 +14,6 @@
   "main": "app://updapp/index.html",
   "dependencies": {
     "ncp": "^0.5.1",
-    "request": "^2.36.0",
-    "tar.gz": "^0.1.1"
+    "request": "^2.36.0"
   }
 }

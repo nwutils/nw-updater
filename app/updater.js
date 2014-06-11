@@ -125,14 +125,25 @@
     },
     linux32: function(filename, cb){
       //filename fix
-      var gzip = new targz();
-      return gzip.extract(filename, os.tmpdir(), function(err){
+      console.log('starting');
+      exec('tar -zxvf ' + filename,{cwd: os.tmpdir()}, function(err){
+        console.log(arguments);
         if(err){
+          console.log(err);
           return cb(err);
         }
         var theName = path.basename(filename, '.tar.gz');
         cb(null,path.join(os.tmpdir(), theName, theName));
-      });
+      })
+ /*     var gzip = new targz();
+      return gzip.extract(filename, os.tmpdir(), function(err){
+        if(err){
+          console.log(err);
+          return cb(err);
+        }
+        var theName = path.basename(filename, '.tar.gz');
+        cb(null,path.join(os.tmpdir(), theName, theName));
+      });*/
     },
   }
   pUnpack.linux64 = pUnpack.linux32;
