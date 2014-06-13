@@ -1,7 +1,8 @@
 {
   "name": "node-webkit-updater",
-  "description": "node-webkit updater library",
-  "version": "0.0.1",
+  "description": "node-webkit autoupdate library",
+  "keywords": ["node-webkit", "update", "autoupdate"],
+  "version": "0.0.2",
   "main":"./app/updater.js",
   "scripts": {
     "test":"node node_modules/grunt-cli/bin/grunt clean mochaTest"
