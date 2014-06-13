@@ -3,7 +3,7 @@ webkit-updater
 This is node-webkit autoupdater.
 
 ```
-npm install webkit-updater
+npm install node-webkit-updater
 ```
 
 Covered by tests and works for linux, windows and mac.

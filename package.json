@@ -1,5 +1,5 @@
 {
-  "name": "webkit-updater",
+  "name": "node-webkit-updater",
   "description": "node-webkit updater library",
   "version": "0.0.1",
   "main":"./app/updater.js",
