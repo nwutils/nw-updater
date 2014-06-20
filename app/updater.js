@@ -16,7 +16,6 @@
   var path = require('path');
   var os = require('os');
   var fs = require('fs');
-  var targz = require('tar.gz');
   var exec = require('child_process').exec;
   var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
