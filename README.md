@@ -6,10 +6,20 @@ This is node-webkit autoupdater.
 npm install node-webkit-updater
 ```
 
-Covered by tests and works for linux, windows and mac.
+Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
+### how to run the tests
+```
+git clone git@github.com:edjafarov/updater.git
+cd updater
+npm install
+cd app
+npm install
+cd ..
+npm test
+```
 
-##API
-
+## API
+As a reference you can use [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 ### new updater(manifest)
 
 Creates new instance of updater. Manifest could be a package.json of project.
