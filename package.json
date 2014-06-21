@@ -1,11 +1,15 @@
 {
   "name": "node-webkit-updater",
   "description": "node-webkit autoupdate library",
-  "keywords": ["node-webkit", "update", "autoupdate"],
+  "keywords": [
+    "node-webkit",
+    "update",
+    "autoupdate"
+  ],
   "version": "0.0.2",
-  "main":"./app/updater.js",
+  "main": "./app/updater.js",
   "scripts": {
-    "test":"node node_modules/grunt-cli/bin/grunt clean mochaTest"
+    "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
   },
   "dependencies": {
     "ncp": "^0.5.1",
@@ -23,6 +27,7 @@
     "grunt-contrib-copy": "^0.5.0",
     "grunt-mocha-test": "^0.10.2",
     "grunt-node-webkit-builder": "~0.1.21",
-    "mocha": "^1.19.0"
+    "mocha": "^1.19.0",
+    "get-port": "^0.1.0"
   }
 }
