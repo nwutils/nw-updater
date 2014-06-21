@@ -30,11 +30,15 @@
   var updater = require('./updater.js');
   var upd = new updater(pkg);
   var newVersionCheckIntervalId = null;
+  var tryingForNewVersion = false;
 
   if(!copyPath){
     document.getElementById('version').innerHTML = 'current version ' + pkg.version;
     newVersionCheckIntervalId = setInterval(function(){
-      if(!d) upd.checkNewVersion(newVersionAvailable);
+      if(!d && !tryingForNewVersion) {
+          tryingForNewVersion = true; //lock
+          upd.checkNewVersion(newVersionAvailable);
+      }
     }, 500);
   } else {
     console.log("I will copy from", path.resolve(process.cwd(),'../../..'));
@@ -53,6 +57,7 @@
   }
 
   function newVersionAvailable(err, manifest){
+    tryingForNewVersion = false; //unlock
     if(err || d){
       console.log(err);
       clearInterval(newVersionCheckIntervalId);
