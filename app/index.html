@@ -29,10 +29,11 @@
   var d = false;
   var updater = require('./updater.js');
   var upd = new updater(pkg);
+  var newVersionCheckIntervalId = null;
 
   if(!copyPath){
     document.getElementById('version').innerHTML = 'current version ' + pkg.version;
-    setInterval(function(){
+    newVersionCheckIntervalId = setInterval(function(){
       if(!d) upd.checkNewVersion(newVersionAvailable);
     }, 500);
   } else {
@@ -54,12 +55,14 @@
   function newVersionAvailable(err, manifest){
     if(err || d){
       console.log(err);
+      clearInterval(newVersionCheckIntervalId);
       return Error(err);
     }
     d = true;
+    clearInterval(newVersionCheckIntervalId);
     var loaded = 0;
-    var package = upd.download(newVersionDownloaded);
-    package.on('data', function(chunk){
+    var newVersion = upd.download(newVersionDownloaded);
+    newVersion.on('data', function(chunk){
       loaded+=chunk.length;
       document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
     })
