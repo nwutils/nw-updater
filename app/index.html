@@ -29,11 +29,16 @@
   var d = false;
   var updater = require('./updater.js');
   var upd = new updater(pkg);
+  var newVersionCheckIntervalId = null;
+  var tryingForNewVersion = false;
 
   if(!copyPath){
     document.getElementById('version').innerHTML = 'current version ' + pkg.version;
-    setInterval(function(){
-      if(!d) upd.checkNewVersion(newVersionAvailable);
+    newVersionCheckIntervalId = setInterval(function(){
+      if(!d && !tryingForNewVersion) {
+          tryingForNewVersion = true; //lock
+          upd.checkNewVersion(newVersionAvailable);
+      }
     }, 500);
   } else {
     console.log("I will copy from", path.resolve(process.cwd(),'../../..'));
@@ -52,14 +57,17 @@
   }
 
   function newVersionAvailable(err, manifest){
+    tryingForNewVersion = false; //unlock
     if(err || d){
       console.log(err);
+      clearInterval(newVersionCheckIntervalId);
       return Error(err);
     }
     d = true;
+    clearInterval(newVersionCheckIntervalId);
     var loaded = 0;
-    var package = upd.download(newVersionDownloaded);
-    package.on('data', function(chunk){
+    var newVersion = upd.download(newVersionDownloaded);
+    newVersion.on('data', function(chunk){
       loaded+=chunk.length;
       document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
     })
