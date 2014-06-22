@@ -9,22 +9,31 @@ var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
 var path = require('path');
 var fs = require('fs');
+var getPort = require('get-port');
+var port = null;
 ncp.limit = 100;
 console.log(__dirname);
 describe('build app: copy current to temp', function buildApp(){
   this.timeout(200000);
   before(function(done){
-    ncp('./app', './test/app', done);
+    ncp('./app', './test/app', function(err){
+        if(err) return done(err);
+        getPort(function(err, availablePort){
+            if(err) return done(err);
+            port = availablePort;
+            done();
+        })
+    });
   })
   describe('change manifest, build from temp', function(){
     before(function(done){
       var mock = {
-        manifestUrl: "http://localhost:3000/package.json",
+        manifestUrl: "http://localhost:" + port + "/package.json",
         packages: {
-          mac: "http://localhost:3000/releases/updapp/mac/updapp.dmg",
-          win: "http://localhost:3000/releases/updapp/win/updapp.zip",
-          linux32: "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz",
-          linux64: "http://localhost:3000/releases/updapp/linux64/updapp.tar.gz"
+          mac: "http://localhost:" + port + "/releases/updapp/mac/updapp.dmg",
+          win: "http://localhost:" + port + "/releases/updapp/win/updapp.zip",
+          linux32: "http://localhost:" + port + "/releases/updapp/linux32/updapp.tar.gz",
+          linux64: "http://localhost:" + port + "/releases/updapp/linux64/updapp.tar.gz"
         },
         updated: true,
         version: "0.0.2"
@@ -91,7 +100,7 @@ describe('build app: copy current to temp', function buildApp(){
             fs.writeFileSync( __dirname + "/deploy0.2/package.json" , JSON.stringify(json, null, 4));
             app = express();
             app.use(express.static('./test/deploy0.2'));
-            app.listen(3000);
+            app.listen(port);
             done();
           })
           it('should be updated',function(done){
