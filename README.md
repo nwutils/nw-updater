@@ -1,4 +1,4 @@
-webkit-updater
+node-webkit-updater
 =======
 This is node-webkit autoupdater.
 
