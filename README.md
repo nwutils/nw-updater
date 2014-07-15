@@ -20,7 +20,6 @@ npm test
 
 ## Quick Start
 ```javascript
-
 var pkg = require('../package.json'); // Insert your app's manifest here
 var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
@@ -70,6 +69,8 @@ Creates new instance of updater. Manifest could be a package.json of project.
 ```
 
 Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
+
+Note that compressed apps are assumed to be downloaded in the format produced by grunt-node-webkit-builder.
 
 ### updater:checkNewVersion(cb)
 
