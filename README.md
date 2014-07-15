@@ -7,7 +7,7 @@ npm install node-webkit-updater
 ```
 
 Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
-### how to run the tests
+### How to run the tests
 ```
 git clone git@github.com:edjafarov/updater.git
 cd updater
@@ -19,7 +19,7 @@ npm test
 ```
 
 ## API
-As a reference you can use [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
+As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 ### new updater(manifest)
 
 Creates new instance of updater. Manifest could be a package.json of project.
@@ -38,14 +38,15 @@ Creates new instance of updater. Manifest could be a package.json of project.
 }
 ```
 
-Inside manifest, you need to specify where to download packages from for all supported OS'es, manifest url where this manifest could be found and version of the app.
+Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
 
 ### updater:checkNewVersion(cb)
 
-Will check version of application by checking manifest specified in manufestUrl. Callback will be executed if the version was changed.
+Will check the latest available version of the application by requesting the manifest specified in manufestUrl. The callback will be executed if the version was changed.
+
 ### updater:download(cb)
 
-Will download the new app version in temporary folder.
+Will download the new app version in a temporary folder.
 
 ### updater:unpack(filename, cb)
 
