@@ -44,13 +44,19 @@ Inside the app manifest, you need to specify where to download packages from for
 
 Will check the latest available version of the application by requesting the manifest specified in manufestUrl. The callback will be executed if the version was changed.
 
+Callback arguments: error, remote version
+
 ### updater:download(cb)
 
 Will download the new app version in a temporary folder.
 
+Callback arguments: error, downloaded filepath
+
 ### updater:unpack(filename, cb)
 
 Will unpack the `filename` in temporary folder.
+
+Callback arguments: error, unpacked directory
 
 ### updater:runInstaller(appPath, args, options)
 
@@ -67,6 +73,8 @@ Returns current application executable
 ### updater:install(copyPath, cb)
 
 Installs the app (copies current application to copyPath)
+
+Callback arguments: error
 
 ### updater:run(execPath, args, options)
 
