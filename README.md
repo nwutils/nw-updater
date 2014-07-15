@@ -18,6 +18,37 @@ cd ..
 npm test
 ```
 
+## Quick Start
+```javascript
+
+var pkg = require('../package.json'); // Insert your app's manifest here
+var updater = require('node-webkit-updater');
+var upd = new updater(pkg);
+
+/* Checks the remote manifest for latest available version and calls the autoupgrading function */
+upd.checkNewVersion(function(error, manifest) {
+	if (!error) {
+		// Insert your user download choice/version comparison code here
+		upgradeNow();
+	}
+});
+
+/* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
+function upgradeNow() {
+	var newVersion = upd.download(function(error, filename) {
+		if (!error) {
+			upd.unpack(filename, function(error, newAppPath) {
+				if (!error) {
+					upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+					process.exit();
+				}
+			});
+		}
+	});
+}
+```
+
+
 ## API
 As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 ### new updater(manifest)
