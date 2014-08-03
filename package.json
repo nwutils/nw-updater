@@ -8,6 +8,14 @@
   ],
   "version": "0.0.2",
   "main": "./app/updater.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edjafarov/node-webkit-updater.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edjafarov/node-webkit-updater/issues"
+  },
+  "homepage": "https://github.com/edjafarov/node-webkit-updater",
   "scripts": {
     "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
   },
