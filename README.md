@@ -7,7 +7,7 @@ npm install node-webkit-updater
 ```
 
 Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
-### how to run the tests
+### How to run the tests
 ```
 git clone git@github.com:edjafarov/updater.git
 cd updater
@@ -18,8 +18,38 @@ cd ..
 npm test
 ```
 
+## Quick Start
+```javascript
+var pkg = require('../package.json'); // Insert your app's manifest here
+var updater = require('node-webkit-updater');
+var upd = new updater(pkg);
+
+/* Checks the remote manifest for latest available version and calls the autoupgrading function */
+upd.checkNewVersion(function(error, manifest) {
+	if (!error) {
+		// Insert your user download choice/version comparison code here
+		upgradeNow();
+	}
+});
+
+/* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
+function upgradeNow() {
+	var newVersion = upd.download(function(error, filename) {
+		if (!error) {
+			upd.unpack(filename, function(error, newAppPath) {
+				if (!error) {
+					upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+					process.exit();
+				}
+			});
+		}
+	});
+}
+```
+
+
 ## API
-As a reference you can use [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
+As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 ### new updater(manifest)
 
 Creates new instance of updater. Manifest could be a package.json of project.
@@ -38,18 +68,27 @@ Creates new instance of updater. Manifest could be a package.json of project.
 }
 ```
 
-Inside manifest, you need to specify where to download packages from for all supported OS'es, manifest url where this manifest could be found and version of the app.
+Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
+
+Note that compressed apps are assumed to be downloaded in the format produced by grunt-node-webkit-builder.
 
 ### updater:checkNewVersion(cb)
 
-Will check version of application by checking manifest specified in manufestUrl. Callback will be executed if the version was changed.
+Will check the latest available version of the application by requesting the manifest specified in manufestUrl. The callback will be executed if the version was changed.
+
+Callback arguments: error, remote version
+
 ### updater:download(cb)
 
-Will download the new app version in temporary folder.
+Will download the new app version in a temporary folder.
+
+Callback arguments: error, downloaded filepath
 
 ### updater:unpack(filename, cb)
 
 Will unpack the `filename` in temporary folder.
+
+Callback arguments: error, unpacked directory
 
 ### updater:runInstaller(appPath, args, options)
 
@@ -66,6 +105,8 @@ Returns current application executable
 ### updater:install(copyPath, cb)
 
 Installs the app (copies current application to copyPath)
+
+Callback arguments: error
 
 ### updater:run(execPath, args, options)
 
