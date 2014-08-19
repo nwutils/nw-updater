@@ -70,7 +70,7 @@ Creates new instance of updater. Manifest could be a package.json of project.
 
 Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
 
-Note that compressed apps are assumed to be downloaded in the format produced by grunt-node-webkit-builder.
+Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
 
 ### updater:checkNewVersion(cb)
 
