@@ -14,7 +14,7 @@ var port = null;
 ncp.limit = 100;
 console.log(__dirname);
 describe('build app: copy current to temp', function buildApp(){
-  this.timeout(200000);
+  this.timeout(2000000);
   before(function(done){
     ncp('./app', './test/app', function(err){
         if(err) return done(err);
@@ -30,10 +30,10 @@ describe('build app: copy current to temp', function buildApp(){
       var mock = {
         manifestUrl: "http://localhost:" + port + "/package.json",
         packages: {
-          mac: "http://localhost:" + port + "/releases/updapp/mac/updapp.dmg",
-          win: "http://localhost:" + port + "/releases/updapp/win/updapp.zip",
-          linux32: "http://localhost:" + port + "/releases/updapp/linux32/updapp.tar.gz",
-          linux64: "http://localhost:" + port + "/releases/updapp/linux64/updapp.tar.gz"
+          mac: "http://localhost:" + port + "/updapp/osx/updapp.zip",
+          win: "http://localhost:" + port + "/updapp/win/updapp.zip",
+          linux32: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz",
+          linux64: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
         },
         updated: true,
         version: "0.0.2"
@@ -58,7 +58,7 @@ describe('build app: copy current to temp', function buildApp(){
       before(function(done){
         
         var pkgCommand;
-        if(isMac) pkgCommand = 'packageMac';
+        if(isMac) pkgCommand = 'packageMacZip';//'packageMac';
         if(isWin) pkgCommand = 'compress:win';
         if(isLinux) pkgCommand = 'compress:linux' + (process.arch == 'ia32'?'32':'64');
         console.log(pkgCommand)
@@ -106,27 +106,27 @@ describe('build app: copy current to temp', function buildApp(){
           it('should be updated',function(done){
             var os = {
               mac:{
-                dir: 'mac/',
-                run: 'open ' + __dirname + "/deploy0.1/releases/updapp/mac/updapp.app"
+                dir: 'osx/',
+                run: 'open ' + __dirname + "/deploy0.1/updapp/osx/updapp.app"
               },
               win:{
                 dir: 'win/',
-                run: path.join(__dirname, "/deploy0.1/releases/updapp/win/updapp/updapp.exe")
+                run: path.join(__dirname, "/deploy0.1/updapp/win/updapp/updapp.exe")
               },
               linux32: {
                 dir: 'linux32/',
-                run: __dirname + "/deploy0.1/releases/updapp/linux32/updapp/updapp"
+                run: __dirname + "/deploy0.1/updapp/linux32/updapp/updapp"
               },
               linux64: {
                 dir: 'linux64/',
-                run: __dirname + "/deploy0.1/releases/updapp/linux64/updapp/updapp"
+                run: __dirname + "/deploy0.1/updapp/linux64/updapp/updapp"
               }
             };
             if(isMac) os = os.mac;
             if(isWin) os = os.win;
             if(isLinux) os = os['linux' + (process.arch == 'ia32'?'32':'64')];
             console.log(os.run)
-            var watcher = chokidar.watch(__dirname + '/deploy0.1/releases/updapp/' + os.dir);
+            var watcher = chokidar.watch(__dirname + '/deploy0.1/updapp/' + os.dir);
             var wasDone = false;
             watcher.on('change', function(){
               if(!wasDone) {

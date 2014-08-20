@@ -55,12 +55,16 @@
     var pkg = request(url);
     var filename = path.basename(url);
     // download the package to template folder
-    pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
+    fs.unlink(path.join(os.tmpdir(), filename), function(){
+      pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
+    });
+    
     pkg.on('end', appDownloaded);
-    pkg.manifest = newManifest;
 
     function appDownloaded(){
-      cb(null, path.join(os.tmpdir(), filename))
+      process.nextTick(function(){
+        cb(null, path.join(os.tmpdir(), filename))
+      });
     }
     return pkg;
   }
@@ -93,33 +97,47 @@
   var pUnpack = {
     mac: function(filename, cb){
       var args = arguments;
-      // just in case if something was wrong during previous mount
-      exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
-        exec('hdiutil attach ' + filename + ' -nobrowse', function(err){
-          if(err) {
-            if(err.code == 1){
-              pUnpack.mac.apply(this, args);
-            }
+      if(filename.slice(-4) == ".zip"){
+        exec('unzip -xo ' + filename,{cwd: os.tmpdir()}, function(err){
+          if(err){
+            console.log(err);
             return cb(err);
           }
-          findMountPoint(path.basename(filename, '.dmg'), cb);
-        });
-      });
-
-      function findMountPoint(dmg_name, callback) {
-        exec('hdiutil info', function(err, stdout){
-          if (err) return callback(err);
-          var results = stdout.split("\n");
-          var dmgExp = new RegExp(dmg_name + '$');
-          for (var i=0,l=results.length;i<l;i++) {
-            if (results[i].match(dmgExp)) {
-              var mountPoint = results[i].split("\t").pop();
-              var fileToRun = path.join(mountPoint, dmg_name + ".app");
-              return callback(null, fileToRun);
-            }
-          }
-          callback(Error("Mount point not found"));
+          var theName = path.basename(filename, '.zip');
+          var appPath = path.join(os.tmpdir(), theName, theName + '.app');
+          cb(null, appPath);
         })
+
+      }
+      if(filename.slice(-4) == ".dmg"){
+        // just in case if something was wrong during previous mount
+        exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
+          exec('hdiutil attach ' + filename + ' -nobrowse', function(err){
+            if(err) {
+              if(err.code == 1){
+                pUnpack.mac.apply(this, args);
+              }
+              return cb(err);
+            }
+            findMountPoint(path.basename(filename, '.dmg'), cb);
+          });
+        });
+
+        function findMountPoint(dmg_name, callback) {
+          exec('hdiutil info', function(err, stdout){
+            if (err) return callback(err);
+            var results = stdout.split("\n");
+            var dmgExp = new RegExp(dmg_name + '$');
+            for (var i=0,l=results.length;i<l;i++) {
+              if (results[i].match(dmgExp)) {
+                var mountPoint = results[i].split("\t").pop();
+                var fileToRun = path.join(mountPoint, dmg_name + ".app");
+                return callback(null, fileToRun);
+              }
+            }
+            callback(Error("Mount point not found"));
+          })
+        }
       }
     },
     win: function(filename, cb){

@@ -1,10 +1,17 @@
 var exec = require('child_process').exec;
+var ncp = require('ncp');
+var fs = require('fs');
 
 var isWin = /^win/.test(process.platform);
 var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
 var is32 = process.arch == 'ia32';
 var is64 = process.arch == 'x64';
+var platforms = [];
+if(isMac) platforms.push('osx');
+if(isWin) platforms.push('win');
+if(isLinux && is32) platforms.push('linux32');
+if(isLinux && is64) platforms.push('linux64');
 
 ///^win/.test(process.platform)?'win':/^darwin/.test(process.platform)?'mac':process.arch == 'ia32'?'linux32':'linux64';
 
@@ -16,45 +23,52 @@ module.exports = function(grunt){
       main: ['test/app']
     },
     compress:{
+      mac:{
+        options: {
+          mode: 'zip',
+          archive: dest + '/updapp/osx/updapp.zip'
+        },
+        expand: true,
+        cwd: dest + '/updapp/osx/',
+        src: ['**/**'],
+        dest: '/updapp'
+      },
       win:{
         options: {
           mode: 'zip',
-          archive: dest + '/releases/updapp/win/updapp.zip'
+          archive: dest + '/updapp/win/updapp.zip'
         },
         expand: true,
-        cwd: dest + '/releases/updapp/win/updapp',
+        cwd: dest + '/updapp/win/updapp',
         src: ['**/**'],
         dest: '/updapp'
       },
       linux32:{
         options: {
           mode: 'tgz',
-          archive: dest + '/releases/updapp/linux32/updapp.tar.gz'
+          archive: dest + '/updapp/linux32/updapp.tar.gz'
         },
         expand: true,
-        cwd: dest + '/releases/updapp/linux32/updapp',
+        cwd: dest + '/updapp/linux32/updapp',
         src: ['**/**'],
         dest: 'updapp/'
       },
       linux64:{
         options: {
           mode: 'tgz',
-          archive: dest + '/releases/updapp/linux64/updapp.tar.gz'
+          archive: dest + '/updapp/linux64/updapp.tar.gz'
         },
         expand: true,
-        cwd: dest + '/releases/updapp/linux64/updapp',
+        cwd: dest + '/updapp/linux64/updapp',
         src: ['**/**'],
         dest: 'updapp/'
       }
     },
     nodewebkit: {
       options: {
-        build_dir: dest, // Where the build version of my node-webkit app is saved
-        mac: isMac, // We want to build it for mac
-        win: isWin,
-        linux32: isLinux && is32,
-        linux64: isLinux && is64,
-        version: '0.9.2',
+        buildDir: dest, // Where the build version of my node-webkit app is saved
+        platforms: platforms,
+        version: '0.10.2',
         toolbar: false,
         frame: false
       },
@@ -71,7 +85,7 @@ module.exports = function(grunt){
     copy:{
       win:{
         src: 'tools/*',
-        dest: dest + '/releases/updapp/win/updapp/'
+        dest: dest + '/updapp/win/updapp/'
       }
     }
   });
@@ -81,12 +95,28 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-
+  grunt.registerTask('packageMacZip', function(){
+    var done = this.async();
+    
+    fs.mkdirSync(dest + '/updapp/osx/updapp');
+    ncp(dest + '/updapp/osx/updapp.app', dest + '/updapp/osx/updapp/updapp.app', function(err){
+      exec('zip -r updapp.zip updapp',{cwd: dest + '/updapp/osx'},function(error, stdout, stderr){
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+          console.log('exec error: ' + error);
+        }
+        done()
+      })
+     
+    })
+  })
+  
   grunt.registerTask('packageMac', function(){
     var done = this.async();
     console.log('packaging...', 'hdiutil create -format UDZO -srcfolder ' + dest + '/releases/updapp/mac/updapp.app ' + dest + '/releases/updapp/mac/updapp.dmg');
     
-    exec('hdiutil create -format UDZO -srcfolder ' + dest + '/releases/updapp/mac/updapp.app ' + dest + '/releases/updapp/mac/updapp.dmg',function(error, stdout, stderr){
+    exec('hdiutil create -format UDZO -srcfolder ' + dest + '/updapp/osx/updapp.app ' + dest + '/updapp/osx/updapp.dmg',function(error, stdout, stderr){
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);
       if (error !== null) {
