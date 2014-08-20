@@ -28,6 +28,7 @@ var upd = new updater(pkg);
 upd.checkNewVersion(function(error, manifest) {
 	if (!error) {
 		// Insert your user download choice/version comparison code here
+		upd.manifest = manifest;
 		upgradeNow();
 	}
 });
