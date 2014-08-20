@@ -93,7 +93,8 @@
   var pUnpack = {
     mac: function(filename, cb){
       var args = arguments;
-      exec('hdiutil unmount ' + filename, function(err){
+      // just in case if something was wrong during previous mount
+      exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
         exec('hdiutil attach ' + filename + ' -nobrowse', function(err){
           if(err) {
             if(err.code == 1){
@@ -112,7 +113,8 @@
           var dmgExp = new RegExp(dmg_name + '$');
           for (var i=0,l=results.length;i<l;i++) {
             if (results[i].match(dmgExp)) {
-              var fileToRun = path.join(results[i].split("\t").pop(), dmg_name + ".app");
+              var mountPoint = results[i].split("\t").pop();
+              var fileToRun = path.join(mountPoint, dmg_name + ".app");
               return callback(null, fileToRun);
             }
           }
