@@ -43,12 +43,21 @@
       }
     }
   }
-  // download the package to template folder
-  updater.prototype.download = function(cb){
-    var pkg = request(this.manifest.packages[platform]);
-    var filename = path.basename(this.manifest.packages[platform]);
+  /**
+   * Download the package to template folder
+   * @param  {Function} cb called when download completes
+   * @param  {Object} manifest package.json manifest where are defined remote url
+   * @return {Request} Request stream, the stream contains `manifest` property with new manifest
+   */
+  updater.prototype.download = function(cb, newManifest){
+    var manifest = newManifest || this.manifest;
+    var url = manifest.packages[platform];
+    var pkg = request(url);
+    var filename = path.basename(url);
+    // download the package to template folder
     pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
     pkg.on('end', appDownloaded);
+    pkg.manifest = newManifest;
 
     function appDownloaded(){
       cb(null, path.join(os.tmpdir(), filename))
@@ -134,16 +143,7 @@
         var theName = path.basename(filename, '.tar.gz');
         cb(null,path.join(os.tmpdir(), theName, theName));
       })
- /*     var gzip = new targz();
-      return gzip.extract(filename, os.tmpdir(), function(err){
-        if(err){
-          console.log(err);
-          return cb(err);
-        }
-        var theName = path.basename(filename, '.tar.gz');
-        cb(null,path.join(os.tmpdir(), theName, theName));
-      });*/
-    },
+     },
   }
   pUnpack.linux64 = pUnpack.linux32;
 
