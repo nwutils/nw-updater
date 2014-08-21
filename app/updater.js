@@ -83,7 +83,7 @@
     var execFolder = this.getAppPath();
     var exec = {
       mac:'',
-      win: path.basename(execFolder) + '.exe',
+      win: path.basename(process.execPath) + '.exe',
       linux32: path.basename(execFolder),
       linux64: path.basename(process.execPath)
     }
