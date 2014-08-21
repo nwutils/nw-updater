@@ -8,7 +8,7 @@
   // checkNewVersion(cb) - checks new version of app
   // download(cb) - downloads new version in temp
   // unpack(cb) - unpacks the version
-  // runInstaller(cb) - is starting the installer
+  // runInstaller(apppath, args, options) - is starting the installer
   // -------INSTALLER---
   // install(cb) - installs the app in app folder
   // runApp(cb) - starting the app

@@ -20,6 +20,7 @@ npm test
 
 ## Quick Start
 ```javascript
+var gui = require('nw.gui');
 var pkg = require('../package.json'); // Insert your app's manifest here
 var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
@@ -39,7 +40,7 @@ function upgradeNow() {
 			upd.unpack(filename, function(error, newAppPath) {
 				if (!error) {
 					upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
-					process.exit();
+					gui.App.quit();
 				}
 			});
 		}
@@ -90,9 +91,13 @@ Will unpack the `filename` in temporary folder.
 
 Callback arguments: error, unpacked directory
 
-### updater:runInstaller(appPath, args, options)
+### updater:runInstaller(apppath, args, options)
 
 Runs installer
+
+`apppath` - String
+`args` - Array of arguments which will be passed when running the new app
+`options` - Optional object 
 
 ### updater:getAppPath()
 
