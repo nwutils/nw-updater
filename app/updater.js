@@ -84,7 +84,7 @@
     var exec = {
       mac:'',
       win: path.basename(process.execPath),
-      linux32: path.basename(execFolder),
+      linux32: path.basename(process.execPath),
       linux64: path.basename(process.execPath)
     }
     return path.join(execFolder, exec[platform]);
