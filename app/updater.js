@@ -55,9 +55,9 @@
     var pkg = request(url);
     var filename = path.basename(url);
     // download the package to template folder
-    fs.unlink(path.join(os.tmpdir(), filename), function(){
+    //fs.unlink(path.join(os.tmpdir(), filename), function(){
       pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
-    });
+    //});
     
     pkg.on('end', appDownloaded);
 
@@ -83,7 +83,7 @@
     var execFolder = this.getAppPath();
     var exec = {
       mac:'',
-      win: path.basename(execFolder) + '.exe',
+      win: path.basename(process.execPath),
       linux32: path.basename(execFolder),
       linux64: path.basename(process.execPath)
     }
@@ -141,6 +141,8 @@
       }
     },
     win: function(filename, cb){
+      console.log(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
+        filename + " -d " + os.tmpdir())
       exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
         filename + " -d " + os.tmpdir(), function(err){
           if(err){
