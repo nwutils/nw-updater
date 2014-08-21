@@ -8,7 +8,7 @@
   // checkNewVersion(cb) - checks new version of app
   // download(cb) - downloads new version in temp
   // unpack(cb) - unpacks the version
-  // runInstaller(cb) - is starting the installer
+  // runInstaller(apppath, args, options) - is starting the installer
   // -------INSTALLER---
   // install(cb) - installs the app in app folder
   // runApp(cb) - starting the app
@@ -20,7 +20,7 @@
   var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
- 
+
   var platform = /^win/.test(process.platform)?'win':/^darwin/.test(process.platform)?'mac':process.arch == 'ia32'?'linux32':'linux64'; //here will be regular exp where we will define platform
 
   function updater(manifest){
@@ -58,7 +58,7 @@
     fs.unlink(path.join(os.tmpdir(), filename), function(){
       pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
     });
-    
+
     pkg.on('end', appDownloaded);
 
     function appDownloaded(){
@@ -180,20 +180,21 @@
       }
       return run('open', args, options);
     },
-    win: function(apppath, args, options, cb){
-      return run(apppath, args, options, cb);
+    win: function(apppath, args, options){
+      return run(apppath, args, options);
     },
-    linux32: function(apppath, args, options, cb){
+    linux32: function(apppath, args, options){
       fs.chmodSync(apppath, 0755);
       if(!options) options = {};
       options.cwd = path.dirname(apppath);
-      return run(apppath, args, options, cb);
+      return run(apppath, args, options);
     }
   }
 
   pRun.linux64 = pRun.linux32;
 
-  function run(path, args, options, cb){
+  function run(path, args, options){
+    if(!options) options = {};
     var opts = {
       detached: true
     }
