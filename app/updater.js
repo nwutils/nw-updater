@@ -85,7 +85,7 @@
       mac:'',
       win: path.basename(execFolder) + '.exe',
       linux32: path.basename(execFolder),
-      linux64: path.basename(execFolder)
+      linux64: path.basename(process.execPath)
     }
     return path.join(execFolder, exec[platform]);
   }

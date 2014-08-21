@@ -39,7 +39,7 @@ module.exports = function(grunt){
           archive: dest + '/updapp/win/updapp.zip'
         },
         expand: true,
-        cwd: dest + '/updapp/win/updapp',
+        cwd: dest + '/updapp/win/',
         src: ['**/**'],
         dest: '/updapp'
       },
@@ -49,7 +49,7 @@ module.exports = function(grunt){
           archive: dest + '/updapp/linux32/updapp.tar.gz'
         },
         expand: true,
-        cwd: dest + '/updapp/linux32/updapp',
+        cwd: dest + '/updapp/linux32/',
         src: ['**/**'],
         dest: 'updapp/'
       },
@@ -59,7 +59,7 @@ module.exports = function(grunt){
           archive: dest + '/updapp/linux64/updapp.tar.gz'
         },
         expand: true,
-        cwd: dest + '/updapp/linux64/updapp',
+        cwd: dest + '/updapp/linux64/',
         src: ['**/**'],
         dest: 'updapp/'
       }
@@ -68,7 +68,7 @@ module.exports = function(grunt){
       options: {
         buildDir: dest, // Where the build version of my node-webkit app is saved
         platforms: platforms,
-        version: '0.10.2',
+        version: '0.9.2',
         toolbar: false,
         frame: false
       },
@@ -85,7 +85,7 @@ module.exports = function(grunt){
     copy:{
       win:{
         src: 'tools/*',
-        dest: dest + '/updapp/win/updapp/'
+        dest: dest + '/updapp/win/'
       }
     }
   });

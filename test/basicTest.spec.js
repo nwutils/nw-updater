@@ -111,15 +111,15 @@ describe('build app: copy current to temp', function buildApp(){
               },
               win:{
                 dir: 'win/',
-                run: path.join(__dirname, "/deploy0.1/updapp/win/updapp/updapp.exe")
+                run: path.join(__dirname, "/deploy0.1/updapp/win/updapp.exe")
               },
               linux32: {
                 dir: 'linux32/',
-                run: __dirname + "/deploy0.1/updapp/linux32/updapp/updapp"
+                run: __dirname + "/deploy0.1/updapp/linux32/updapp"
               },
               linux64: {
                 dir: 'linux64/',
-                run: __dirname + "/deploy0.1/updapp/linux64/updapp/updapp"
+                run: __dirname + "/deploy0.1/updapp/linux64/updapp"
               }
             };
             if(isMac) os = os.mac;
@@ -137,6 +137,7 @@ describe('build app: copy current to temp', function buildApp(){
             })
             exec(os.run, function(err, stdo, stder){
               console.log(arguments)
+              console.log(arguments[2])
               console.log("opened and updated");
             });
           })
