@@ -112,3 +112,6 @@ Callback arguments: error
 
 Runs the app from original path.
 
+## troubleshooting
+
+to run the test on mac `ulimit -n 10240`
