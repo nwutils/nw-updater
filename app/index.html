@@ -52,7 +52,7 @@
         return;
       }
       upd.run(execPath, null, {});
-      process.exit();
+      gui.App.quit();
     }
   }
 
@@ -96,7 +96,7 @@
     runner.stderr.on('data', function(data){
       console.log(data)
     })
-    process.exit();
+    gui.App.quit();
   }
 
 
