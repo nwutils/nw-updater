@@ -20,6 +20,7 @@ npm test
 
 ## Quick Start
 ```javascript
+var gui = require('nw.gui');
 var pkg = require('../package.json'); // Insert your app's manifest here
 var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
@@ -39,7 +40,7 @@ function upgradeNow() {
 			upd.unpack(filename, function(error, newAppPath) {
 				if (!error) {
 					upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
-					process.exit();
+					gui.App.quit();
 				}
 			});
 		}
