@@ -1,6 +1,6 @@
 node-webkit-updater
 =======
-This is node-webkit autoupdater.
+This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater.
 
 ```
 npm install node-webkit-updater
