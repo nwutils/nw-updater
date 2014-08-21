@@ -20,7 +20,7 @@
   var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
-
+ 
   var platform = /^win/.test(process.platform)?'win':/^darwin/.test(process.platform)?'mac':process.arch == 'ia32'?'linux32':'linux64'; //here will be regular exp where we will define platform
 
   function updater(manifest){
@@ -55,10 +55,10 @@
     var pkg = request(url);
     var filename = path.basename(url);
     // download the package to template folder
-    fs.unlink(path.join(os.tmpdir(), filename), function(){
+    //fs.unlink(path.join(os.tmpdir(), filename), function(){
       pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
-    });
-
+    //});
+    
     pkg.on('end', appDownloaded);
 
     function appDownloaded(){
@@ -83,7 +83,7 @@
     var execFolder = this.getAppPath();
     var exec = {
       mac:'',
-      win: path.basename(execFolder) + '.exe',
+      win: path.basename(process.execPath),
       linux32: path.basename(execFolder),
       linux64: path.basename(process.execPath)
     }
@@ -141,6 +141,8 @@
       }
     },
     win: function(filename, cb){
+      console.log(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
+        filename + " -d " + os.tmpdir())
       exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
         filename + " -d " + os.tmpdir(), function(err){
           if(err){
@@ -180,21 +182,20 @@
       }
       return run('open', args, options);
     },
-    win: function(apppath, args, options){
-      return run(apppath, args, options);
+    win: function(apppath, args, options, cb){
+      return run(apppath, args, options, cb);
     },
-    linux32: function(apppath, args, options){
+    linux32: function(apppath, args, options, cb){
       fs.chmodSync(apppath, 0755);
       if(!options) options = {};
       options.cwd = path.dirname(apppath);
-      return run(apppath, args, options);
+      return run(apppath, args, options, cb);
     }
   }
 
   pRun.linux64 = pRun.linux32;
 
-  function run(path, args, options){
-    if(!options) options = {};
+  function run(path, args, options, cb){
     var opts = {
       detached: true
     }
