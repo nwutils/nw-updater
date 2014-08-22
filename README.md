@@ -1,10 +1,21 @@
 node-webkit-updater
 =======
-This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater.
+This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater. 
 
 ```
 npm install node-webkit-updater
 ```
+
+It gives you low level api to:
+
+1. Check the manifest for version.
+2. If the version is different from local one download new package to temp.
+3. Unpack the package to temp.
+4. Run new version from temp and exit the process.
+5. The new version from temp will copy itself to original folder.
+6. The new version will run itself from original folder and exit the process.
+
+you should build this logic by yourself though. As a reference you can use [example](https://github.com/edjafarov/node-webkit-updater/blob/master/app/index.html).
 
 Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
 ### How to run the tests
@@ -62,7 +73,7 @@ Creates new instance of updater. Manifest could be a package.json of project.
     "author": "Eldar Djafarov <djkojb@gmail.com>",
     "manifestUrl": "http://localhost:3000/package.json",
     "packages": {
-        "mac": "http://localhost:3000/releases/updapp/mac/updapp.dmg",
+        "mac": "http://localhost:3000/releases/updapp/mac/updapp.zip",
         "win": "http://localhost:3000/releases/updapp/win/updapp.zip",
         "linux32": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
     }
