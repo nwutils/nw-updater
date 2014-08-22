@@ -6,7 +6,7 @@
     "update",
     "autoupdate"
   ],
-  "version": "0.0.3",
+  "version": "0.0.5",
   "main": "./app/updater.js",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "grunt-contrib-compress": "^0.9.1",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-mocha-test": "^0.10.2",
-    "grunt-node-webkit-builder": "~0.2.1",
+    "grunt-node-webkit-builder": "~0.2.2",
     "mocha": "^1.19.0",
     "get-port": "^0.1.0"
   }
