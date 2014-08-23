@@ -66,7 +66,7 @@ Creates new instance of updater. Manifest could be a `package.json` of project.
 
 **Params**
 
-- manifest `object` - Inside the app manifest, you need to specify where to download packages from for all supported OS'es, etc. See [the manifest documentation](#manifest-schema)  
+- manifest `object` - See the [manifest schema](#manifest-schema) below.  
 
 <a name="updater#checkNewVersion"></a>
 ###updater.checkNewVersion(cb)
@@ -83,7 +83,7 @@ Downloads the new app to a template folder
 **Params**
 
 - cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
-- newManifest `Object` - package.json manifest where are defined remote url  
+- newManifest `Object` - see [manifest schema](#manifest-schema) below  
 
 **Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest  
 <a name="updater#getAppPath"></a>
@@ -97,12 +97,13 @@ Returns current application executable
 
 **Returns**: `string`  
 <a name="updater#unpack"></a>
-###updater.unpack(filename, cb)
+###updater.unpack(filename, manifest, cb)
 Will unpack the `filename` in temporary folder.For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
 **Params**
 
 - filename `string`  
+- manifest `object`  
 - cb `function` - Callback arguments: error, unpacked directory  
 
 <a name="updater#runInstaller"></a>
@@ -168,7 +169,7 @@ The manifest could be a `package.json` of project, but doesn't have to be.
 The name of your app. From time, it is assumed your Mac app is called `<manifest.name>.app`, your Windows executable is `<manifest.name>.exe`, etc.
 
 ### manifest.version
-[semver](http://semver.org) version.
+[semver](http://semver.org) version of your app.
 
 ### manifest.manifestUrl
 The URL where your latest manifest is hosted; where node-webkit-updater looks to check if there is a newer version of your app available.

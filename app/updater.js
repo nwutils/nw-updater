@@ -17,7 +17,7 @@
    * Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
    *
    * @constructor
-   * @param {object} manifest - Inside the app manifest, you need to specify where to download packages from for all supported OS'es, etc. See [the manifest documentation](#manifest-schema)
+   * @param {object} manifest - See the [manifest schema](#manifest-schema) below.
    */
   function updater(manifest){
     this.manifest = manifest;
@@ -59,12 +59,12 @@
   /**
    * Downloads the new app to a template folder
    * @param  {Function} cb - called when download completes. Callback arguments: error, downloaded filepath
-   * @param  {Object} newManifest - package.json manifest where are defined remote url
+   * @param  {Object} newManifest - see [manifest schema](#manifest-schema) below
    * @return {Request} Request - stream, the stream contains `manifest` property with new manifest
    */
   updater.prototype.download = function(cb, newManifest){
     var manifest = newManifest || this.manifest;
-    var url = manifest.packages[platform];
+    var url = manifest.packages[platform].url;
     var pkg = request(url, function(err, response){
         if(err){
             cb(err);
@@ -74,10 +74,11 @@
             return cb(new Error(response.statusCode));
         }
     });
-    var filename = path.basename(url);
+    var filename = path.basename(url),
+        destinationPath = path.join(os.tmpdir(), filename);
     // download the package to template folder
     //fs.unlink(path.join(os.tmpdir(), filename), function(){
-      pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
+      pkg.pipe(fs.createWriteStream(destinationPath));
     //});
     
     pkg.on('error', cb);
@@ -85,7 +86,7 @@
 
     function appDownloaded(){
       process.nextTick(function(){
-        cb(null, path.join(os.tmpdir(), filename))
+        cb(null, destinationPath)
       });
     }
     return pkg;
@@ -128,40 +129,62 @@
    * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
    *
    * @param {string} filename
+   * @param {object} manifest
    * @param {function} cb - Callback arguments: error, unpacked directory
    */
-  updater.prototype.unpack = function(filename, cb){
+  updater.prototype.unpack = function(filename, manifest, cb){
     pUnpack[platform].apply(this, arguments);
   };
 
   /**
    * @private
-   * @param zipPath
+   * @param {string} zipPath
    * @return {string}
    */
   var getZipDestinationDirectory = function(zipPath){
       return path.join(os.tmpdir(), path.basename(zipPath, path.extname(zipPath)));
-  };
+    },
+    /**
+     * @private
+     * @param {object} manifest
+     * @return {string}
+     */
+    getExecPathRelativeToPackage = function(manifest){
+      var execPath = manifest.packages[platform] && manifest.packages[platform].execPath;
+
+      if(execPath){
+        return execPath;
+      }
+      else {
+        var suffix = {
+          win: '.exe',
+          mac: '.app'
+        };
+        return manifest.name + (suffix[platform] || '');
+      }
+    };
+
 
   var pUnpack = {
     /**
      * @private
      */
-    mac: function(filename, cb){
-      var args = arguments;
-      if(filename.slice(-4) == ".zip"){
+    mac: function(filename, manifest, cb){
+      var args = arguments,
+          extension = path.extname(filename);
+
+      if(extension === ".zip"){
         exec('unzip -xo ' + filename,{cwd: os.tmpdir()}, function(err){
           if(err){
             console.log(err);
             return cb(err);
           }
-          var theName = path.basename(filename, '.zip');
-          var appPath = path.join(os.tmpdir(), theName, theName + '.app');
+          var appPath = path.join(os.tmpdir(), getExecPathRelativeToPackage(manifest));
           cb(null, appPath);
         })
 
       }
-      if(filename.slice(-4) == ".dmg"){
+      else if(extension === ".dmg"){
         // just in case if something was wrong during previous mount
         exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
           exec('hdiutil attach ' + filename + ' -nobrowse', function(err){
@@ -195,7 +218,7 @@
     /**
      * @private
      */
-    win: function(filename, cb){
+    win: function(filename, manifest, cb){
       var destinationDirectory = getZipDestinationDirectory(filename);
 
       // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
@@ -204,14 +227,14 @@
           if(err){
             return cb(err);
           }
-          var basename = path.basename(filename, path.extname(filename));
-          cb(null, path.join(destinationDirectory, basename + '.exe'));
+
+          cb(null, path.join(destinationDirectory, getExecPathRelativeToPackage(manifest)));
         });
     },
     /**
      * @private
      */
-    linux32: function(filename, cb){
+    linux32: function(filename, manifest, cb){
       //filename fix
       console.log('starting');
       exec('tar -zxvf ' + filename,{cwd: os.tmpdir()}, function(err){
@@ -220,8 +243,7 @@
           console.log(err);
           return cb(err);
         }
-        var theName = path.basename(filename, '.tar.gz');
-        cb(null,path.join(os.tmpdir(), theName, theName));
+        cb(null,path.join(os.tmpdir(), getExecPathRelativeToPackage(manifest)));
       })
      }
   };
