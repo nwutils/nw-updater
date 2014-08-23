@@ -12,6 +12,26 @@
 
 
   /**
+   * Creates new instance of updater. Manifest could be a `package.json` of project.
+   *
+   * ```json
+   * {
+   *     "name": "updapp",
+   *     "version": "0.0.2",
+   *     "author": "Eldar Djafarov <djkojb@gmail.com>",
+   *     "manifestUrl": "http://localhost:3000/package.json",
+   *     "packages": {
+   *         "mac": "http://localhost:3000/releases/updapp/mac/updapp.zip",
+   *         "win": "http://localhost:3000/releases/updapp/win/updapp.zip",
+   *         "linux32": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+   *     }
+   * }
+   * ```
+   *
+   * Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
+   *
+   * Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
+   *
    * @constructor
    * @param {object} manifest
    */
