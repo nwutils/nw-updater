@@ -133,6 +133,14 @@
     pUnpack[platform].apply(this, arguments);
   };
 
+  /**
+   * @param zipPath
+   * @return {string}
+   */
+  var getZipDestinationDirectory = function(zipPath){
+      return path.join(path.dirname(zipPath), path.basename(zipPath, path.extname(zipPath)));
+  };
+
   var pUnpack = {
     mac: function(filename, cb){
       var args = arguments;
@@ -180,14 +188,16 @@
       }
     },
     win: function(filename, cb){
+      var destinationDirectory = getZipDestinationDirectory(filename);
+
       // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
       exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
-        filename + " -d " + os.tmpdir(), function(err){
+        filename + " -d " + destinationDirectory, function(err){
           if(err){
             return cb(err);
           }
-          var theName = path.basename(filename, path.extname(filename));
-          cb(null, path.join(os.tmpdir(), theName, theName + '.exe'));
+          var basename = path.basename(filename, path.extname(filename));
+          cb(null, path.join(destinationDirectory, basename + '.exe'));
         });
     },
     linux32: function(filename, cb){
