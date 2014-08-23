@@ -21,11 +21,7 @@ Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [wind
 ### How to run the tests
 ```
 git clone git@github.com:edjafarov/updater.git
-cd updater
-npm install
-cd app
-npm install
-cd ..
+npm run deps
 npm test
 ```
 

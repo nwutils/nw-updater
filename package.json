@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/edjafarov/node-webkit-updater",
   "scripts": {
+    "deps": "npm i && cd app && npm i && cd ..",
     "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
   },
   "dependencies": {
