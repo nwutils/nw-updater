@@ -49,7 +49,7 @@ function upgradeNow(newManifest) {
                     upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
                     gui.App.quit();
                 }
-            });
+            }, newManifest);
         }
     }, newManifest);
 }

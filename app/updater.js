@@ -129,10 +129,10 @@
    * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
    *
    * @param {string} filename
-   * @param {object} manifest
    * @param {function} cb - Callback arguments: error, unpacked directory
+   * @param {object} manifest
    */
-  updater.prototype.unpack = function(filename, manifest, cb){
+  updater.prototype.unpack = function(filename, cb, manifest){
     pUnpack[platform].apply(this, arguments);
   };
 
@@ -169,7 +169,7 @@
     /**
      * @private
      */
-    mac: function(filename, manifest, cb){
+    mac: function(filename, cb, manifest){
       var args = arguments,
           extension = path.extname(filename);
 
@@ -218,7 +218,7 @@
     /**
      * @private
      */
-    win: function(filename, manifest, cb){
+    win: function(filename, cb, manifest){
       var destinationDirectory = getZipDestinationDirectory(filename);
 
       // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
@@ -234,7 +234,7 @@
     /**
      * @private
      */
-    linux32: function(filename, manifest, cb){
+    linux32: function(filename, cb, manifest){
       //filename fix
       console.log('starting');
       exec('tar -zxvf ' + filename,{cwd: os.tmpdir()}, function(err){

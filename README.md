@@ -49,7 +49,7 @@ function upgradeNow(newManifest) {
                     upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
                     gui.App.quit();
                 }
-            });
+            }, newManifest);
         }
     }, newManifest);
 }
@@ -97,14 +97,14 @@ Returns current application executable
 
 **Returns**: `string`  
 <a name="updater#unpack"></a>
-###updater.unpack(filename, manifest, cb)
+###updater.unpack(filename, cb, manifest)
 Will unpack the `filename` in temporary folder.For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
 **Params**
 
 - filename `string`  
-- manifest `object`  
 - cb `function` - Callback arguments: error, unpacked directory  
+- manifest `object`  
 
 <a name="updater#runInstaller"></a>
 ###updater.runInstaller(appPath, args, options)
