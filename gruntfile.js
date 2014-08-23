@@ -154,7 +154,7 @@ module.exports = function(grunt){
   if(isWin) buildFlow.push('copy:win');
 
   grunt.registerTask('buildapp', buildFlow);
-  grunt.registerTask('apiDocs', 'jsdoc2md');
+  grunt.registerTask('docs', 'jsdoc2md');
 
   grunt.registerTask('default', 'mochaTest');
 };
