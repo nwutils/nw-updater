@@ -1,4 +1,8 @@
 *
+!app
+app/index.html
+app/package.json
+app/node_modules
 !app/updater.js
 !app/tools/unzip.exe
 !README.md
