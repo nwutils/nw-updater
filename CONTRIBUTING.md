@@ -1,0 +1,1 @@
+[README.hbs](README.hbs) is generated based on [docs/README.hbs](docs/README.hbs) and the JSDoc comments in [app/updater.js](app/updater.js). When changing the readme / API, make sure to run `grunt apiDocs` before committing. 

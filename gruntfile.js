@@ -87,13 +87,24 @@ module.exports = function(grunt){
         src: 'tools/*',
         dest: dest + '/updapp/win/'
       }
+    },
+    jsdoc2md: {
+      withOptions: {
+        options: {
+          index: false,
+          template: "docs/README.hbs"
+        },
+        src: "app/updater.js",
+        dest: "README.md"
+      }
     }
-  });
+});
   grunt.loadNpmTasks('grunt-node-webkit-builder');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-jsdoc-to-markdown');
 
   grunt.registerTask('packageMacZip', function(){
     var done = this.async();
@@ -110,7 +121,7 @@ module.exports = function(grunt){
       })
      
     })
-  })
+  });
   
   grunt.registerTask('packageMac', function(){
     var done = this.async();
@@ -124,7 +135,7 @@ module.exports = function(grunt){
       }
       done()
     })
-  })
+  });
 
   grunt.registerTask('version', function(){
     var ver = grunt.option('ver');
@@ -143,6 +154,7 @@ module.exports = function(grunt){
   if(isWin) buildFlow.push('copy:win');
 
   grunt.registerTask('buildapp', buildFlow);
+  grunt.registerTask('apiDocs', 'jsdoc2md');
 
-  grunt.registerTask('default', 'test');
-}
+  grunt.registerTask('default', 'mochaTest');
+};

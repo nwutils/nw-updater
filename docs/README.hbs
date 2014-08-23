@@ -1,0 +1,116 @@
+node-webkit-updater
+=======
+This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater.
+
+```
+npm install node-webkit-updater
+```
+
+It gives you low level api to:
+
+1. Check the manifest for version.
+2. If the version is different from local one download new package to temp.
+3. Unpack the package to temp.
+4. Run new version from temp and exit the process.
+5. The new version from temp will copy itself to original folder.
+6. The new version will run itself from original folder and exit the process.
+
+you should build this logic by yourself though. As a reference you can use [example](https://github.com/edjafarov/node-webkit-updater/blob/master/app/index.html).
+
+Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
+### How to run the tests
+```
+git clone git@github.com:edjafarov/updater.git
+cd updater
+npm install
+cd app
+npm install
+cd ..
+npm test
+```
+
+## Quick Start
+```javascript
+var gui = require('nw.gui');
+var pkg = require('../package.json'); // Insert your app's manifest here
+var updater = require('node-webkit-updater');
+var upd = new updater(pkg);
+
+/* Checks the remote manifest for latest available version and calls the autoupgrading function */
+upd.checkNewVersion(function(error, manifest) {
+    if (!error) {
+        // Insert your user download choice/version comparison code here
+        upgradeNow();
+    }
+});
+
+/* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
+function upgradeNow() {
+    var newVersion = upd.download(function(error, filename) {
+        if (!error) {
+            upd.unpack(filename, function(error, newAppPath) {
+                if (!error) {
+                    upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+                    gui.App.quit();
+                }
+            });
+        }
+    });
+}
+```
+
+
+## API
+As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
+### new updater(manifest)
+
+Creates new instance of updater. Manifest could be a package.json of project.
+
+```json
+{
+    "name": "updapp",
+    "version": "0.0.2",
+    "author": "Eldar Djafarov <djkojb@gmail.com>",
+    "manifestUrl": "http://localhost:3000/package.json",
+    "packages": {
+        "mac": "http://localhost:3000/releases/updapp/mac/updapp.zip",
+        "win": "http://localhost:3000/releases/updapp/win/updapp.zip",
+        "linux32": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+    }
+}
+```
+
+Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
+
+Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
+
+{{heading-depth-bump~}}
+{{#if (constructorHasDocs)}}{{set "isConstructor" true~}}{{>function}}{{/if~}}
+{{~#each (groupByKind (children))~}}
+    {{#if (equal kind "member")}}{{>member}}{{/if~}}
+    {{#if (equal kind "function")}}{{>function}}{{/if~}}
+    {{#if (equal kind "namespace")}}{{>namespace}}{{/if~}}
+    {{#if (equal kind "constant")}}{{>constant}}{{/if~}}
+    {{#if (equal kind "typedef")}}{{>typedef}}{{/if~}}
+    {{#if (equal kind "event")}}{{>event}}{{/if~}}
+    {{~#if (equal kind "class")~}}
+        {{set "isConstructor" false~}}
+        {{~#unless (equal kind "class")~}}
+            {{>head~}}
+        {{/unless~}}
+        {{>body~}}
+        {{>members~}}
+    {{/if~}}
+    {{#if (equal kind "module")}}{{>module}}{{/if~}}
+{{/each~}}
+{{heading-depth-drop~}}
+
+---
+
+## Troubleshooting
+
+If you get an error on Mac about too many files being open, run `ulimit -n 10240`
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
