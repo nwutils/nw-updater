@@ -36,12 +36,12 @@ var upd = new updater(pkg);
 upd.checkNewVersion(function(error, manifest) {
     if (!error) {
         // Insert your user download choice/version comparison code here
-        upgradeNow();
+        upgradeNow(manifest);
     }
 });
 
 /* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
-function upgradeNow() {
+function upgradeNow(newManifest) {
     var newVersion = upd.download(function(error, filename) {
         if (!error) {
             upd.unpack(filename, function(error, newAppPath) {
@@ -51,7 +51,7 @@ function upgradeNow() {
                 }
             });
         }
-    });
+    }, newManifest);
 }
 ```
 

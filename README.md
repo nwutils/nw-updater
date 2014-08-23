@@ -36,12 +36,12 @@ var upd = new updater(pkg);
 upd.checkNewVersion(function(error, manifest) {
     if (!error) {
         // Insert your user download choice/version comparison code here
-        upgradeNow();
+        upgradeNow(manifest);
     }
 });
 
 /* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
-function upgradeNow() {
+function upgradeNow(newManifest) {
     var newVersion = upd.download(function(error, filename) {
         if (!error) {
             upd.unpack(filename, function(error, newAppPath) {
@@ -51,7 +51,7 @@ function upgradeNow() {
                 }
             });
         }
-    });
+    }, newManifest);
 }
 ```
 
@@ -60,6 +60,13 @@ function upgradeNow() {
 
 As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 
+<a name="getZipDestinationDirectory"></a>
+##getZipDestinationDirectory(zipPath)
+**Params**
+
+- zipPath   
+
+**Returns**: `string`  
 <a name="new_updater"></a>
 ###new updater(manifest)
 Creates new instance of updater. Manifest could be a `package.json` of project.```json{    "name": "updapp",    "version": "0.0.2",    "author": "Eldar Djafarov <djkojb@gmail.com>",    "manifestUrl": "http://localhost:3000/package.json",    "packages": {        "mac": "http://localhost:3000/releases/updapp/mac/updapp.zip",        "win": "http://localhost:3000/releases/updapp/win/updapp.zip",        "linux32": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"    }}```Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).

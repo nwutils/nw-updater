@@ -66,7 +66,7 @@
     d = true;
     clearInterval(newVersionCheckIntervalId);
     var loaded = 0;
-    var newVersion = upd.download(newVersionDownloaded);
+    var newVersion = upd.download(newVersionDownloaded, manifest);
     newVersion.on('data', function(chunk){
       loaded+=chunk.length;
       document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
