@@ -1,6 +1,6 @@
 node-webkit-updater
 =======
-This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater. 
+This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater.
 
 ```
 npm install node-webkit-updater
@@ -38,24 +38,24 @@ var upd = new updater(pkg);
 
 /* Checks the remote manifest for latest available version and calls the autoupgrading function */
 upd.checkNewVersion(function(error, manifest) {
-	if (!error) {
-		// Insert your user download choice/version comparison code here
-		upgradeNow();
-	}
+    if (!error) {
+        // Insert your user download choice/version comparison code here
+        upgradeNow();
+    }
 });
 
 /* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
 function upgradeNow() {
-	var newVersion = upd.download(function(error, filename) {
-		if (!error) {
-			upd.unpack(filename, function(error, newAppPath) {
-				if (!error) {
-					upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
-					gui.App.quit();
-				}
-			});
-		}
-	});
+    var newVersion = upd.download(function(error, filename) {
+        if (!error) {
+            upd.unpack(filename, function(error, newAppPath) {
+                if (!error) {
+                    upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+                    gui.App.quit();
+                }
+            });
+        }
+    });
 }
 ```
 
@@ -84,52 +84,85 @@ Inside the app manifest, you need to specify where to download packages from for
 
 Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
 
-### updater:checkNewVersion(cb)
+<a name="new_updater"></a>
+###new updater(manifest)
+**Params**
 
-Will check the latest available version of the application by requesting the manifest specified in manufestUrl. The callback will be executed if the version was changed.
+- manifest `object`  
 
-Callback arguments: error, remote version
+<a name="updater#checkNewVersion"></a>
+###updater.checkNewVersion(cb)
+Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`. The callback will be executed if the version was changed.
 
-### updater:download(cb)
+**Params**
 
-Will download the new app version in a temporary folder.
+- cb `function` - Callback arguments: error, remote version  
 
-Callback arguments: error, downloaded filepath
+<a name="updater#download"></a>
+###updater.download(cb, newManifest)
+Downloads the new app to a template folder
 
-### updater:unpack(filename, cb)
+**Params**
 
-Will unpack the `filename` in temporary folder.
+- cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
+- newManifest `Object` - package.json manifest where are defined remote url  
 
-Callback arguments: error, unpacked directory
-
-For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) by C. Spieler is used.  
-
-### updater:runInstaller(apppath, args, options)
-
-Runs installer
-
-`apppath` - String
-`args` - Array of arguments which will be passed when running the new app
-`options` - Optional object 
-
-### updater:getAppPath()
-
+**Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest  
+<a name="updater#getAppPath"></a>
+###updater.getAppPath()
 Returns executed application path
 
-### updater:getAppExec()
-
+**Returns**: `string`  
+<a name="updater#getAppExec"></a>
+###updater.getAppExec()
 Returns current application executable
 
-### updater:install(copyPath, cb)
+**Returns**: `string`  
+<a name="updater#unpack"></a>
+###updater.unpack(filename, cb)
+Will unpack the `filename` in temporary folder.For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
-Installs the app (copies current application to copyPath)
+**Params**
 
-Callback arguments: error
+- filename `string`  
+- cb `function` - Callback arguments: error, unpacked directory  
 
-### updater:run(execPath, args, options)
+<a name="updater#runInstaller"></a>
+###updater.runInstaller(apppath, args, options)
+Runs installer
 
+**Params**
+
+- apppath `string`  
+- args `array` - Arguments which will be passed when running the new app  
+- options `object` - Optional  
+
+**Returns**: `function`  
+<a name="updater#install"></a>
+###updater.install(copyPath, cb)
+Installs the app (copies current application to `copyPath`)
+
+**Params**
+
+- copyPath `string`  
+- cb `function` - Callback arguments: error  
+
+<a name="updater#run"></a>
+###updater.run(execPath, args, options)
 Runs the app from original path.
 
-## troubleshooting
+**Params**
 
-to run the test on mac `ulimit -n 10240`
+- execPath `string`  
+- args `array` - Arguments based to the app being ran  
+- options `object` - Optional  
+
+---
+
+## Troubleshooting
+
+If you get an error on Mac about too many files being open, run `ulimit -n 10240`
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
