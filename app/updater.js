@@ -138,7 +138,7 @@
    * @return {string}
    */
   var getZipDestinationDirectory = function(zipPath){
-      return path.join(path.dirname(zipPath), path.basename(zipPath, path.extname(zipPath)));
+      return path.join(os.tmpdir(), path.basename(zipPath, path.extname(zipPath)));
   };
 
   var pUnpack = {
