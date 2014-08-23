@@ -187,33 +187,33 @@
 
   /**
    * Runs installer
-   * @param {string} apppath
+   * @param {string} appPath
    * @param {array} args - Arguments which will be passed when running the new app
    * @param {object} options - Optional
    * @returns {function}
    */
-  updater.prototype.runInstaller = function(apppath, args, options){
+  updater.prototype.runInstaller = function(appPath, args, options){
     return pRun[platform].apply(this, arguments);
   };
 
   var pRun = {
-    mac: function(apppath, args, options){
+    mac: function(appPath, args, options){
       //spawn
       if(args && args.length) {
-        args = [apppath].concat('--args', args);
+        args = [appPath].concat('--args', args);
       } else {
-        args = [apppath];
+        args = [appPath];
       }
       return run('open', args, options);
     },
-    win: function(apppath, args, options, cb){
-      return run(apppath, args, options, cb);
+    win: function(appPath, args, options, cb){
+      return run(appPath, args, options, cb);
     },
-    linux32: function(apppath, args, options, cb){
-      fs.chmodSync(apppath, 0755);
+    linux32: function(appPath, args, options, cb){
+      fs.chmodSync(appPath, 0755);
       if(!options) options = {};
-      options.cwd = path.dirname(apppath);
-      return run(apppath, args, options, cb);
+      options.cwd = path.dirname(appPath);
+      return run(appPath, args, options, cb);
     }
   };
 

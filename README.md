@@ -124,12 +124,12 @@ Will unpack the `filename` in temporary folder.For Windows, [unzip](https://www
 - cb `function` - Callback arguments: error, unpacked directory  
 
 <a name="updater#runInstaller"></a>
-###updater.runInstaller(apppath, args, options)
+###updater.runInstaller(appPath, args, options)
 Runs installer
 
 **Params**
 
-- apppath `string`  
+- appPath `string`  
 - args `array` - Arguments which will be passed when running the new app  
 - options `object` - Optional  
 
