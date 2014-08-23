@@ -48,6 +48,9 @@
   updater.prototype.checkNewVersion = function(cb){
     request.get(this.manifest.manifestUrl, gotManifest.bind(this)); //get manifest from url
 
+    /**
+     * @private
+     */
     function gotManifest(err, req, data){
       if(err) {
         return cb(err);
@@ -148,6 +151,7 @@
   };
 
   /**
+   * @private
    * @param zipPath
    * @return {string}
    */
@@ -156,6 +160,9 @@
   };
 
   var pUnpack = {
+    /**
+     * @private
+     */
     mac: function(filename, cb){
       var args = arguments;
       if(filename.slice(-4) == ".zip"){
@@ -201,6 +208,9 @@
         }
       }
     },
+    /**
+     * @private
+     */
     win: function(filename, cb){
       var destinationDirectory = getZipDestinationDirectory(filename);
 
@@ -214,6 +224,9 @@
           cb(null, path.join(destinationDirectory, basename + '.exe'));
         });
     },
+    /**
+     * @private
+     */
     linux32: function(filename, cb){
       //filename fix
       console.log('starting');
@@ -243,6 +256,9 @@
   };
 
   var pRun = {
+    /**
+     * @private
+     */
     mac: function(appPath, args, options){
       //spawn
       if(args && args.length) {
@@ -252,9 +268,15 @@
       }
       return run('open', args, options);
     },
+    /**
+     * @private
+     */
     win: function(appPath, args, options, cb){
       return run(appPath, args, options, cb);
     },
+    /**
+     * @private
+     */
     linux32: function(appPath, args, options, cb){
       fs.chmodSync(appPath, 0755);
       if(!options) options = {};
@@ -265,6 +287,9 @@
 
   pRun.linux64 = pRun.linux32;
 
+  /**
+   * @private
+   */
   function run(path, args, options){
     var opts = {
       detached: true
@@ -287,9 +312,15 @@
   };
 
   var pInstall = {
+    /**
+     * @private
+     */
     mac: function(to, cb){
       ncp(this.getAppPath(), to, cb);
     },
+    /**
+     * @private
+     */
     win: function(to, cb){
       deleteApp(appDeleted.bind(this));
       function appDeleted(err){
@@ -306,6 +337,9 @@
         cb();
       }
     },
+    /**
+     * @private
+     */
     linux32: function(to, cb){
       ncp(this.getAppPath(), to, cb);
     }
