@@ -60,13 +60,6 @@ function upgradeNow(newManifest) {
 
 As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 
-<a name="getZipDestinationDirectory"></a>
-##getZipDestinationDirectory(zipPath)
-**Params**
-
-- zipPath   
-
-**Returns**: `string`  
 <a name="new_updater"></a>
 ###new updater(manifest)
 Creates new instance of updater. Manifest could be a `package.json` of project.Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
