@@ -1,21 +1,21 @@
 node-webkit-updater
 =======
-This is [node-webkit](https://github.com/rogerwang/node-webkit) autoupdater.
+This is [node-webkit](https://github.com/rogerwang/node-webkit)-updater.
 
 ```
 npm install node-webkit-updater
 ```
 
-It gives you low level api to:
+It gives you low-level API to:
 
-1. Check the manifest for version.
-2. If the version is different from local one download new package to temp.
-3. Unpack the package to temp.
-4. Run new version from temp and exit the process.
-5. The new version from temp will copy itself to original folder.
-6. The new version will run itself from original folder and exit the process.
+1. Check the manifest for version (from your running "old" app).
+2. If the version is different from the running one, download new package to a temp directory.
+3. Unpack the package in temp.
+4. Run new app from temp and kill the old one (i.e. still all from the running app).
+5. The new app (in temp) will copy itself to the original folder, overriding the old app.
+6. The new app will run itself from original folder and exit the process.
 
-you should build this logic by yourself though. As a reference you can use [example](https://github.com/edjafarov/node-webkit-updater/blob/master/app/index.html).
+You should build this logic by yourself though. As a reference you can use [example](app/index.html).
 
 Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
 ### How to run the tests
