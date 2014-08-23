@@ -1,4 +1,11 @@
 node_modules
 
+# Test stuff
+cache
+test/app
+test/deploy0.1
+test/deploy0.2
+
+# JetBrains
 .idea
 *.iml
