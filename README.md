@@ -1,4 +1,4 @@
-node-webkit-updater
+node-webkit-updater [![NPM version][npm-image]][npm-url]
 =======
 This is [node-webkit](https://github.com/rogerwang/node-webkit)-updater.
 
@@ -88,7 +88,7 @@ Note that compressed apps are assumed to be downloaded in the format produced by
 
 <a name="updater#checkNewVersion"></a>
 ###updater.checkNewVersion(cb)
-Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`. The callback will be executed if the version was changed.
+Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.The callback will be executed if the version was changed.
 
 **Params**
 
@@ -162,3 +162,6 @@ If you get an error on Mac about too many files being open, run `ulimit -n 10240
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+[npm-url]: https://npmjs.org/package/node-webkit-updater
+[npm-image]: https://badge.fury.io/js/node-webkit-updater.png
