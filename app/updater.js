@@ -21,9 +21,15 @@
    *     "author": "Eldar Djafarov <djkojb@gmail.com>",
    *     "manifestUrl": "http://localhost:3000/package.json",
    *     "packages": {
-   *         "mac": "http://localhost:3000/releases/updapp/mac/updapp.zip",
-   *         "win": "http://localhost:3000/releases/updapp/win/updapp.zip",
-   *         "linux32": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+   *         "mac": {
+   *            "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
+   *         },
+   *         "win": {
+   *            "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
+   *         },
+   *         "linux32": {
+   *            "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+   *         }
    *     }
    * }
    * ```

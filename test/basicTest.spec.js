@@ -11,8 +11,9 @@ var path = require('path');
 var fs = require('fs');
 var getPort = require('get-port');
 var port = null;
+
 ncp.limit = 100;
-console.log(__dirname);
+
 describe('build app: copy current to temp', function buildApp(){
   this.timeout(2000000);
   before(function(done){
@@ -28,12 +29,21 @@ describe('build app: copy current to temp', function buildApp(){
   describe('change manifest, build from temp', function(){
     before(function(done){
       var mock = {
+        name: "updapp",
         manifestUrl: "http://localhost:" + port + "/package.json",
         packages: {
-          mac: "http://localhost:" + port + "/updapp/osx/updapp.zip",
-          win: "http://localhost:" + port + "/updapp/win/updapp.zip",
-          linux32: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz",
-          linux64: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
+          mac: {
+              url: "http://localhost:" + port + "/updapp/osx/updapp.zip"
+          },
+          win: {
+              url: "http://localhost:" + port + "/updapp/win/updapp.zip"
+          },
+          linux32: {
+              url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz"
+          },
+          linux64: {
+              url: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
+          }
         },
         updated: true,
         version: "0.0.2"
@@ -77,6 +87,7 @@ describe('build app: copy current to temp', function buildApp(){
       describe('change manifest, build from temp', function(){
         before(function(done){
           var mock = {
+            name: "updapp",
             updated: false,
             version: "0.0.1"
           }
@@ -95,12 +106,21 @@ describe('build app: copy current to temp', function buildApp(){
         describe('run built app for [os], wait for app to be updated', function(){
           before(function(done){
             var json = {
+              name: "updapp",
               manifestUrl: "http://localhost:" + port + "/package.json",
               packages: {
-                mac: "http://localhost:" + port + "/updapp/osx/updapp.zip",
-                win: "http://localhost:" + port + "/updapp/win/updapp.zip",
-                linux32: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz",
-                linux64: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
+                mac: {
+                    url: "http://localhost:" + port + "/updapp/osx/updapp.zip"
+                },
+                win: {
+                    url: "http://localhost:" + port + "/updapp/win/updapp.zip"
+                },
+                linux32: {
+                    url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz"
+                },
+                linux64: {
+                    url: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
+                }
               },
               updated: true,
               version: "0.0.2"
