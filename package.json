@@ -6,7 +6,7 @@
     "update",
     "autoupdate"
   ],
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "./app/updater.js",
   "repository": {
     "type": "git",

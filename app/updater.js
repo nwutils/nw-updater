@@ -93,6 +93,7 @@
       pkg.pipe(fs.createWriteStream(path.join(os.tmpdir(), filename)));
     //});
     
+    pkg.on('error', cb);
     pkg.on('end', appDownloaded);
 
     function appDownloaded(){
