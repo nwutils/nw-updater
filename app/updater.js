@@ -219,7 +219,7 @@
 
   pRun.linux64 = pRun.linux32;
 
-  function run(path, args, options, cb){
+  function run(path, args, options){
     var opts = {
       detached: true
     };
