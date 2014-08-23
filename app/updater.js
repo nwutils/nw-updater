@@ -91,7 +91,7 @@
   updater.prototype.getAppExec = function(){
     var execFolder = this.getAppPath();
     var exec = {
-      mac:'',
+      mac: '',
       win: path.basename(process.execPath),
       linux32: path.basename(process.execPath),
       linux64: path.basename(process.execPath)
@@ -180,7 +180,7 @@
         var theName = path.basename(filename, '.tar.gz');
         cb(null,path.join(os.tmpdir(), theName, theName));
       })
-     },
+     }
   };
   pUnpack.linux64 = pUnpack.linux32;
 
