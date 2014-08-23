@@ -6,8 +6,9 @@
   var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
- 
-  var platform = /^win/.test(process.platform)?'win':/^darwin/.test(process.platform)?'mac':process.arch == 'ia32'?'linux32':'linux64'; //here will be regular exp where we will define platform
+
+  var platform = process.platform;
+  platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
 
 
   /**
@@ -20,7 +21,8 @@
 
 
   /**
-   * Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`. The callback will be executed if the version was changed.
+   * Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.
+   * The callback will be executed if the version was changed.
    * @param {function} cb - Callback arguments: error, remote version
    */
   updater.prototype.checkNewVersion = function(cb){
