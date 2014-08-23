@@ -102,6 +102,8 @@ Will unpack the `filename` in temporary folder.
 
 Callback arguments: error, unpacked directory
 
+For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) by C. Spieler is used.  
+
 ### updater:runInstaller(apppath, args, options)
 
 Runs installer

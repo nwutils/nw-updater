@@ -141,8 +141,7 @@
       }
     },
     win: function(filename, cb){
-      console.log(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
-        filename + " -d " + os.tmpdir())
+      // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
       exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
         filename + " -d " + os.tmpdir(), function(err){
           if(err){
