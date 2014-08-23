@@ -53,7 +53,7 @@
         return cb(err);
       }
 
-      if(req.statusCode < 200 || req.statusCode > 300){
+      if(req.statusCode < 200 || req.statusCode > 299){
         return cb(new Error(req.statusCode));
       }
 
@@ -83,7 +83,7 @@
             cb(err);
         }
 
-        if(response.statusCode < 200 || response.statusCode > 300){
+        if(response.statusCode < 200 || response.statusCode > 299){
             return cb(new Error(response.statusCode));
         }
     });
