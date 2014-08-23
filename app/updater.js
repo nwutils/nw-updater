@@ -52,6 +52,11 @@
       if(err) {
         return cb(err);
       }
+
+      if(req.statusCode < 200 || req.statusCode > 300){
+        return cb(new Error(req.statusCode));
+      }
+
       try{
         data = JSON.parse(data);
       } catch(e){
@@ -73,7 +78,15 @@
   updater.prototype.download = function(cb, newManifest){
     var manifest = newManifest || this.manifest;
     var url = manifest.packages[platform];
-    var pkg = request(url);
+    var pkg = request(url, function(err, response){
+        if(err){
+            cb(err);
+        }
+
+        if(response.statusCode < 200 || response.statusCode > 300){
+            return cb(new Error(response.statusCode));
+        }
+    });
     var filename = path.basename(url);
     // download the package to template folder
     //fs.unlink(path.join(os.tmpdir(), filename), function(){

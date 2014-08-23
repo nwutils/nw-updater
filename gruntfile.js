@@ -85,7 +85,7 @@ module.exports = function(grunt){
     copy:{
       win:{
         src: 'tools/*',
-        dest: dest + '/updapp/win/'
+        dest: dest + '/win/'
       }
     },
     jsdoc2md: {
