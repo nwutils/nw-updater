@@ -219,24 +219,35 @@
      * @private
      */
     win: function(filename, cb, manifest){
-      var destinationDirectory = getZipDestinationDirectory(filename);
+      var destinationDirectory = getZipDestinationDirectory(filename),
+          unzip = function(){
+            // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
+            exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
+                filename + " -d " + destinationDirectory, function(err){
+              if(err){
+                return cb(err);
+              }
 
-      fs.unlink(destinationDirectory, function(err){
-        if(err){
-          cb(err);
-        }
-        else {
-          // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
-          exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
-              filename + " -d " + destinationDirectory, function(err){
-            if(err){
-              return cb(err);
+              cb(null, path.join(destinationDirectory, getExecPathRelativeToPackage(manifest)));
+            });
+          };
+
+      fs.exists(destinationDirectory, function(exists){
+        if(exists) {
+          fs.unlink(destinationDirectory, function (err) {
+            if (err) {
+              cb(err);
             }
-
-            cb(null, path.join(destinationDirectory, getExecPathRelativeToPackage(manifest)));
+            else {
+              unzip();
+            }
           });
         }
+        else {
+          unzip();
+        }
       });
+
     },
     /**
      * @private
@@ -335,16 +346,23 @@
      * @private
      */
     win: function(to, cb){
-      deleteApp(appDeleted.bind(this));
+      var self = this;
+
+      deleteApp(appDeleted);
       function appDeleted(err){
-        ncp(this.getAppPath(), to, appCopied.bind(this));
+        if(err){
+          cb(err);
+        }
+        else {
+          ncp(self.getAppPath(), to, appCopied);
+        }
       }
       function deleteApp(cb){
         exec('rd ' + to + '/s /q', cb)
       }
       function appCopied(err){
         if(err){
-          setTimeout(function(){deleteApp(appDeleted.bind(this))}.bind(this), 100);
+          setTimeout(deleteApp, 100, appDeleted);
           return
         }
         cb();
