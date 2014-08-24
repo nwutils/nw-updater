@@ -37,7 +37,8 @@ describe('build app: copy current to temp', function buildApp(){
               execPath: "updapp/updapp.app"
           },
           win: {
-              url: "http://localhost:" + port + "/updapp/win/updapp.zip"
+              url: "http://localhost:" + port + "/updapp/win/updapp.zip",
+              execPath: "updapp\\updapp.exe"
           },
           linux32: {
               url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz"
@@ -115,7 +116,8 @@ describe('build app: copy current to temp', function buildApp(){
                     execPath: "updapp/updapp.app"
                 },
                 win: {
-                    url: "http://localhost:" + port + "/updapp/win/updapp.zip"
+                    url: "http://localhost:" + port + "/updapp/win/updapp.zip",
+                    execPath: "updapp\\updapp.exe"
                 },
                 linux32: {
                     url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz"
