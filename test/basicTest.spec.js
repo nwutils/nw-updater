@@ -33,7 +33,8 @@ describe('build app: copy current to temp', function buildApp(){
         manifestUrl: "http://localhost:" + port + "/package.json",
         packages: {
           mac: {
-              url: "http://localhost:" + port + "/updapp/osx/updapp.zip"
+              url: "http://localhost:" + port + "/updapp/osx/updapp.zip",
+              execPath: "updapp/updapp.app"
           },
           win: {
               url: "http://localhost:" + port + "/updapp/win/updapp.zip"
@@ -110,7 +111,8 @@ describe('build app: copy current to temp', function buildApp(){
               manifestUrl: "http://localhost:" + port + "/package.json",
               packages: {
                 mac: {
-                    url: "http://localhost:" + port + "/updapp/osx/updapp.zip"
+                    url: "http://localhost:" + port + "/updapp/osx/updapp.zip",
+                    execPath: "updapp/updapp.app"
                 },
                 win: {
                     url: "http://localhost:" + port + "/updapp/win/updapp.zip"

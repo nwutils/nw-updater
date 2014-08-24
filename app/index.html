@@ -51,7 +51,7 @@
         console.log(err);
         return;
       }
-      upd.run(execPath, null, {});
+      upd.run(execPath, null);
       gui.App.quit();
     }
   }
@@ -89,8 +89,8 @@
       console.log(err)
       return Error(err);
     }
-    console.log(newAppPath, [upd.getAppPath(), newAppPath]);
-    var runner = upd.runInstaller(newAppPath, [upd.getAppPath(), newAppPath]);
+    console.log(newAppPath, [upd.getAppPath(), upd.getAppExec()]);
+    var runner = upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()]);
     runner.stdout.on('data', 
     function(data){
       console.log(data)

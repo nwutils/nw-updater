@@ -46,7 +46,7 @@ function upgradeNow(newManifest) {
         if (!error) {
             upd.unpack(filename, function(error, newAppPath) {
                 if (!error) {
-                    upd.runInstaller(newAppPath, [upd.getAppPath(), newAppPath],{});
+                    upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
                     gui.App.quit();
                 }
             }, newManifest);
@@ -62,7 +62,9 @@ As a reference you can use the [example](https://github.com/edjafarov/updater/bl
 
 <a name="new_updater"></a>
 ###new updater(manifest)
-Creates new instance of updater. Manifest could be a `package.json` of project.Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
+Creates new instance of updater. Manifest could be a `package.json` of project.
+
+Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
 
 **Params**
 
@@ -70,7 +72,8 @@ Creates new instance of updater. Manifest could be a `package.json` of project.
 
 <a name="updater#checkNewVersion"></a>
 ###updater.checkNewVersion(cb)
-Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.The callback will be executed if the version was changed.
+Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.
+The callback will be executed if the version was changed.
 
 **Params**
 
@@ -98,7 +101,8 @@ Returns current application executable
 **Returns**: `string`  
 <a name="updater#unpack"></a>
 ###updater.unpack(filename, cb, manifest)
-Will unpack the `filename` in temporary folder.For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
+Will unpack the `filename` in temporary folder.
+For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
 **Params**
 
