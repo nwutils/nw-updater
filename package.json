@@ -24,7 +24,7 @@
     "ncp": "^0.5.1",
     "request": "~2.36.0",
     "tar.gz": "^0.1.1",
-    "rimraf": "~2.2.8"
+    "del": "~0.1.2"
   },
   "devDependencies": {
     "grunt-contrib-clean": "^0.5.0",

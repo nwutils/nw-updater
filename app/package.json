@@ -17,6 +17,6 @@
   "dependencies": {
     "ncp": "^0.5.1",
     "request": "^2.36.0",
-    "rimraf": "~2.2.8"
+    "del": "~0.1.2"
   }
 }
