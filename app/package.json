@@ -7,7 +7,7 @@
   "manifestUrl": "https://raw.githubusercontent.com/openconf/updater/master/package.json",
   "packages": {
     "mac": {
-        "url": "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true"
+      "url": "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true"
     }
   },
   "window": {
@@ -16,6 +16,7 @@
   "main": "app://updapp/index.html",
   "dependencies": {
     "ncp": "^0.5.1",
-    "request": "^2.36.0"
+    "request": "^2.36.0",
+    "rimraf": "~2.2.8"
   }
 }

@@ -6,6 +6,7 @@
   var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
+  var rimraf = require('rimraf');
 
   var platform = process.platform;
   platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
@@ -234,7 +235,7 @@
 
       fs.exists(destinationDirectory, function(exists){
         if(exists) {
-          fs.unlink(destinationDirectory, function (err) {
+          rimraf(destinationDirectory, function (err) {
             if (err) {
               cb(err);
             }
@@ -358,7 +359,7 @@
         }
       }
       function deleteApp(cb){
-        exec('rd ' + to + '/s /q', cb)
+        rimraf(to, cb);
       }
       function appCopied(err){
         if(err){
