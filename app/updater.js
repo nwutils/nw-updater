@@ -221,15 +221,22 @@
     win: function(filename, cb, manifest){
       var destinationDirectory = getZipDestinationDirectory(filename);
 
-      // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
-      exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
-        filename + " -d " + destinationDirectory, function(err){
-          if(err){
-            return cb(err);
-          }
+      fs.unlink(destinationDirectory, function(err){
+        if(err){
+          cb(err);
+        }
+        else {
+          // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
+          exec(path.resolve(__dirname, 'tools/unzip.exe') + " -u -o " +
+              filename + " -d " + destinationDirectory, function(err){
+            if(err){
+              return cb(err);
+            }
 
-          cb(null, path.join(destinationDirectory, getExecPathRelativeToPackage(manifest)));
-        });
+            cb(null, path.join(destinationDirectory, getExecPathRelativeToPackage(manifest)));
+          });
+        }
+      });
     },
     /**
      * @private
