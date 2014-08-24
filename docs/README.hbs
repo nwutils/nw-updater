@@ -46,7 +46,7 @@ function upgradeNow(newManifest) {
         if (!error) {
             upd.unpack(filename, function(error, newAppPath) {
                 if (!error) {
-                    upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+                    upd.runInstaller(newAppPath, [upd.getAppPath(), newAppPath],{});
                     gui.App.quit();
                 }
             }, newManifest);
