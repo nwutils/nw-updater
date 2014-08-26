@@ -14,6 +14,7 @@
   "main": "app://updapp/index.html",
   "dependencies": {
     "ncp": "^0.5.1",
-    "request": "^2.36.0"
+    "request": "^2.36.0",
+    "semver": "^3.0.1"
   }
 }

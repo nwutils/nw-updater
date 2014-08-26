@@ -33,9 +33,8 @@ var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
 
 /* Checks the remote manifest for latest available version and calls the autoupgrading function */
-upd.checkNewVersion(function(error, manifest) {
-    if (!error) {
-        // Insert your user download choice/version comparison code here
+upd.checkNewVersion(function(error, newVersionExists, manifest) {
+    if (!error && newVersionExists) {
         upgradeNow(manifest);
     }
 });
