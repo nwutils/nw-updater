@@ -55,8 +55,13 @@
       }
     }
   };
+  /**
+   * Cleans previous app from temp folder. Do it before downloading stuff.
+   * @param  {Function} cb - called when download completes. Callback arguments: error, downloaded filepath
+   */
+  updater.prototype.clean = function(cb){
 
-
+  }
   /**
    * Downloads the new app to a template folder
    * @param  {Function} cb - called when download completes. Callback arguments: error, downloaded filepath
@@ -78,12 +83,13 @@
     var filename = path.basename(url),
         destinationPath = path.join(os.tmpdir(), filename);
     // download the package to template folder
-    //fs.unlink(path.join(os.tmpdir(), filename), function(){
+    fs.unlink(path.join(os.tmpdir(), filename), function(){
       pkg.pipe(fs.createWriteStream(destinationPath));
-    //});
-    
+      pkg.resume();
+    });
     pkg.on('error', cb);
     pkg.on('end', appDownloaded);
+    pkg.pause();
 
     function appDownloaded(){
       process.nextTick(function(){
