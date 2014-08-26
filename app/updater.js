@@ -43,8 +43,10 @@
 
   /**
    * Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.
-   * The callback will always be called; the second paramter indicates whether or not there's a newer version.
+   *
+   * The callback will always be called; the second parameter indicates whether or not there's a newer version.
    * This function assumes you use [Semantic Versioning](http://semver.org) and enforces it; if your local version is `0.2.0` and the remote one is `0.1.23456` then the callback will be called with `false` as the second paramter. If on the off chance you don't use semantic versioning, you could manually download the remote manifest and call `download` if you're happy that the remote version is newer.
+   *
    * @param {function} cb - Callback arguments: error, newerVersionExists (`Boolean`), remoteManfiest
    */
   updater.prototype.checkNewVersion = function(cb){
