@@ -3,10 +3,10 @@
   var os = require('os');
   var fs = require('fs');
   var exec = require('child_process').exec;
-  var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
   var semver = require('semver');
+  var gui = global.window.nwDispatcher.requireNwGui();
 
   var platform = process.platform;
   platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
@@ -352,11 +352,16 @@
   /**
    * Runs the app from original path.
    * @param {string} execPath
-   * @param {array} args - Arguments based to the app being ran
-   * @param {object} options - Optional
+   * @param {array} args - Arguments based to the app being ran. Ignored on Windows & Mac
+   * @param {object} options - Optional. Ignored on Windows & Mac
    */
   updater.prototype.run = function(execPath, args, options){
-    pRun[platform].apply(this, arguments);
+    if(platform.indexOf('linux') === 0){
+      pRun[platform].apply(this, arguments);
+    }
+    else {
+      gui.Shell.open(execPath);
+    }
   };
 
   module.exports = updater;
