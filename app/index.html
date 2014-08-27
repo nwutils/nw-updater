@@ -51,7 +51,7 @@
         console.log(err);
         return;
       }
-      upd.run(execPath, null, {});
+      upd.run(execPath, null);
       gui.App.quit();
     }
   }
@@ -73,20 +73,22 @@
     d = true;
     clearInterval(newVersionCheckIntervalId);
     var loaded = 0;
-    var newVersion = upd.download(newVersionDownloaded, manifest);
+    var newVersion = upd.download(function(error, filename){
+        newVersionDownloaded(error, filename, manifest);
+    }, manifest);
     newVersion.on('data', function(chunk){
       loaded+=chunk.length;
       document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
     })
   }
 
-  function newVersionDownloaded(err, filename){
+  function newVersionDownloaded(err, filename, manifest){
     if(err){
       console.log(err)
       return Error(err);
     }
     document.getElementById('loaded').innerHTML = "unpacking: " + filename;
-    upd.unpack(filename, newVersionUnpacked);
+    upd.unpack(filename, newVersionUnpacked, manifest);
   }
 
   function newVersionUnpacked(err, newAppPath){
@@ -94,8 +96,8 @@
       console.log(err)
       return Error(err);
     }
-    console.log(newAppPath, upd.getAppPath(), upd.getAppExec());
-    var runner = upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+    console.log(newAppPath, [upd.getAppPath(), upd.getAppExec()]);
+    var runner = upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()]);
     runner.stdout.on('data', 
     function(data){
       console.log(data)

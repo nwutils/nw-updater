@@ -6,7 +6,9 @@
   "license": "MIT",
   "manifestUrl": "https://raw.githubusercontent.com/openconf/updater/master/package.json",
   "packages": {
-    "mac": "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true"
+    "mac": {
+      "url": "https://github.com/openconf/updater/blob/master/deploy/releases/updapp/mac/updapp.dmg?raw=true"
+    }
   },
   "window": {
     "toolbar": true
@@ -15,6 +17,7 @@
   "dependencies": {
     "ncp": "^0.5.1",
     "request": "^2.36.0",
+    "del": "~0.1.2",
     "semver": "^3.0.1"
   }
 }

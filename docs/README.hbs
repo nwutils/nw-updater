@@ -48,7 +48,7 @@ function upgradeNow(newManifest) {
                     upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
                     gui.App.quit();
                 }
-            });
+            }, newManifest);
         }
     }, newManifest);
 }
@@ -79,6 +79,55 @@ As a reference you can use the [example](https://github.com/edjafarov/updater/bl
     {{#if (equal kind "module")}}{{>module}}{{/if~}}
 {{/each~}}
 {{heading-depth-drop~}}
+
+---
+
+## Manifest Schema
+
+An example manifest:
+
+```json
+{
+    "name": "updapp",
+    "version": "0.0.2",
+    "author": "Eldar Djafarov <djkojb@gmail.com>",
+    "manifestUrl": "http://localhost:3000/package.json",
+    "packages": {
+        "mac": {
+           "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
+        },
+        "win": {
+           "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
+        },
+        "linux32": {
+           "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+        }
+    }
+}
+```
+
+The manifest could be a `package.json` of project, but doesn't have to be.
+
+### manifest.name
+
+The name of your app. From time, it is assumed your Mac app is called `<manifest.name>.app`, your Windows executable is `<manifest.name>.exe`, etc.
+
+### manifest.version
+[semver](http://semver.org) version of your app.
+
+### manifest.manifestUrl
+The URL where your latest manifest is hosted; where node-webkit-updater looks to check if there is a newer version of your app available.
+
+### manifest.packages
+An "object" containing an object for each OS your app (at least this version of your app) supports; `mac`, `win`, `linux32`, `linux64`.
+
+### manifest.packages.{mac, win, linux32, linux64}.url
+Each package has to contain a `url` property pointing to where the app (for the version & OS in question) can be downloaded.
+
+### manifest.packages.{mac, win, linux32, linux64}.execPath (Optional)
+It's assumed your app is stored at the root of your package, use this to override that and specify a path (relative to the root of your package).
+
+This can also be used to override `manifest.name`; e.g. if your `manifest.name` is `helloWorld` (therefore `helloWorld.app` on Mac) but your Windows executable is named `nw.exe`. Then you'd set `execPath` to `nw.exe`
 
 ---
 
