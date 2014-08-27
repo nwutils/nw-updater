@@ -33,9 +33,8 @@ var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
 
 /* Checks the remote manifest for latest available version and calls the autoupgrading function */
-upd.checkNewVersion(function(error, manifest) {
-    if (!error) {
-        // Insert your user download choice/version comparison code here
+upd.checkNewVersion(function(error, newVersionExists, manifest) {
+    if (!error && newVersionExists) {
         upgradeNow(manifest);
     }
 });
@@ -70,11 +69,11 @@ Creates new instance of updater. Manifest could be a `package.json` of project.
 
 <a name="updater#checkNewVersion"></a>
 ###updater.checkNewVersion(cb)
-Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.The callback will be executed if the version was changed.
+Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.The callback will always be called; the second paramter indicates whether or not there's a newer version.This function assumes you use [Semantic Versioning](http://semver.org) and enforces it; if your local version is `0.2.0` and the remote one is `0.1.23456` then the callback will be called with `false` as the second paramter. If on the off chance you don't use semantic versioning, you could manually download the remote manifest and call `download` if you're happy that the remote version is newer.
 
 **Params**
 
-- cb `function` - Callback arguments: error, remote version  
+- cb `function` - Callback arguments: error, newerVersionExists (`Boolean`), remoteManfiest  
 
 <a name="updater#download"></a>
 ###updater.download(cb, newManifest)
