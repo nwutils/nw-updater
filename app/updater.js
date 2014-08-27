@@ -309,10 +309,11 @@
      * @private
      */
     linux32: function(appPath, args, options, cb){
-      fs.chmodSync(appPath, 0755);
+      var appExec = path.join(appPath, path.basename(this.getAppExec()));
+      fs.chmodSync(appExec, 0755);
       if(!options) options = {};
       options.cwd = path.dirname(appPath);
-      return run(appPath, args, options, cb);
+      return run(path.basename(this.getAppExec()), args, options, cb);
     }
   };
 
