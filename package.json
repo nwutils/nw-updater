@@ -24,7 +24,8 @@
     "ncp": "^0.5.1",
     "request": "~2.36.0",
     "tar.gz": "^0.1.1",
-    "del": "~0.1.2"
+    "del": "~0.1.2",
+    "semver": "^3.0.1"
   },
   "devDependencies": {
     "grunt-contrib-clean": "^0.5.0",

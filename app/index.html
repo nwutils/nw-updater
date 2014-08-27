@@ -37,7 +37,7 @@
     newVersionCheckIntervalId = setInterval(function(){
       if(!d && !tryingForNewVersion) {
           tryingForNewVersion = true; //lock
-          upd.checkNewVersion(newVersionAvailable);
+          upd.checkNewVersion(versionChecked);
       }
     }, 500);
   } else {
@@ -56,12 +56,19 @@
     }
   }
 
-  function newVersionAvailable(err, manifest){
+  function versionChecked(err, newVersionExists, manifest){
     tryingForNewVersion = false; //unlock
-    if(err || d){
-      console.log(err);
-      clearInterval(newVersionCheckIntervalId);
-      return Error(err);
+    if(err){
+        console.log(err);
+        return Error(err);
+    }
+    else if(d){
+        console.log('Already downloading');
+        return;
+    }
+    else if(!newVersionExists){
+        console.log('No new version exists');
+        return;
     }
     d = true;
     clearInterval(newVersionCheckIntervalId);

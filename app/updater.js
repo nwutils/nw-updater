@@ -3,10 +3,11 @@
   var os = require('os');
   var fs = require('fs');
   var exec = require('child_process').exec;
-  var execFile = require('child_process').execFile;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
   var del = require('del');
+  var semver = require('semver');
+  var gui = global.window.nwDispatcher.requireNwGui();
 
   var platform = process.platform;
   platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
@@ -26,9 +27,12 @@
 
 
   /**
-   * Will check the latest available version of the application by requesting the manifest specified in `manufestUrl`.
-   * The callback will be executed if the version was changed.
-   * @param {function} cb - Callback arguments: error, remote version
+   * Will check the latest available version of the application by requesting the manifest specified in `manifestUrl`.
+   *
+   * The callback will always be called; the second parameter indicates whether or not there's a newer version.
+   * This function assumes you use [Semantic Versioning](http://semver.org) and enforces it; if your local version is `0.2.0` and the remote one is `0.1.23456` then the callback will be called with `false` as the second paramter. If on the off chance you don't use semantic versioning, you could manually download the remote manifest and call `download` if you're happy that the remote version is newer.
+   *
+   * @param {function} cb - Callback arguments: error, newerVersionExists (`Boolean`), remoteManifest
    */
   updater.prototype.checkNewVersion = function(cb){
     request.get(this.manifest.manifestUrl, gotManifest.bind(this)); //get manifest from url
@@ -50,9 +54,8 @@
       } catch(e){
         return cb(e)
       }
-      if(data.version !== this.manifest.version){
-        cb(null, data);
-      }
+
+      cb(null, semver.gt(data.version, this.manifest.version), data);
     }
   };
   /**
@@ -388,11 +391,16 @@
   /**
    * Runs the app from original path.
    * @param {string} execPath
-   * @param {array} args - Arguments based to the app being ran
-   * @param {object} options - Optional
+   * @param {array} args - Arguments based to the app being ran. Ignored on Windows & Mac
+   * @param {object} options - Optional. Ignored on Windows & Mac
    */
   updater.prototype.run = function(execPath, args, options){
-    pRun[platform].apply(this, arguments);
+    if(platform.indexOf('linux') === 0){
+      pRun[platform].apply(this, arguments);
+    }
+    else {
+      gui.Shell.openItem(execPath);
+    }
   };
 
   module.exports = updater;

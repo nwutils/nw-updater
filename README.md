@@ -33,9 +33,8 @@ var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
 
 /* Checks the remote manifest for latest available version and calls the autoupgrading function */
-upd.checkNewVersion(function(error, manifest) {
-    if (!error) {
-        // Insert your user download choice/version comparison code here
+upd.checkNewVersion(function(error, newVersionExists, manifest) {
+    if (!error && newVersionExists) {
         upgradeNow(manifest);
     }
 });
@@ -64,11 +63,27 @@ As a reference you can use the [example](https://github.com/edjafarov/updater/bl
 ###new updater(manifest)
 Creates new instance of updater. Manifest could be a `package.json` of project.
 
+```json
+{
+    "name": "updapp",
+    "version": "0.0.2",
+    "author": "Eldar Djafarov <djkojb@gmail.com>",
+    "manifestUrl": "http://localhost:3000/package.json",
+    "packages": {
+        "mac": "http://localhost:3000/releases/updapp/mac/updapp.zip",
+        "win": "http://localhost:3000/releases/updapp/win/updapp.zip",
+        "linux32": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
+    }
+}
+```
+
+Inside the app manifest, you need to specify where to download packages from for all supported OS'es, a manifest url where this manifest can be found and the current version of the app.
+
 Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
 
 **Params**
 
-- manifest `object` - See the [manifest schema](#manifest-schema) below.  
+- manifest `object`  
 
 <a name="updater#checkNewVersion"></a>
 ###updater.checkNewVersion(cb)
@@ -86,7 +101,7 @@ Downloads the new app to a template folder
 **Params**
 
 - cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
-- newManifest `Object` - see [manifest schema](#manifest-schema) below  
+- newManifest `Object` - package.json manifest where are defined remote url  
 
 **Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest  
 <a name="updater#getAppPath"></a>
@@ -100,7 +115,7 @@ Returns current application executable
 
 **Returns**: `string`  
 <a name="updater#unpack"></a>
-###updater.unpack(filename, cb, manifest)
+###updater.unpack(filename, cb)
 Will unpack the `filename` in temporary folder.
 For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
@@ -108,7 +123,6 @@ For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
 - filename `string`  
 - cb `function` - Callback arguments: error, unpacked directory  
-- manifest `object`  
 
 <a name="updater#runInstaller"></a>
 ###updater.runInstaller(appPath, args, options)
@@ -139,55 +153,6 @@ Runs the app from original path.
 - execPath `string`  
 - args `array` - Arguments based to the app being ran  
 - options `object` - Optional  
-
----
-
-## Manifest Schema
-
-An example manifest:
-
-```json
-{
-    "name": "updapp",
-    "version": "0.0.2",
-    "author": "Eldar Djafarov <djkojb@gmail.com>",
-    "manifestUrl": "http://localhost:3000/package.json",
-    "packages": {
-        "mac": {
-           "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
-        },
-        "win": {
-           "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
-        },
-        "linux32": {
-           "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
-        }
-    }
-}
-```
-
-The manifest could be a `package.json` of project, but doesn't have to be.
-
-### manifest.name
-
-The name of your app. From time, it is assumed your Mac app is called `<manifest.name>.app`, your Windows executable is `<manifest.name>.exe`, etc.
-
-### manifest.version
-[semver](http://semver.org) version of your app.
-
-### manifest.manifestUrl
-The URL where your latest manifest is hosted; where node-webkit-updater looks to check if there is a newer version of your app available.
-
-### manifest.packages
-An "object" containing an object for each OS your app (at least this version of your app) supports; `mac`, `win`, `linux32`, `linux64`.
-
-### manifest.packages.{mac, win, linux32, linux64}.url
-Each package has to contain a `url` property pointing to where the app (for the version & OS in question) can be downloaded.
-
-### manifest.packages.{mac, win, linux32, linux64}.execPath (Optional)
-It's assumed your app is stored at the root of your package, use this to override that and specify a path (relative to the root of your package).
-
-This can also be used to override `manifest.name`; e.g. if your `manifest.name` is `helloWorld` (therefore `helloWorld.app` on Mac) but your Windows executable is named `nw.exe`. Then you'd set `execPath` to `nw.exe`
 
 ---
 
