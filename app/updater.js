@@ -360,7 +360,7 @@
       pRun[platform].apply(this, arguments);
     }
     else {
-      gui.Shell.open(execPath);
+      gui.Shell.openItem(execPath);
     }
   };
 
