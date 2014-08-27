@@ -7,6 +7,11 @@
     "autoupdate"
   ],
   "version": "0.0.14",
+  "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "contributors": [
+    "Eldar Djafarov <djkojb@gmail.com>",
+    "Adam Lynch <contact@adamlynch.com>"
+  ],
   "main": "./app/updater.js",
   "repository": {
     "type": "git",
