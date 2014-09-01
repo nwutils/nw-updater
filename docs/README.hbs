@@ -12,7 +12,7 @@ It gives you low-level API to:
 2. If the version is different from the running one, download new package to a temp directory.
 3. Unpack the package in temp.
 4. Run new app from temp and kill the old one (i.e. still all from the running app).
-5. The new app (in temp) will copy itself to the original folder, overriding the old app.
+5. The new app (in temp) will copy itself to the original folder, overwriting the old app.
 6. The new app will run itself from original folder and exit the process.
 
 You should build this logic by yourself though. As a reference you can use [example](app/index.html).
