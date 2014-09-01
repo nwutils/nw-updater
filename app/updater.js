@@ -313,10 +313,10 @@
      */
     linux32: function(appPath, args, options, cb){
       var appExec = path.join(appPath, path.basename(this.getAppExec()));
-      fs.chmodSync(appExec, 0755);
+      fs.chmodSync(appExec, 0755)
       if(!options) options = {};
-      options.cwd = path.dirname(appPath);
-      return run(path.basename(this.getAppExec()), args, options, cb);
+      options.cwd = appPath;
+      return run(appPath + "/"+path.basename(this.getAppExec()), args, options, cb);
     }
   };
 
@@ -396,7 +396,10 @@
    */
   updater.prototype.run = function(execPath, args, options){
     if(platform.indexOf('linux') === 0){
-      pRun[platform].apply(this, arguments);
+      //TODO: refactor to work with different app executable names
+      var arg = arguments;
+      arg[0] = path.dirname(arg[0]);
+      pRun[platform].apply(this, arg);
     }
     else {
       gui.Shell.openItem(execPath);

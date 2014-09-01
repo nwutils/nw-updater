@@ -98,13 +98,14 @@
     }
     console.log(newAppPath, [upd.getAppPath(), upd.getAppExec()]);
     var runner = upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()]);
+    /*
     runner.stdout.on('data', 
     function(data){
       console.log(data)
     })
     runner.stderr.on('data', function(data){
       console.log(data)
-    })
+    })*/
     gui.App.quit();
   }
 
