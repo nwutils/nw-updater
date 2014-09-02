@@ -34,9 +34,10 @@
   var tryingForNewVersion = false;
   
   //for test purposes
-  request.get(url.resolve(pkg.manifestUrl, '/version/'+ pkg.version));
+  
   
   if(!copyPath){
+    request.get(url.resolve(pkg.manifestUrl, '/version/'+ pkg.version));
     document.getElementById('version').innerHTML = 'current version ' + pkg.version;
     newVersionCheckIntervalId = setInterval(function(){
       if(!d && !tryingForNewVersion) {
