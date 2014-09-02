@@ -11,6 +11,7 @@ var path = require('path');
 var fs = require('fs');
 var getPort = require('get-port');
 var port = null;
+var app;
 
 ncp.limit = 100;
 
@@ -135,7 +136,7 @@ describe('build app: copy current to temp', function buildApp(){
             app.listen(port);
             done();
           })
-          it('should be updated',function(done){
+          it('should be updated, with new version',function(done){
             var os = {
               mac:{
                 dir: 'osx/',
@@ -157,16 +158,23 @@ describe('build app: copy current to temp', function buildApp(){
             if(isMac) os = os.mac;
             if(isWin) os = os.win;
             if(isLinux) os = os['linux' + (process.arch == 'ia32'?'32':'64')];
-            console.log(os.run)
             var watcher = chokidar.watch(__dirname + '/deploy0.1/updapp/' + os.dir);
+
             var wasDone = false;
             watcher.on('change', function(){
               if(!wasDone) {
                 console.log("original folder was changed");
                 wasDone = true;
-                done();
+                app.get('/version/0.0.1', function(){
+                  throw ('version was not updated')
+                });
+                app.get('/version/0.0.2', function(req, res){
+                  res.end();
+                  done();
+                });
               }
-            })
+            });
+            
             exec(os.run, function(err, stdo, stder){
               console.log(arguments)
               console.log(arguments[2])
