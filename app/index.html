@@ -78,9 +78,10 @@
     var newVersion = upd.download(function(error, filename){
         newVersionDownloaded(error, filename, manifest);
     }, manifest);
+
     newVersion.on('data', function(chunk){
       loaded+=chunk.length;
-      document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / 1024) + 'kb';
+      document.getElementById('loaded').innerHTML = "New version loading " + Math.floor(loaded / newVersion['content-length'] * 100) + '%';
     })
   }
 

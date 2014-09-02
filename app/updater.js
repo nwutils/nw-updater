@@ -72,9 +72,13 @@
         if(err){
             cb(err);
         }
-
         if(response.statusCode < 200 || response.statusCode > 299){
             return cb(new Error(response.statusCode));
+        }
+    });
+    pkg.on('response', function(response){
+      if(response && response.headers && response.headers['content-length']){
+          pkg['content-length'] = response.headers['content-length'];
         }
     });
     var filename = path.basename(url),
