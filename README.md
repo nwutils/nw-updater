@@ -80,14 +80,6 @@ This function assumes you use [Semantic Versioning](http://semver.org) and enfor
 
 - cb `function` - Callback arguments: error, newerVersionExists (`Boolean`), remoteManifest  
 
-<a name="updater#clean"></a>
-###updater.clean(cb)
-Cleans previous app from temp folder. Do it before downloading stuff.
-
-**Params**
-
-- cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
-
 <a name="updater#download"></a>
 ###updater.download(cb, newManifest)
 Downloads the new app to a template folder

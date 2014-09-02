@@ -58,13 +58,7 @@
       cb(null, semver.gt(data.version, this.manifest.version), data);
     }
   };
-  /**
-   * Cleans previous app from temp folder. Do it before downloading stuff.
-   * @param  {Function} cb - called when download completes. Callback arguments: error, downloaded filepath
-   */
-  updater.prototype.clean = function(cb){
 
-  }
   /**
    * Downloads the new app to a template folder
    * @param  {Function} cb - called when download completes. Callback arguments: error, downloaded filepath
