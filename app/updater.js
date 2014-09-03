@@ -356,11 +356,18 @@
      */
     win: function(to, cb){
       var self = this;
-
+      var errCounter = 50;
       deleteApp(appDeleted);
+      
       function appDeleted(err){
         if(err){
-          cb(err);
+	  errCounter--;
+	  if(errCounter > 0) {
+	    setTimeout(function(){
+	      deleteApp(appDeleted);
+	    }, 100);
+	  }
+          return cb(err);
         }
         else {
           ncp(self.getAppPath(), to, appCopied);
@@ -393,15 +400,9 @@
    * @param {object} options - Optional. Ignored on Windows & Mac
    */
   updater.prototype.run = function(execPath, args, options){
-    if(platform.indexOf('linux') === 0){
-      //TODO: refactor to work with different app executable names
-      var arg = arguments;
-      arg[0] = path.dirname(arg[0]);
-      pRun[platform].apply(this, arg);
-    }
-    else {
-      gui.Shell.openItem(execPath);
-    }
+    var arg = arguments;
+    if(platform.indexOf('linux') === 0) arg[0] = path.dirname(arg[0]);
+    pRun[platform].apply(this, arg);
   };
 
   module.exports = updater;
