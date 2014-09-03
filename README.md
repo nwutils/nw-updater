@@ -89,7 +89,7 @@ Downloads the new app to a template folder
 - cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
 - newManifest `Object` - see [manifest schema](#manifest-schema) below  
 
-**Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest  
+**Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest and 'content-length' property with the size of package.  
 <a name="updater#getAppPath"></a>
 ###updater.getAppPath()
 Returns executed application path
@@ -133,13 +133,13 @@ Installs the app (copies current application to `copyPath`)
 
 <a name="updater#run"></a>
 ###updater.run(execPath, args, options)
-Runs the app from original path.
+Runs the app from original app executable path.
 
 **Params**
 
 - execPath `string`  
-- args `array` - Arguments based to the app being ran. Ignored on Windows & Mac  
-- options `object` - Optional. Ignored on Windows & Mac  
+- args `array` - Arguments passed to the app being ran.  
+- options `object` - Optional. See `spawn` from nodejs docs.  
 
 ---
 

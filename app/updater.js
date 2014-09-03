@@ -63,7 +63,7 @@
    * Downloads the new app to a template folder
    * @param  {Function} cb - called when download completes. Callback arguments: error, downloaded filepath
    * @param  {Object} newManifest - see [manifest schema](#manifest-schema) below
-   * @return {Request} Request - stream, the stream contains `manifest` property with new manifest
+   * @return {Request} Request - stream, the stream contains `manifest` property with new manifest and 'content-length' property with the size of package.
    */
   updater.prototype.download = function(cb, newManifest){
     var manifest = newManifest || this.manifest;
@@ -262,7 +262,6 @@
      */
     linux32: function(filename, cb, manifest){
       //filename fix
-      console.log('starting');
       exec('tar -zxvf ' + filename,{cwd: os.tmpdir()}, function(err){
         console.log(arguments);
         if(err){
@@ -361,13 +360,14 @@
       
       function appDeleted(err){
         if(err){
-	  errCounter--;
-	  if(errCounter > 0) {
-	    setTimeout(function(){
-	      deleteApp(appDeleted);
-	    }, 100);
-	  }
-          return cb(err);
+          errCounter--;
+          if(errCounter > 0) {
+            setTimeout(function(){
+              deleteApp(appDeleted);
+            }, 100);
+          } else {
+            return cb(err);
+          }
         }
         else {
           ncp(self.getAppPath(), to, appCopied);
@@ -394,10 +394,10 @@
   pInstall.linux64 = pInstall.linux32;
 
   /**
-   * Runs the app from original path.
+   * Runs the app from original app executable path.
    * @param {string} execPath
-   * @param {array} args - Arguments based to the app being ran. Ignored on Windows & Mac
-   * @param {object} options - Optional. Ignored on Windows & Mac
+   * @param {array} args - Arguments passed to the app being ran.
+   * @param {object} options - Optional. See `spawn` from nodejs docs.
    */
   updater.prototype.run = function(execPath, args, options){
     var arg = arguments;
