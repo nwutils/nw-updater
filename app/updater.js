@@ -182,7 +182,7 @@
           extension = path.extname(filename);
 
       if(extension === ".zip"){
-        exec('unzip -xo ' + filename,{cwd: os.tmpdir()}, function(err){
+        exec('unzip -xo ' + filename + ' >/dev/null',{cwd: os.tmpdir()}, function(err){
           if(err){
             console.log(err);
             return cb(err);
@@ -357,7 +357,7 @@
       var self = this;
       var errCounter = 50;
       deleteApp(appDeleted);
-      
+
       function appDeleted(err){
         if(err){
           errCounter--;
