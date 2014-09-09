@@ -52,6 +52,23 @@ function upgradeNow(newManifest) {
         }
     }, newManifest);
 }
+
+/* Args passed when new app is launched from temp dir during update */
+if(gui.App.argv.length){
+    copyPath = gui.App.argv[0];
+    execPath = gui.App.argv[1];
+}
+
+if(copyPath){
+    /* Replace old app, Run updated app from original location and close temp instance */
+    upd.install(copyPath, newAppInstalled);
+    var newAppInstalled = function(err){
+        if(!err){
+            upd.run(execPath, null);
+            gui.App.quit();
+        }
+    }
+}
 ```
 
 
