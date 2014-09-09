@@ -31,26 +31,44 @@ var gui = require('nw.gui');
 var pkg = require('../package.json'); // Insert your app's manifest here
 var updater = require('node-webkit-updater');
 var upd = new updater(pkg);
+var copyPath, execPath;
 
-/* Checks the remote manifest for latest available version and calls the autoupgrading function */
-upd.checkNewVersion(function(error, newVersionExists, manifest) {
-    if (!error && newVersionExists) {
-        upgradeNow(manifest);
-    }
-});
+/* Args passed when new app is launched from temp dir during update */
+if(gui.App.argv.length) {
+    copyPath = gui.App.argv[0];
+    execPath = gui.App.argv[1];
+}
 
-/* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
-function upgradeNow(newManifest) {
-    var newVersion = upd.download(function(error, filename) {
-        if (!error) {
-            upd.unpack(filename, function(error, newAppPath) {
-                if (!error) {
-                    upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
-                    gui.App.quit();
-                }
-            }, newManifest);
+if(!copyPath) {
+    /* Checks the remote manifest for latest available version and calls the autoupgrading function */
+    upd.checkNewVersion(function(error, newVersionExists, manifest) {
+        if (!error && newVersionExists) {
+            upgradeNow(manifest);
         }
-    }, newManifest);
+    });
+
+    /* Downloads the new version, unpacks it, replaces the existing files, runs the new version, and exits the old app */
+    function upgradeNow(newManifest) {
+        var newVersion = upd.download(function(error, filename) {
+            if (!error) {
+                upd.unpack(filename, function(error, newAppPath) {
+                    if (!error) {
+                        upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+                        gui.App.quit();
+                    }
+                }, newManifest);
+            }
+        }, newManifest);
+    }
+} else {
+    /* Replace old app, Run updated app from original location and close temp instance */
+    upd.install(copyPath, newAppInstalled);
+    var newAppInstalled = function(err) {
+        if(!err) {
+            upd.run(execPath, null);
+            gui.App.quit();
+        }
+    }
 }
 ```
 
