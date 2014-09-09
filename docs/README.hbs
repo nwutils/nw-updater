@@ -34,7 +34,7 @@ var upd = new updater(pkg);
 var copyPath, execPath;
 
 /* Args passed when new app is launched from temp dir during update */
-if(gui.App.argv.length){
+if(gui.App.argv.length) {
     copyPath = gui.App.argv[0];
     execPath = gui.App.argv[1];
 }
@@ -60,11 +60,11 @@ if(!copyPath) {
             }
         }, newManifest);
     }
-} else{
+} else {
     /* Replace old app, Run updated app from original location and close temp instance */
     upd.install(copyPath, newAppInstalled);
-    var newAppInstalled = function(err){
-        if(!err){
+    var newAppInstalled = function(err) {
+        if(!err) {
             upd.run(execPath, null);
             gui.App.quit();
         }
