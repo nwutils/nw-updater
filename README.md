@@ -79,19 +79,6 @@ As a reference you can use the [example](https://github.com/edjafarov/updater/bl
 
 <a name="updater"></a>
 ###class: updater
-**Members**
-
-* [class: updater](#updater)
-  * [new updater(manifest)](#new_updater)
-  * [updater.checkNewVersion(cb)](#updater#checkNewVersion)
-  * [updater.download(cb, newManifest)](#updater#download)
-  * [updater.getAppPath()](#updater#getAppPath)
-  * [updater.getAppExec()](#updater#getAppExec)
-  * [updater.unpack(filename, cb, manifest)](#updater#unpack)
-  * [updater.runInstaller(appPath, args, options)](#updater#runInstaller)
-  * [updater.install(copyPath, cb)](#updater#install)
-  * [updater.run(execPath, args, options)](#updater#run)
-
 <a name="new_updater"></a>
 ####new updater(manifest)
 Creates new instance of updater. Manifest could be a `package.json` of project.
