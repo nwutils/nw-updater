@@ -77,27 +77,11 @@ if(!copyPath) {
 
 As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 
-{{heading-depth-bump~}}
-{{#if (constructorHasDocs)}}{{set "isConstructor" true~}}{{>function}}{{/if~}}
-{{~#each (groupByKind (children))~}}
-    {{#if (equal kind "member")}}{{>member}}{{/if~}}
-    {{#if (equal kind "function")}}{{>function}}{{/if~}}
-    {{#if (equal kind "namespace")}}{{>namespace}}{{/if~}}
-    {{#if (equal kind "constant")}}{{>constant}}{{/if~}}
-    {{#if (equal kind "typedef")}}{{>typedef}}{{/if~}}
-    {{#if (equal kind "event")}}{{>event}}{{/if~}}
-    {{~#if (equal kind "class")~}}
-        {{set "isConstructor" false~}}
-        {{~#unless (equal kind "class")~}}
-            {{>head~}}
-        {{/unless~}}
-        {{>body~}}
-        {{>members~}}
-    {{/if~}}
-    {{#if (equal kind "module")}}{{>module}}{{/if~}}
-{{/each~}}
-{{heading-depth-drop~}}
-
+{{heading-depth-set 2~}}
+{{#class name="updater"~}}
+{{>body~}}
+{{>members~}}
+{{/class}}
 ---
 
 ## Manifest Schema

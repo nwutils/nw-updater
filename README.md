@@ -78,7 +78,7 @@ if(!copyPath) {
 As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
 
 <a name="new_updater"></a>
-###new updater(manifest)
+####new updater(manifest)
 Creates new instance of updater. Manifest could be a `package.json` of project.
 
 Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
@@ -88,7 +88,7 @@ Note that compressed apps are assumed to be downloaded in the format produced by
 - manifest `object` - See the [manifest schema](#manifest-schema) below.  
 
 <a name="updater#checkNewVersion"></a>
-###updater.checkNewVersion(cb)
+####updater.checkNewVersion(cb)
 Will check the latest available version of the application by requesting the manifest specified in `manifestUrl`.
 
 The callback will always be called; the second parameter indicates whether or not there's a newer version.
@@ -99,7 +99,7 @@ This function assumes you use [Semantic Versioning](http://semver.org) and enfor
 - cb `function` - Callback arguments: error, newerVersionExists (`Boolean`), remoteManifest  
 
 <a name="updater#download"></a>
-###updater.download(cb, newManifest)
+####updater.download(cb, newManifest)
 Downloads the new app to a template folder
 
 **Params**
@@ -109,17 +109,17 @@ Downloads the new app to a template folder
 
 **Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest and 'content-length' property with the size of package.  
 <a name="updater#getAppPath"></a>
-###updater.getAppPath()
+####updater.getAppPath()
 Returns executed application path
 
 **Returns**: `string`  
 <a name="updater#getAppExec"></a>
-###updater.getAppExec()
+####updater.getAppExec()
 Returns current application executable
 
 **Returns**: `string`  
 <a name="updater#unpack"></a>
-###updater.unpack(filename, cb, manifest)
+####updater.unpack(filename, cb, manifest)
 Will unpack the `filename` in temporary folder.
 For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
@@ -130,7 +130,7 @@ For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 - manifest `object`  
 
 <a name="updater#runInstaller"></a>
-###updater.runInstaller(appPath, args, options)
+####updater.runInstaller(appPath, args, options)
 Runs installer
 
 **Params**
@@ -141,7 +141,7 @@ Runs installer
 
 **Returns**: `function`  
 <a name="updater#install"></a>
-###updater.install(copyPath, cb)
+####updater.install(copyPath, cb)
 Installs the app (copies current application to `copyPath`)
 
 **Params**
@@ -150,7 +150,7 @@ Installs the app (copies current application to `copyPath`)
 - cb `function` - Callback arguments: error  
 
 <a name="updater#run"></a>
-###updater.run(execPath, args, options)
+####updater.run(execPath, args, options)
 Runs the app from original app executable path.
 
 **Params**
@@ -158,6 +158,7 @@ Runs the app from original app executable path.
 - execPath `string`  
 - args `array` - Arguments passed to the app being ran.  
 - options `object` - Optional. See `spawn` from nodejs docs.  
+
 
 ---
 
