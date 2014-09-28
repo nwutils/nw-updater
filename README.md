@@ -26,8 +26,6 @@ Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [wind
 
 ## API
 
-As a reference you can use the [example](https://github.com/edjafarov/updater/blob/master/app/index.html).
-
 <a name="new_updater"></a>
 ####new updater(manifest)
 Creates new instance of updater. Manifest could be a `package.json` of project.
