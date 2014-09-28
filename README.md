@@ -18,12 +18,6 @@ It gives you low-level API to:
 You should build this logic by yourself though. As a reference you can use [example](app/index.html).
 
 Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
-### How to run the tests
-```
-git clone git@github.com:edjafarov/updater.git
-npm run deps
-npm test
-```
 
 ## Quick Start
 ```javascript
