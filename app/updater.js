@@ -72,7 +72,8 @@
         if(err){
             cb(err);
         }
-        if(response.statusCode < 200 || response.statusCode > 299){
+        if(response.statusCode < 200 || response.statusCode >= 300){
+            pkg.abort();
             return cb(new Error(response.statusCode));
         }
     });
@@ -94,7 +95,9 @@
 
     function appDownloaded(){
       process.nextTick(function(){
-        cb(null, destinationPath)
+        if(pkg.response.statusCode >= 200 && pkg.response.statusCode < 300){
+          cb(null, destinationPath);
+        }
       });
     }
     return pkg;
