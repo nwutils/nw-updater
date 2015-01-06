@@ -72,7 +72,7 @@
         if(err){
             cb(err);
         }
-        if(response.statusCode < 200 || response.statusCode >= 300){
+        if(response && (response.statusCode < 200 || response.statusCode >= 300)){
             pkg.abort();
             return cb(new Error(response.statusCode));
         }
