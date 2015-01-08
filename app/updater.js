@@ -406,6 +406,8 @@
    * @param {string} execPath
    * @param {array} args - Arguments passed to the app being ran.
    * @param {object} options - Optional. See `spawn` from nodejs docs.
+   *
+   * Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).
    */
   updater.prototype.run = function(execPath, args, options){
     var arg = arguments;

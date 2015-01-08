@@ -15,7 +15,7 @@ It gives you low-level API to:
 5. The new app (in temp) will copy itself to the original folder, overwriting the old app.
 6. The new app will run itself from original folder and exit the process.
 
-You should build this logic by yourself though. As a reference you can use [example](examples/basic.js).
+You should build this logic by yourself though. As a reference you can use [example](app/index.html).
 
 Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [windows](http://screencast.com/t/MSTKqVS3) and [mac](http://screencast.com/t/OXyC5xoA).
 
@@ -106,7 +106,9 @@ Runs the app from original app executable path.
 
 - execPath `string`  
 - args `array` - Arguments passed to the app being ran.  
-- options `object` - Optional. See `spawn` from nodejs docs.  
+- options `object` - Optional. See `spawn` from nodejs docs.
+
+Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).  
 
 
 ---
