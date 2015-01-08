@@ -182,15 +182,20 @@
      */
     mac: function(filename, cb, manifest){
       var args = arguments,
-          extension = path.extname(filename);
+        extension = path.extname(filename),
+        destination = path.join(os.tmpdir(), path.basename(filename, extension));
+
+      if(!fs.existsSync(destination)){
+        fs.mkdirSync(destination);
+      }
 
       if(extension === ".zip"){
-        exec('unzip -xo ' + filename + ' >/dev/null',{cwd: os.tmpdir()}, function(err){
+        exec('unzip -xo ' + filename + ' >/dev/null',{ cwd: destination }, function(err){
           if(err){
             console.log(err);
             return cb(err);
           }
-          var appPath = path.join(os.tmpdir(), getExecPathRelativeToPackage(manifest));
+          var appPath = path.join(destination, getExecPathRelativeToPackage(manifest));
           cb(null, appPath);
         })
 
