@@ -7,6 +7,7 @@
   var ncp = require('ncp');
   var del = require('del');
   var semver = require('semver');
+  var zlib = require('zlib');
   var gui = global.window.nwDispatcher.requireNwGui();
 
   var platform = process.platform;
@@ -68,30 +69,38 @@
   updater.prototype.download = function(cb, newManifest){
     var manifest = newManifest || this.manifest;
     var url = manifest.packages[platform].url;
+    var filename = path.basename(url);
+    var destinationPath = path.join(os.tmpdir(), filename);
+
     var pkg = request(url, function(err, response){
-        if(err){
-            cb(err);
-        }
-        if(response && (response.statusCode < 200 || response.statusCode >= 300)){
-            pkg.abort();
-            return cb(new Error(response.statusCode));
-        }
+      if(err){
+          cb(err);
+      }
+      if(response && (response.statusCode < 200 || response.statusCode >= 300)){
+          pkg.abort();
+          return cb(new Error(response.statusCode));
+      }
     });
-    pkg.on('response', function(response){
-      if(response && response.headers && response.headers['content-length']){
+
+
+    pkg.on('response', function(response) {
+      if (response && response.headers) {
+        if (response.headers['content-length']) {
           pkg['content-length'] = response.headers['content-length'];
         }
-    });
-    var filename = path.basename(url),
-        destinationPath = path.join(os.tmpdir(), filename);
-    // download the package to template folder
-    fs.unlink(path.join(os.tmpdir(), filename), function(){
-      pkg.pipe(fs.createWriteStream(destinationPath));
-      pkg.resume();
+
+        fs.unlink(destinationPath, function(err) {
+          var destination = fs.createWriteStream(destinationPath);
+          if (response.headers['content-encoding'] === 'gzip') {
+            response.pipe(zlib.createGunzip()).pipe(destination)
+          } else {
+            response.pipe(destination);
+          }
+        });
+      }
     });
     pkg.on('error', cb);
     pkg.on('end', appDownloaded);
-    pkg.pause();
 
     function appDownloaded(){
       process.nextTick(function(){
