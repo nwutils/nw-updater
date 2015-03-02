@@ -203,14 +203,18 @@
       else if(extension === ".dmg"){
         // just in case if something was wrong during previous mount
         exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
-          exec('hdiutil attach ' + filename + ' -nobrowse', function(err){
-            if(err) {
-              if(err.code == 1){
-                pUnpack.mac.apply(this, args);
+          // create a CDR from the DMG to bypass any steps which require user interaction
+          var cdrPath = filename.replace(/.dmg$/, '.cdr');
+          exec('hdiutil convert ' + filename + ' -format UDTO -o ' + cdrPath, function(err){
+            exec('hdiutil attach ' + cdrPath + ' -nobrowse', function(err){
+              if(err) {
+                if(err.code == 1){
+                  pUnpack.mac.apply(this, args);
+                }
+                return cb(err);
               }
-              return cb(err);
-            }
-            findMountPoint(path.basename(filename, '.dmg'), cb);
+              findMountPoint(path.basename(filename, '.dmg'), cb);
+            });
           });
         });
 
