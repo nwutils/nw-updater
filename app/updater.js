@@ -190,7 +190,7 @@
       }
 
       if(extension === ".zip"){
-        exec('unzip -xo ' + filename + ' >/dev/null',{ cwd: destination }, function(err){
+        exec('unzip -xo "' + filename + '" >/dev/null',{ cwd: destination }, function(err){
           if(err){
             console.log(err);
             return cb(err);
@@ -205,8 +205,8 @@
         exec('hdiutil unmount /Volumes/'+path.basename(filename, '.dmg'), function(err){
           // create a CDR from the DMG to bypass any steps which require user interaction
           var cdrPath = filename.replace(/.dmg$/, '.cdr');
-          exec('hdiutil convert ' + filename + ' -format UDTO -o ' + cdrPath, function(err){
-            exec('hdiutil attach ' + cdrPath + ' -nobrowse', function(err){
+          exec('hdiutil convert "' + filename + '" -format UDTO -o "' + cdrPath + '"', function(err){
+            exec('hdiutil attach "' + cdrPath + '" -nobrowse', function(err){
               if(err) {
                 if(err.code == 1){
                   pUnpack.mac.apply(this, args);
@@ -274,7 +274,7 @@
      */
     linux32: function(filename, cb, manifest){
       //filename fix
-      exec('tar -zxvf ' + filename + ' >/dev/null',{cwd: os.tmpdir()}, function(err){
+      exec('tar -zxvf "' + filename + '" >/dev/null',{cwd: os.tmpdir()}, function(err){
         console.log(arguments);
         if(err){
           console.log(err);
