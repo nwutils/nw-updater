@@ -20,9 +20,14 @@
    *
    * @constructor
    * @param {object} manifest - See the [manifest schema](#manifest-schema) below.
+   * @param {object} options - Optional
+   * @property {string} options.temporaryDirectory - (Optional) path to a directory to download the updates to and unpack them in. Defaults to [`os.tmpdir()`](https://nodejs.org/api/os.html#os_os_tmpdir)
    */
-  function updater(manifest){
+  function updater(manifest, options){
     this.manifest = manifest;
+    this.options = {
+      temporaryDirectory: options.temporaryDirectory || os.tmpdir()
+    };
   }
 
 
@@ -83,9 +88,9 @@
         }
     });
     var filename = path.basename(url),
-        destinationPath = path.join(os.tmpdir(), filename);
+        destinationPath = path.join(this.options.temporaryDirectory, filename);
     // download the package to template folder
-    fs.unlink(path.join(os.tmpdir(), filename), function(){
+    fs.unlink(path.join(this.options.temporaryDirectory, filename), function(){
       pkg.pipe(fs.createWriteStream(destinationPath));
       pkg.resume();
     });
@@ -144,16 +149,17 @@
    * @param {object} manifest
    */
   updater.prototype.unpack = function(filename, cb, manifest){
-    pUnpack[platform].apply(this, arguments);
+    pUnpack[platform](filename, cb, manifest, this.options.temporaryDirectory);
   };
 
   /**
    * @private
    * @param {string} zipPath
+   * @param {string} temporaryDirectory
    * @return {string}
    */
-  var getZipDestinationDirectory = function(zipPath){
-      return path.join(os.tmpdir(), path.basename(zipPath, path.extname(zipPath)));
+  var getZipDestinationDirectory = function(zipPath, temporaryDirectory){
+      return path.join(temporaryDirectory, path.basename(zipPath, path.extname(zipPath)));
     },
     /**
      * @private
@@ -180,10 +186,10 @@
     /**
      * @private
      */
-    mac: function(filename, cb, manifest){
+    mac: function(filename, cb, manifest, temporaryDirectory){
       var args = arguments,
         extension = path.extname(filename),
-        destination = path.join(os.tmpdir(), path.basename(filename, extension));
+        destination = path.join(temporaryDirectory, path.basename(filename, extension));
 
       if(!fs.existsSync(destination)){
         fs.mkdirSync(destination);
@@ -238,8 +244,8 @@
     /**
      * @private
      */
-    win: function(filename, cb, manifest){
-      var destinationDirectory = getZipDestinationDirectory(filename),
+    win: function(filename, cb, manifest, temporaryDirectory){
+      var destinationDirectory = getZipDestinationDirectory(filename, temporaryDirectory),
           unzip = function(){
             // unzip by C. Spieler (docs: https://www.mkssoftware.com/docs/man1/unzip.1.asp, issues: http://www.info-zip.org/)
             exec( '"' + path.resolve(__dirname, 'tools/unzip.exe') + '" -u -o "' +
@@ -272,15 +278,15 @@
     /**
      * @private
      */
-    linux32: function(filename, cb, manifest){
+    linux32: function(filename, cb, manifest, temporaryDirectory){
       //filename fix
-      exec('tar -zxvf "' + filename + '" >/dev/null',{cwd: os.tmpdir()}, function(err){
+      exec('tar -zxvf "' + filename + '" >/dev/null',{cwd: temporaryDirectory}, function(err){
         console.log(arguments);
         if(err){
           console.log(err);
           return cb(err);
         }
-        cb(null,path.join(os.tmpdir(), getExecPathRelativeToPackage(manifest)));
+        cb(null,path.join(temporaryDirectory, getExecPathRelativeToPackage(manifest)));
       })
      }
   };

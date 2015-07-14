@@ -27,7 +27,7 @@ Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [wind
 ## API
 
 <a name="new_updater"></a>
-####new updater(manifest)
+####new updater(manifest, options)
 Creates new instance of updater. Manifest could be a `package.json` of project.
 
 Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
@@ -35,6 +35,7 @@ Note that compressed apps are assumed to be downloaded in the format produced by
 **Params**
 
 - manifest `object` - See the [manifest schema](#manifest-schema) below.  
+- options `object` - Optional  
 
 <a name="updater#checkNewVersion"></a>
 ####updater.checkNewVersion(cb)
@@ -70,7 +71,7 @@ Returns current application executable
 <a name="updater#unpack"></a>
 ####updater.unpack(filename, cb, manifest)
 Will unpack the `filename` in temporary folder.
-For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
+For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
 
 **Params**
 
