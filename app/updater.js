@@ -142,7 +142,7 @@
 
   /**
    * Will unpack the `filename` in temporary folder.
-   * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used.
+   * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
    *
    * @param {string} filename
    * @param {function} cb - Callback arguments: error, unpacked directory
