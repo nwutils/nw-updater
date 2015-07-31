@@ -357,7 +357,7 @@
    * @param {string} copyPath
    * @param {function} cb - Callback arguments: error
    */
-  updater.prototype.install = function(copyPath, cb){
+  updater.prototype.install = function(copyPath, cb, options){
     pInstall[platform].apply(this, arguments);
   };
 
@@ -392,7 +392,13 @@
         }
       }
       function deleteApp(cb){
-        del(to, {force: true}, cb);
+        if (options && options.deleteApp === false) {
+          if (cb) {
+            cb();
+          }
+        } else {
+          del(to, {force: true}, cb);
+        }
       }
       function appCopied(err){
         if(err){
