@@ -356,6 +356,7 @@
    * Installs the app (copies current application to `copyPath`)
    * @param {string} copyPath
    * @param {function} cb - Callback arguments: error
+   * @param {object} options - Optional. Can be set to {deleteApp: false} to prevent original app folder to be deleted in windows
    */
   updater.prototype.install = function(copyPath, cb, options){
     pInstall[platform].apply(this, arguments);
