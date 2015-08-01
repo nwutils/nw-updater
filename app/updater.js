@@ -366,13 +366,13 @@
     /**
      * @private
      */
-    mac: function(to, cb){
+    mac: function(to, cb, options){
       ncp(this.getAppPath(), to, cb);
     },
     /**
      * @private
      */
-    win: function(to, cb){
+    win: function(to, cb, options){
       var self = this;
       var errCounter = 50;
       deleteApp(appDeleted);
@@ -412,7 +412,7 @@
     /**
      * @private
      */
-    linux32: function(to, cb){
+    linux32: function(to, cb, options){
       ncp(this.getAppPath(), to, cb);
     }
   };
