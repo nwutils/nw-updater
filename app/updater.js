@@ -5,7 +5,7 @@
   var exec = require('child_process').exec;
   var spawn = require('child_process').spawn;
   var ncp = require('ncp');
-  var del = require('del');
+  var rimraf = require('rimraf');
   var semver = require('semver');
   var gui = global.window.nwDispatcher.requireNwGui();
 
@@ -260,7 +260,7 @@
 
       fs.exists(destinationDirectory, function(exists){
         if(exists) {
-          del(destinationDirectory, {force: true}, function (err) {
+          rimraf(destinationDirectory, function (err) {
             if (err) {
               cb(err);
             }
@@ -398,7 +398,7 @@
             cb();
           }
         } else {
-          del(to, {force: true}, cb);
+          rimraf(to, cb);
         }
       }
       function appCopied(err){
