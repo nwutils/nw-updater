@@ -28,7 +28,9 @@ Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [wind
 
 <a name="new_updater"></a>
 ####new updater(manifest, options)
-Creates new instance of updater. Manifest could be a `package.json` of project.Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
+Creates new instance of updater. Manifest could be a `package.json` of project.
+
+Note that compressed apps are assumed to be downloaded in the format produced by [node-webkit-builder](https://github.com/mllrsohn/node-webkit-builder) (or [grunt-node-webkit-builder](https://github.com/mllrsohn/grunt-node-webkit-builder)).
 
 **Params**
 
@@ -37,7 +39,10 @@ Creates new instance of updater. Manifest could be a `package.json` of project.
 
 <a name="updater#checkNewVersion"></a>
 ####updater.checkNewVersion(cb)
-Will check the latest available version of the application by requesting the manifest specified in `manifestUrl`.The callback will always be called; the second parameter indicates whether or not there's a newer version.This function assumes you use [Semantic Versioning](http://semver.org) and enforces it; if your local version is `0.2.0` and the remote one is `0.1.23456` then the callback will be called with `false` as the second paramter. If on the off chance you don't use semantic versioning, you could manually download the remote manifest and call `download` if you're happy that the remote version is newer.
+Will check the latest available version of the application by requesting the manifest specified in `manifestUrl`.
+
+The callback will always be called; the second parameter indicates whether or not there's a newer version.
+This function assumes you use [Semantic Versioning](http://semver.org) and enforces it; if your local version is `0.2.0` and the remote one is `0.1.23456` then the callback will be called with `false` as the second paramter. If on the off chance you don't use semantic versioning, you could manually download the remote manifest and call `download` if you're happy that the remote version is newer.
 
 **Params**
 
@@ -65,7 +70,8 @@ Returns current application executable
 **Returns**: `string`  
 <a name="updater#unpack"></a>
 ####updater.unpack(filename, cb, manifest)
-Will unpack the `filename` in temporary folder.For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
+Will unpack the `filename` in temporary folder.
+For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
 
 **Params**
 
@@ -101,7 +107,9 @@ Runs the app from original app executable path.
 
 - execPath `string`  
 - args `array` - Arguments passed to the app being ran.  
-- options `object` - Optional. See `spawn` from nodejs docs.Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).  
+- options `object` - Optional. See `spawn` from nodejs docs.
+
+Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).  
 
 
 ---
@@ -157,7 +165,11 @@ This can also be used to override `manifest.name`; e.g. if your `manifest.name` 
 
 ## Troubleshooting
 
+### Mac
 If you get an error on Mac about too many files being open, run `ulimit -n 10240`
+
+### Windows
+On Windows, there is no "unzip" command built in by default. As a result, this project uses a third party "unzip.exe" in order to extract the downloaded update. On the NWJS site, in the "How to package and distribute your apps" file, one of the recommended methods of distribution is using EnigmaVirtualBox to package the app, nw.exe, and required DLLs into a single EXE file. This method works great for distribution, but unfortunately breaks node-webkit-updater, because it wraps the required unzip.exe file inside of the created EnigmaVirtualBox EXE. As a result, *it is not possible to use EnigmaVirtualBox to distribute your app if you plan on using node-webkit-updater*. Try using InnoSetup instead.
 
 ## Contributing
 
