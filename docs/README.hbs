@@ -84,7 +84,11 @@ This can also be used to override `manifest.name`; e.g. if your `manifest.name` 
 
 ## Troubleshooting
 
+### Mac
 If you get an error on Mac about too many files being open, run `ulimit -n 10240`
+
+### Windows
+On Windows, there is no "unzip" command built in by default. As a result, this project uses a third party "unzip.exe" in order to extract the downloaded update. On the NWJS site, in the "How to package and distribute your apps" file, one of the recommended methods of distribution is using EnigmaVirtualBox to package the app, nw.exe, and required DLLs into a single EXE file. This method works great for distribution, but unfortunately breaks node-webkit-updater, because it wraps the required unzip.exe file inside of the created EnigmaVirtualBox EXE. As a result, *it is not possible to use EnigmaVirtualBox to distribute your app if you plan on using node-webkit-updater*. Try using InnoSetup instead.
 
 ## Contributing
 
