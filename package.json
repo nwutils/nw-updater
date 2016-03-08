@@ -26,7 +26,7 @@
     "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
   },
   "dependencies": {
-    "ncp": "^0.5.1",
+    "ncp": "2.0.0",
     "request": "~2.64.0",
     "tar.gz": "^0.1.1",
     "del": "~0.1.2",
