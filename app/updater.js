@@ -342,7 +342,8 @@
    */
   function run(path, args, options){
     var opts = {
-      detached: true
+      detached: true,
+      cwd: path
     };
     for(var key in options){
       opts[key] = options[key];
@@ -392,7 +393,23 @@
         }
       }
       function deleteApp(cb){
-        del(to, {force: true}, cb);
+        cb(rmDir(to, false));
+      }
+      function rmDir(dirPath, removeSelf) {
+        if (removeSelf === undefined)
+          removeSelf = true;
+        try { var files = fs.readdirSync(dirPath); }
+        catch(e) { return; }
+        if (files.length > 0)
+          for (var i = 0; i < files.length; i++) {
+            var filePath = dirPath + '/' + files[i];
+            if (fs.statSync(filePath).isFile())
+              fs.unlinkSync(filePath);
+            else
+              rmDir(filePath);
+          }
+        if (removeSelf)
+          fs.rmdirSync(dirPath);
       }
       function appCopied(err){
         if(err){
