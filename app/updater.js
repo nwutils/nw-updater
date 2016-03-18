@@ -342,8 +342,7 @@
    */
   function run(path, args, options){
     var opts = {
-      detached: true,
-      cwd: path
+      detached: true
     };
     for(var key in options){
       opts[key] = options[key];
@@ -393,23 +392,8 @@
         }
       }
       function deleteApp(cb){
-        cb(rmDir(to, false));
-      }
-      function rmDir(dirPath, removeSelf) {
-        if (removeSelf === undefined)
-          removeSelf = true;
-        try { var files = fs.readdirSync(dirPath); }
-        catch(e) { return; }
-        if (files.length > 0)
-          for (var i = 0; i < files.length; i++) {
-            var filePath = dirPath + '/' + files[i];
-            if (fs.statSync(filePath).isFile())
-              fs.unlinkSync(filePath);
-            else
-              rmDir(filePath);
-          }
-        if (removeSelf)
-          fs.rmdirSync(dirPath);
+        // in case of path to root folder we want to remove everything from within but root folder as it may be locked
+        del( to + '/**/*', {force: true}, cb);
       }
       function appCopied(err){
         if(err){
