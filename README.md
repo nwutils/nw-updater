@@ -1,3 +1,5 @@
+Hi, I cant support this package since not working with NW anymore. So I would love to give the project out to somebody who cares. Contact me on twitter @edjafarov.
+
 node-webkit-updater [![NPM version][npm-image]][npm-url]
 =======
 This is [node-webkit](https://github.com/rogerwang/node-webkit)-updater.
