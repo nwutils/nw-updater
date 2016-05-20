@@ -7,7 +7,6 @@
   var ncp = require('ncp');
   var del = require('del');
   var semver = require('semver');
-  var gui = global.window.nwDispatcher.requireNwGui();
 
   var platform = process.platform;
   platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');

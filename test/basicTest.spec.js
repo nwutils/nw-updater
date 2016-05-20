@@ -3,7 +3,6 @@ var expect = require('chai').expect;
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var express = require('express');
-var chokidar = require('chokidar');
 var isWin = /^win/.test(process.platform);
 var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
@@ -53,7 +52,7 @@ describe('build app: copy current to temp', function buildApp(){
       }
       customizePackageJson(mock, __dirname + '/app/package.json');
       var base = path.normalize(__dirname);
-      var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp', 
+      var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp',
         '--dest=' + base + '/deploy0.2',
         '--src=' + base + '/app']);
       bd.stdout.on('data', function(data){
@@ -69,16 +68,16 @@ describe('build app: copy current to temp', function buildApp(){
     })
     describe('package for [current os]', function(){
       before(function(done){
-        
+
         var pkgCommand;
         if(isMac) pkgCommand = 'packageMacZip';//'packageMac';
         if(isWin) pkgCommand = 'compress:win';
         if(isLinux) pkgCommand = 'compress:linux' + (process.arch == 'ia32'?'32':'64');
         console.log(pkgCommand)
 
-        
+
         var pk = spawn('node', ['./node_modules/grunt-cli/bin/grunt', pkgCommand, '--dest=./test/deploy0.2','--src=./test/app']);
-        
+
         pk.stdout.on('data', function(data){
           console.log(data.toString());
         })
@@ -163,7 +162,7 @@ describe('build app: copy current to temp', function buildApp(){
 		  res.end();
 		  done();
 		});
-            
+
             exec(os.run, function(err, stdo, stder){
               console.log(arguments)
               console.log(arguments[2])
