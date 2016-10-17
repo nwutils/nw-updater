@@ -26,7 +26,7 @@ if(gui.App.argv.length) {
         if(!err) {
 
             // ------------- Step 6 -------------
-            upd.run(execPath, null);
+            upd.run(execPath, []);
             gui.App.quit();
         }
     });
