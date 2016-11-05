@@ -9,7 +9,7 @@
   var semver = require('semver');
 
   var platform = process.platform;
-  platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
+  platform = (/^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux') + (process.arch == 'ia32' ? '32' : '64');
 
 
   /**
