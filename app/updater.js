@@ -59,7 +59,12 @@
         return cb(e)
       }
 
-      cb(null, semver.gt(data.version, this.manifest.version), data);
+      try {
+          cb(null, semver.gt(data.version, this.manifest.version), data);
+      } catch (e) {
+          return cb(e)
+      }
+          
     }
   };
 
