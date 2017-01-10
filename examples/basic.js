@@ -12,6 +12,7 @@
 var gui = require('nw.gui');
 var pkg = require('../package.json'); // Insert your app's manifest here
 var updater = require('node-webkit-updater');
+var path = require('path')
 var upd = new updater(pkg);
 var copyPath, execPath;
 
@@ -44,9 +45,9 @@ else { // if no arguments were passed to the app
                     // ------------- Step 3 -------------
                     upd.unpack(filename, function(error, newAppPath) {
                         if (!error) {
-
+							var newAppDir = path.dirname(newAppPath); 
                             // ------------- Step 4 -------------
-                            upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()],{});
+                            upd.runInstaller(newAppPath, [upd.getAppPath(), upd.getAppExec()], {cwd: newAppDir} );
                             gui.App.quit();
                         }
                     }, manifest);
