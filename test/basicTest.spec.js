@@ -1,29 +1,32 @@
+var { strictEqual } = require('node:assert/strict');
+var { exec, spawn } = require('node:child_process');
+var { writeFileSync } = require('node:fs');
 var { cp } = require('node:fs/promises');
-var expect = require('chai').expect;
-var spawn = require('child_process').spawn;
-var exec = require('child_process').exec;
+var { join, normalize } = require('node:path');
+var { platform } = require('node:process');
+var { before, describe, it } = require('node:test');
+
 var express = require('express');
-var isWin = /^win/.test(process.platform);
-var isMac = /^darwin/.test(process.platform);
-var isLinux = /^linux/.test(process.platform);
-var path = require('path');
-var fs = require('fs');
 var getPort = require('get-port');
+
+var isWin = /^win/.test(platform);
+var isMac = /^darwin/.test(platform);
+var isLinux = /^linux/.test(platform);
 var port = null;
 var app;
 
-describe('build app: copy current to temp', function buildApp(){
-  this.timeout(2000000);
-  before(function(done){
+describe('build app: copy current to temp', function () {
+  
+  before(function () {
     cp('./app', './test/app').catch(function(err){
-        if(err) return done(err);
+        if(err) throw err;
         getPort(function(err, availablePort){
-            if(err) return done(err);
+            if(err) throw err;
             port = availablePort;
-            done();
         })
     });
   })
+
   describe('change manifest, build from temp', function(){
     before(function(done){
       var mock = {
@@ -49,7 +52,7 @@ describe('build app: copy current to temp', function buildApp(){
         version: "0.0.2"
       }
       customizePackageJson(mock, __dirname + '/app/package.json');
-      var base = path.normalize(__dirname);
+      var base = normalize(__dirname);
       var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp',
         '--dest=' + base + '/deploy0.2',
         '--src=' + base + '/app']);
@@ -60,8 +63,7 @@ describe('build app: copy current to temp', function buildApp(){
         console.log(data.toString());
       })
       bd.on('close', function(code){
-        expect(code).to.equal(0);
-        done();
+        strictEqual(code, 0);
       });
     })
     describe('package for [current os]', function(){
@@ -80,7 +82,7 @@ describe('build app: copy current to temp', function buildApp(){
           console.log(data.toString());
         })
         pk.on('close', function(code){
-          expect(code).to.equal(0);
+          strictEqual(code, 0);
           done();
         })
       })
@@ -98,7 +100,7 @@ describe('build app: copy current to temp', function buildApp(){
           })
 
           bd.on('close', function(code){
-            expect(code).to.equal(0);
+            strictEqual(code, 0);
             done();
           });
         })
@@ -127,7 +129,7 @@ describe('build app: copy current to temp', function buildApp(){
               updated: true,
               version: "0.0.2"
             }
-            fs.writeFileSync( __dirname + "/deploy0.2/package.json" , JSON.stringify(json, null, 4));
+            writeFileSync( __dirname + "/deploy0.2/package.json" , JSON.stringify(json, null, 4));
             app = express();
             app.use(express.static('./test/deploy0.2'));
             app.listen(port);
@@ -141,7 +143,7 @@ describe('build app: copy current to temp', function buildApp(){
               },
               win:{
                 dir: 'win/',
-                run: path.join(__dirname, "/deploy0.1/updapp/win/updapp.exe")
+                run: join(__dirname, "/deploy0.1/updapp/win/updapp.exe")
               },
               linux32: {
                 dir: 'linux32/',
@@ -179,7 +181,7 @@ function customizePackageJson(obj, path){
   for(var i in obj){
     json[i] = obj[i];
   }
-  fs.writeFileSync(path, JSON.stringify(json, null, 4));
+  writeFileSync(path, JSON.stringify(json, null, 4));
 }
 //build app
 //serve from url dmg
