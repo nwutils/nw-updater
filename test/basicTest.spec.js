@@ -1,13 +1,13 @@
-var { strictEqual } = require('node:assert/strict');
-var { exec, spawn } = require('node:child_process');
-var { writeFileSync } = require('node:fs');
-var { cp } = require('node:fs/promises');
-var { join, normalize } = require('node:path');
-var { platform } = require('node:process');
-var { before, describe, it } = require('node:test');
+var { strictEqual } = require("node:assert/strict");
+var { exec, spawn } = require("node:child_process");
+var { writeFileSync } = require("node:fs");
+var { cp } = require("node:fs/promises");
+var { join, normalize } = require("node:path");
+var { platform } = require("node:process");
+var { before, describe, it } = require("node:test");
 
-var express = require('express');
-var getPort = require('get-port');
+var express = require("express");
+var getPort = require("get-port");
 
 var isWin = /^win/.test(platform);
 var isMac = /^darwin/.test(platform);
@@ -15,170 +15,191 @@ var isLinux = /^linux/.test(platform);
 var port = null;
 var app;
 
-describe('build app: copy current to temp', function () {
-  
+describe("build app: copy current to temp", function () {
   before(function () {
-    cp('./app', './test/app').catch(function(err){
-        if(err) throw err;
-        getPort(function(err, availablePort){
-            if(err) throw err;
-            port = availablePort;
-        })
+    cp("./app", "./test/app").catch(function (err) {
+      if (err) throw err;
+      getPort(function (err, availablePort) {
+        if (err) throw err;
+        port = availablePort;
+      });
     });
-  })
+  });
 
-  describe('change manifest, build from temp', function(){
-    before(function(done){
+  describe("change manifest, build from temp", function () {
+    before(function (done) {
       var mock = {
         name: "updapp",
         manifestUrl: "http://localhost:" + port + "/package.json",
         packages: {
           mac: {
-              url: "http://localhost:" + port + "/updapp/osx/updapp.zip",
-              execPath: "updapp/updapp.app"
+            url: "http://localhost:" + port + "/updapp/osx/updapp.zip",
+            execPath: "updapp/updapp.app",
           },
           win: {
-              url: "http://localhost:" + port + "/updapp/win/updapp.zip",
-              execPath: "updapp\\updapp.exe"
+            url: "http://localhost:" + port + "/updapp/win/updapp.zip",
+            execPath: "updapp\\updapp.exe",
           },
           linux32: {
-              url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz"
+            url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz",
           },
           linux64: {
-              url: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
-          }
+            url: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz",
+          },
         },
         updated: true,
-        version: "0.0.2"
-      }
-      customizePackageJson(mock, __dirname + '/app/package.json');
+        version: "0.0.2",
+      };
+      customizePackageJson(mock, __dirname + "/app/package.json");
       var base = normalize(__dirname);
-      var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp',
-        '--dest=' + base + '/deploy0.2',
-        '--src=' + base + '/app']);
-      bd.stdout.on('data', function(data){
+      var bd = spawn("node", [
+        "./node_modules/grunt-cli/bin/grunt",
+        "buildapp",
+        "--dest=" + base + "/deploy0.2",
+        "--src=" + base + "/app",
+      ]);
+      bd.stdout.on("data", function (data) {
         console.log(data.toString());
-      })
-      bd.stderr.on('data', function(data){
+      });
+      bd.stderr.on("data", function (data) {
         console.log(data.toString());
-      })
-      bd.on('close', function(code){
+      });
+      bd.on("close", function (code) {
         strictEqual(code, 0);
       });
-    })
-    describe('package for [current os]', function(){
-      before(function(done){
-
+    });
+    describe("package for [current os]", function () {
+      before(function (done) {
         var pkgCommand;
-        if(isMac) pkgCommand = 'packageMacZip';//'packageMac';
-        if(isWin) pkgCommand = 'compress:win';
-        if(isLinux) pkgCommand = 'compress:linux' + (process.arch == 'ia32'?'32':'64');
-        console.log(pkgCommand)
+        if (isMac) pkgCommand = "packageMacZip"; //'packageMac';
+        if (isWin) pkgCommand = "compress:win";
+        if (isLinux)
+          pkgCommand =
+            "compress:linux" + (process.arch == "ia32" ? "32" : "64");
+        console.log(pkgCommand);
 
+        var pk = spawn("node", [
+          "./node_modules/grunt-cli/bin/grunt",
+          pkgCommand,
+          "--dest=./test/deploy0.2",
+          "--src=./test/app",
+        ]);
 
-        var pk = spawn('node', ['./node_modules/grunt-cli/bin/grunt', pkgCommand, '--dest=./test/deploy0.2','--src=./test/app']);
-
-        pk.stdout.on('data', function(data){
+        pk.stdout.on("data", function (data) {
           console.log(data.toString());
-        })
-        pk.on('close', function(code){
+        });
+        pk.on("close", function (code) {
           strictEqual(code, 0);
           done();
-        })
-      })
-      describe('change manifest, build from temp', function(){
-        before(function(done){
+        });
+      });
+      describe("change manifest, build from temp", function () {
+        before(function (done) {
           var mock = {
             name: "updapp",
             updated: false,
-            version: "0.0.1"
-          }
-          customizePackageJson(mock, __dirname + '/app/package.json');
-          var bd = spawn('node', ['./node_modules/grunt-cli/bin/grunt', 'buildapp', '--dest=./test/deploy0.1','--src=./test/app']);
-          bd.stdout.on('data', function(data){
+            version: "0.0.1",
+          };
+          customizePackageJson(mock, __dirname + "/app/package.json");
+          var bd = spawn("node", [
+            "./node_modules/grunt-cli/bin/grunt",
+            "buildapp",
+            "--dest=./test/deploy0.1",
+            "--src=./test/app",
+          ]);
+          bd.stdout.on("data", function (data) {
             console.log(data.toString());
-          })
+          });
 
-          bd.on('close', function(code){
+          bd.on("close", function (code) {
             strictEqual(code, 0);
             done();
           });
-        })
+        });
 
-        describe('run built app for [os], wait for app to be updated', function(){
-          before(function(done){
+        describe("run built app for [os], wait for app to be updated", function () {
+          before(function () {
             var json = {
               name: "updapp",
               manifestUrl: "http://localhost:" + port + "/package.json",
               packages: {
                 mac: {
-                    url: "http://localhost:" + port + "/updapp/osx/updapp.zip",
-                    execPath: "updapp/updapp.app"
+                  url: "http://localhost:" + port + "/updapp/osx/updapp.zip",
+                  execPath: "updapp/updapp.app",
                 },
                 win: {
-                    url: "http://localhost:" + port + "/updapp/win/updapp.zip",
-                    execPath: "updapp\\updapp.exe"
+                  url: "http://localhost:" + port + "/updapp/win/updapp.zip",
+                  execPath: "updapp\\updapp.exe",
                 },
                 linux32: {
-                    url: "http://localhost:" + port + "/updapp/linux32/updapp.tar.gz"
+                  url:
+                    "http://localhost:" +
+                    port +
+                    "/updapp/linux32/updapp.tar.gz",
                 },
                 linux64: {
-                    url: "http://localhost:" + port + "/updapp/linux64/updapp.tar.gz"
-                }
+                  url:
+                    "http://localhost:" +
+                    port +
+                    "/updapp/linux64/updapp.tar.gz",
+                },
               },
               updated: true,
-              version: "0.0.2"
-            }
-            writeFileSync( __dirname + "/deploy0.2/package.json" , JSON.stringify(json, null, 4));
+              version: "0.0.2",
+            };
+            writeFileSync(
+              __dirname + "/deploy0.2/package.json",
+              JSON.stringify(json, null, 4)
+            );
             app = express();
-            app.use(express.static('./test/deploy0.2'));
+            app.use(express.static("./test/deploy0.2"));
             app.listen(port);
-            done();
-          })
-          it('should be updated, with new version',function(done){
+          });
+
+          it("should be updated, with new version", function (done) {
             var os = {
-              mac:{
-                dir: 'osx/',
-                run: 'open ' + __dirname + "/deploy0.1/updapp/osx/updapp.app"
+              mac: {
+                dir: "osx/",
+                run: "open " + __dirname + "/deploy0.1/updapp/osx/updapp.app",
               },
-              win:{
-                dir: 'win/',
-                run: join(__dirname, "/deploy0.1/updapp/win/updapp.exe")
+              win: {
+                dir: "win/",
+                run: join(__dirname, "/deploy0.1/updapp/win/updapp.exe"),
               },
               linux32: {
-                dir: 'linux32/',
-                run: __dirname + "/deploy0.1/updapp/linux32/updapp"
+                dir: "linux32/",
+                run: __dirname + "/deploy0.1/updapp/linux32/updapp",
               },
               linux64: {
-                dir: 'linux64/',
-                run: __dirname + "/deploy0.1/updapp/linux64/updapp"
-              }
+                dir: "linux64/",
+                run: __dirname + "/deploy0.1/updapp/linux64/updapp",
+              },
             };
-            if(isMac) os = os.mac;
-            if(isWin) os = os.win;
-            if(isLinux) os = os['linux' + (process.arch == 'ia32'?'32':'64')];
+            if (isMac) os = os.mac;
+            if (isWin) os = os.win;
+            if (isLinux)
+              os = os["linux" + (process.arch == "ia32" ? "32" : "64")];
 
-		app.get('/version/0.0.2', function(req, res){
-		  res.end();
-		  done();
-		});
+            app.get("/version/0.0.2", function (req, res) {
+              res.end();
+              done();
+            });
 
-            exec(os.run, function(err, stdo, stder){
-              console.log(arguments)
-              console.log(arguments[2])
+            exec(os.run, function (err, stdo, stder) {
+              console.log(arguments);
+              console.log(arguments[2]);
               console.log("opened and updated");
             });
-          })
-        })
-      })
-    })
-  })
+          });
+        });
+      });
+    });
+  });
 });
 
-
-function customizePackageJson(obj, path){
+function customizePackageJson(obj, path) {
   var json = require(path);
-  for(var i in obj){
+  for (var i in obj) {
     json[i] = obj[i];
   }
   writeFileSync(path, JSON.stringify(json, null, 4));

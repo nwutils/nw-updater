@@ -1,7 +1,7 @@
 Hi, I cant support this package since not working with NW anymore. So I would love to give the project out to somebody who cares. Contact me on twitter @edjafarov.
 
-node-webkit-updater [![NPM version][npm-image]][npm-url]
-=======
+# node-webkit-updater [![NPM version][npm-image]][npm-url]
+
 This is [node-webkit](https://github.com/rogerwang/node-webkit)-updater.
 
 ```
@@ -25,7 +25,6 @@ Covered by tests and works for [linux](http://screencast.com/t/Je2ptbHhP), [wind
 
 - [Basic](examples/basic.js)
 
-
 ## API
 
 <a name="new_updater"></a>
@@ -36,8 +35,8 @@ Note that compressed apps are assumed to be downloaded in the format produced by
 
 **Params**
 
-- manifest `object` - See the [manifest schema](#manifest-schema) below.  
-- options `object` - Optional  
+- manifest `object` - See the [manifest schema](#manifest-schema) below.
+- options `object` - Optional
 
 <a name="updater#checkNewVersion"></a>
 ####updater.checkNewVersion(cb)
@@ -48,7 +47,7 @@ This function assumes you use [Semantic Versioning](http://semver.org) and enfor
 
 **Params**
 
-- cb `function` - Callback arguments: error, newerVersionExists (`Boolean`), remoteManifest  
+- cb `function` - Callback arguments: error, newerVersionExists (`Boolean`), remoteManifest
 
 <a name="updater#download"></a>
 ####updater.download(cb, newManifest)
@@ -56,8 +55,8 @@ Downloads the new app to a template folder
 
 **Params**
 
-- cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
-- newManifest `Object` - see [manifest schema](#manifest-schema) below  
+- cb `function` - called when download completes. Callback arguments: error, downloaded filepath
+- newManifest `Object` - see [manifest schema](#manifest-schema) below
 
 **Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest and 'content-length' property with the size of package.  
 <a name="updater#getAppPath"></a>
@@ -77,9 +76,9 @@ For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used 
 
 **Params**
 
-- filename `string`  
-- cb `function` - Callback arguments: error, unpacked directory  
-- manifest `object`  
+- filename `string`
+- cb `function` - Callback arguments: error, unpacked directory
+- manifest `object`
 
 <a name="updater#runInstaller"></a>
 ####updater.runInstaller(appPath, args, options)
@@ -87,9 +86,9 @@ Runs installer
 
 **Params**
 
-- appPath `string`  
-- args `array` - Arguments which will be passed when running the new app  
-- options `object` - Optional  
+- appPath `string`
+- args `array` - Arguments which will be passed when running the new app
+- options `object` - Optional
 
 **Returns**: `function`  
 <a name="updater#install"></a>
@@ -98,8 +97,8 @@ Installs the app (copies current application to `copyPath`)
 
 **Params**
 
-- copyPath `string`  
-- cb `function` - Callback arguments: error  
+- copyPath `string`
+- cb `function` - Callback arguments: error
 
 <a name="updater#run"></a>
 ####updater.run(execPath, args, options)
@@ -107,12 +106,11 @@ Runs the app from original app executable path.
 
 **Params**
 
-- execPath `string`  
-- args `array` - Arguments passed to the app being ran.  
+- execPath `string`
+- args `array` - Arguments passed to the app being ran.
 - options `object` - Optional. See `spawn` from nodejs docs.
 
-Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).  
-
+Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).
 
 ---
 
@@ -122,21 +120,21 @@ An example manifest:
 
 ```json
 {
-    "name": "updapp",
-    "version": "0.0.2",
-    "author": "Eldar Djafarov <djkojb@gmail.com>",
-    "manifestUrl": "http://localhost:3000/package.json",
-    "packages": {
-        "mac": {
-           "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
-        },
-        "win": {
-           "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
-        },
-        "linux32": {
-           "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
-        }
+  "name": "updapp",
+  "version": "0.0.2",
+  "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "manifestUrl": "http://localhost:3000/package.json",
+  "packages": {
+    "mac": {
+      "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
+    },
+    "win": {
+      "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
+    },
+    "linux32": {
+      "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
     }
+  }
 }
 ```
 
@@ -147,18 +145,23 @@ The manifest could be a `package.json` of project, but doesn't have to be.
 The name of your app. From time, it is assumed your Mac app is called `<manifest.name>.app`, your Windows executable is `<manifest.name>.exe`, etc.
 
 ### manifest.version
+
 [semver](http://semver.org) version of your app.
 
 ### manifest.manifestUrl
+
 The URL where your latest manifest is hosted; where node-webkit-updater looks to check if there is a newer version of your app available.
 
 ### manifest.packages
+
 An "object" containing an object for each OS your app (at least this version of your app) supports; `mac`, `win`, `linux32`, `linux64`.
 
 ### manifest.packages.{mac, win, linux32, linux64}.url
+
 Each package has to contain a `url` property pointing to where the app (for the version & OS in question) can be downloaded.
 
 ### manifest.packages.{mac, win, linux32, linux64}.execPath (Optional)
+
 It's assumed your app is stored at the root of your package, use this to override that and specify a path (relative to the root of your package).
 
 This can also be used to override `manifest.name`; e.g. if your `manifest.name` is `helloWorld` (therefore `helloWorld.app` on Mac) but your Windows executable is named `nw.exe`. Then you'd set `execPath` to `nw.exe`
@@ -168,10 +171,12 @@ This can also be used to override `manifest.name`; e.g. if your `manifest.name` 
 ## Troubleshooting
 
 ### Mac
+
 If you get an error on Mac about too many files being open, run `ulimit -n 10240`
 
 ### Windows
-On Windows, there is no "unzip" command built in by default. As a result, this project uses a third party "unzip.exe" in order to extract the downloaded update. On the NWJS site, in the "How to package and distribute your apps" file, one of the recommended methods of distribution is using EnigmaVirtualBox to package the app, nw.exe, and required DLLs into a single EXE file. This method works great for distribution, but unfortunately breaks node-webkit-updater, because it wraps the required unzip.exe file inside of the created EnigmaVirtualBox EXE. As a result, *it is not possible to use EnigmaVirtualBox to distribute your app if you plan on using node-webkit-updater*. Try using InnoSetup instead.
+
+On Windows, there is no "unzip" command built in by default. As a result, this project uses a third party "unzip.exe" in order to extract the downloaded update. On the NWJS site, in the "How to package and distribute your apps" file, one of the recommended methods of distribution is using EnigmaVirtualBox to package the app, nw.exe, and required DLLs into a single EXE file. This method works great for distribution, but unfortunately breaks node-webkit-updater, because it wraps the required unzip.exe file inside of the created EnigmaVirtualBox EXE. As a result, _it is not possible to use EnigmaVirtualBox to distribute your app if you plan on using node-webkit-updater_. Try using InnoSetup instead.
 
 ## Contributing
 
