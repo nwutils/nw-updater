@@ -74,14 +74,6 @@ module.exports = function(grunt){
       },
       src: [ src + '/**/*'] // Your node-wekit app
     },
-    mochaTest:{
-      test:{
-        options: {
-          reporter: 'spec'
-        },
-        src: ['test/**/*.spec.js']
-      }
-    },
     copy:{
       win:{
         src: 'tools/*',
@@ -100,7 +92,6 @@ module.exports = function(grunt){
     }
 });
   grunt.loadNpmTasks('grunt-node-webkit-builder');
-  grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -156,6 +147,4 @@ module.exports = function(grunt){
 
   grunt.registerTask('buildapp', buildFlow);
   grunt.registerTask('docs', 'jsdoc2md');
-
-  grunt.registerTask('default', 'mochaTest');
 };

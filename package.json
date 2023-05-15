@@ -36,7 +36,7 @@
   "homepage": "https://github.com/tharatau/nw-updater",
   "scripts": {
     "deps": "npm i && cd app && npm i && cd ..",
-    "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
+    "test": "node --test test"
   },
   "dependencies": {
     "request": "~2.64.0",
@@ -53,8 +53,6 @@
     "grunt-contrib-compress": "^0.9.1",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-jsdoc-to-markdown": "~0.4.1",
-    "grunt-mocha-test": "^0.10.2",
-    "grunt-node-webkit-builder": "~0.2.2",
-    "mocha": "^1.19.0"
+    "grunt-node-webkit-builder": "~0.2.2"
   }
 }
