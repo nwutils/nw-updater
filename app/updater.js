@@ -4,9 +4,9 @@
   var fs = require('fs');
   var exec = require('child_process').exec;
   var spawn = require('child_process').spawn;
-  var ncp = require('ncp');
   var del = require('del');
   var semver = require('semver');
+  var {cp} = require('node:fs/promises');
 
   var platform = process.platform;
   platform = /^win/.test(platform)? 'win' : /^darwin/.test(platform)? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
@@ -365,7 +365,8 @@
      * @private
      */
     mac: function(to, cb){
-      ncp(this.getAppPath(), to, cb);
+      cp(this.getAppPath(), to)
+      .catch(cb);
     },
     /**
      * @private
@@ -387,7 +388,8 @@
           }
         }
         else {
-          ncp(self.getAppPath(), to, appCopied);
+          cp(self.getAppPath(), to)
+          .catch(appCopied);
         }
       }
       function deleteApp(cb){
@@ -405,7 +407,8 @@
      * @private
      */
     linux32: function(to, cb){
-      ncp(this.getAppPath(), to, cb);
+      cp(this.getAppPath(), to)
+      .catch(cb);
     }
   };
   pInstall.linux64 = pInstall.linux32;

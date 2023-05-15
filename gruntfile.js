@@ -1,6 +1,6 @@
 var exec = require('child_process').exec;
-var ncp = require('ncp');
 var fs = require('fs');
+var { cp } = require('node:fs/promises');
 
 var isWin = /^win/.test(process.platform);
 var isMac = /^darwin/.test(process.platform);
@@ -110,17 +110,18 @@ module.exports = function(grunt){
     var done = this.async();
     
     fs.mkdirSync(dest + '/updapp/osx/updapp');
-    ncp(dest + '/updapp/osx/updapp.app', dest + '/updapp/osx/updapp/updapp.app', function(err){
-      exec('zip -r updapp.zip updapp',{cwd: dest + '/updapp/osx'},function(error, stdout, stderr){
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-        if (error !== null) {
-          console.log('exec error: ' + error);
-        }
-        done()
-      })
-     
-    })
+    cp(dest + '/updapp/osx/updapp.app', dest + '/updapp/osx/updapp/updapp.app')
+      .then(() => done())
+      .catch((_) => {
+        exec('zip -r updapp.zip updapp',{cwd: dest + '/updapp/osx'},function(error, stdout, stderr){
+          console.log('stdout: ' + stdout);
+          console.log('stderr: ' + stderr);
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          }
+          done()
+        })
+      });
   });
   
   grunt.registerTask('packageMac', function(){

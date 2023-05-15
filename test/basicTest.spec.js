@@ -1,4 +1,4 @@
-var ncp = require('ncp');
+var { cp } = require('node:fs/promises');
 var expect = require('chai').expect;
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
@@ -12,12 +12,10 @@ var getPort = require('get-port');
 var port = null;
 var app;
 
-ncp.limit = 100;
-
 describe('build app: copy current to temp', function buildApp(){
   this.timeout(2000000);
   before(function(done){
-    ncp('./app', './test/app', function(err){
+    cp('./app', './test/app').catch(function(err){
         if(err) return done(err);
         getPort(function(err, availablePort){
             if(err) return done(err);
