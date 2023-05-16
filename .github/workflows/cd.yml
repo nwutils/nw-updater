@@ -1,0 +1,21 @@
+name: cd
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - uses: actions/setup-node@v3.6.0
+        with:
+          node-version: "18"
+
+      - run: npm ci
+      - run: npm run deps
+      - run: npm run test
+      - uses: JS-DevTools/npm-publish@v2.1.0
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
