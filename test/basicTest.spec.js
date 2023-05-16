@@ -8,9 +8,17 @@ var isMac = /^darwin/.test(process.platform);
 var isLinux = /^linux/.test(process.platform);
 var path = require('path');
 var fs = require('fs');
-var getPort = require('get-port');
+var getPort = undefined;
 var port = null;
 var app;
+
+(async function () {
+  try {
+    getPort = (await import('get-port')).default;
+  } catch (e) {
+    console.log(e);
+  }
+})();
 
 ncp.limit = 100;
 
