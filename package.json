@@ -7,7 +7,11 @@
     "update"
   ],
   "version": "0.3.3",
-  "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "author": {
+    "name": "Eldar Djafarov",
+    "email": "djkojb@gmail.com",
+    "url": "https://github.com/edjafarov"
+  },
   "maintainers": [
     {
       "name": "Ayushman Chhabra",
