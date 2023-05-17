@@ -396,7 +396,7 @@
         }
       }
       function deleteApp(cb){
-        del(to, {force: true}, cb);
+        del(to + '/**/*', {force: true}, cb);
       }
       function appCopied(err){
         if(err){
