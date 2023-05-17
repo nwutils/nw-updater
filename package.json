@@ -1,6 +1,6 @@
 {
   "name": "node-webkit-updater",
-  "description": "node-webkit autoupdate library",
+  "description": "Update NW.js applications",
   "keywords": [
     "node-webkit",
     "update",
@@ -8,19 +8,28 @@
   ],
   "version": "0.3.3",
   "author": "Eldar Djafarov <djkojb@gmail.com>",
+  "maintainers": [
+    {
+      "name": "Ayushman Chhabra",
+      "email": "info@ayushmanchhabra.com",
+      "url": "https://ayushmanchhabra.com/"
+    }
+  ],
   "contributors": [
-    "Eldar Djafarov <djkojb@gmail.com>",
-    "Adam Lynch <contact@adamlynch.com>"
+    {
+      "name": "The nw-updater Authors",
+      "url": "https://github.com/tharatau/nw-updater/graphs/contributors"
+    }
   ],
   "main": "./app/updater.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/edjafarov/node-webkit-updater.git"
+    "url": "https://github.com/tharatau/nw-updater.git"
   },
   "bugs": {
-    "url": "https://github.com/edjafarov/node-webkit-updater/issues"
+    "url": "https://github.com/tharatau/nw-updater/issues"
   },
-  "homepage": "https://github.com/edjafarov/node-webkit-updater",
+  "homepage": "https://github.com/tharatau/nw-updater",
   "scripts": {
     "deps": "npm i && cd app && npm i && cd ..",
     "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
