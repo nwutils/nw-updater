@@ -66,11 +66,11 @@ module.exports = function(grunt){
     },
     nwjs: {
       options: {
-        buildDir: dest, // Where the build version of my node-webkit app is saved
-        platforms: platforms,
-        version: '0.76.0',
+        srcDir: src,
+        version: '0.76.1',
+        outDir: dest, // Where the build version of my node-webkit app is saved
+        glob: false,
       },
-      src: [ src + '/**/*'] // Your node-wekit app
     },
     mochaTest:{
       test:{
