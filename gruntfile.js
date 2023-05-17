@@ -64,13 +64,11 @@ module.exports = function(grunt){
         dest: 'updapp/'
       }
     },
-    nodewebkit: {
+    nwjs: {
       options: {
         buildDir: dest, // Where the build version of my node-webkit app is saved
         platforms: platforms,
-        version: '0.9.2',
-        toolbar: false,
-        frame: false
+        version: '0.76.0',
       },
       src: [ src + '/**/*'] // Your node-wekit app
     },
@@ -150,7 +148,7 @@ module.exports = function(grunt){
     }
   });
   
-  var buildFlow = ['nodewebkit'];
+  var buildFlow = ['nwjs'];
   if(isWin) buildFlow.push('copy:win');
 
   grunt.registerTask('buildapp', buildFlow);
