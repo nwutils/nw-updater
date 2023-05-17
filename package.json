@@ -2,9 +2,9 @@
   "name": "node-webkit-updater",
   "description": "Update NW.js applications",
   "keywords": [
+    "NW.js",
     "node-webkit",
-    "update",
-    "autoupdate"
+    "update"
   ],
   "version": "0.3.3",
   "author": "Eldar Djafarov <djkojb@gmail.com>",
