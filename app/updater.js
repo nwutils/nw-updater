@@ -91,7 +91,7 @@
           pkg['content-length'] = response.headers['content-length'];
         }
     });
-    var filename = path.basename(url),
+    var filename = decodeURI(path.basename(url)),
         destinationPath = path.join(this.options.temporaryDirectory, filename);
     // download the package to template folder
     fs.unlink(path.join(this.options.temporaryDirectory, filename), function(){
