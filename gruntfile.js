@@ -64,15 +64,13 @@ module.exports = function(grunt){
         dest: 'updapp/'
       }
     },
-    nodewebkit: {
+    nwjs: {
       options: {
-        buildDir: dest, // Where the build version of my node-webkit app is saved
-        platforms: platforms,
-        version: '0.9.2',
-        toolbar: false,
-        frame: false
+        srcDir: src,
+        version: '0.76.1',
+        outDir: dest, // Where the build version of my node-webkit app is saved
+        glob: false,
       },
-      src: [ src + '/**/*'] // Your node-wekit app
     },
     mochaTest:{
       test:{
@@ -99,7 +97,7 @@ module.exports = function(grunt){
       }
     }
 });
-  grunt.loadNpmTasks('grunt-node-webkit-builder');
+  grunt.loadNpmTasks('grunt-nw-builder');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -150,7 +148,7 @@ module.exports = function(grunt){
     }
   });
   
-  var buildFlow = ['nodewebkit'];
+  var buildFlow = ['nwjs'];
   if(isWin) buildFlow.push('copy:win');
 
   grunt.registerTask('buildapp', buildFlow);
