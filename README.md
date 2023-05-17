@@ -1,11 +1,10 @@
-Hi, I cant support this package since not working with NW anymore. So I would love to give the project out to somebody who cares. Contact me on twitter @edjafarov.
+# node-webkit-updater
 
-node-webkit-updater [![NPM version][npm-image]][npm-url]
-=======
-This is [node-webkit](https://github.com/rogerwang/node-webkit)-updater.
+[![npm](https://img.shields.io/npm/v/node-webkit-updater.svg?style=flat)](https://www.npmjs.com/package/node-webkit-updater)
+[![Join the chat at https://gitter.im/nwjs/nwjs](https://badges.gitter.im/nwjs/nw-builder.svg)](https://gitter.im/nwjs/nw-builder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ```
-npm install node-webkit-updater
+npm i -D node-webkit-updater
 ```
 
 It gives you low-level API to:
@@ -176,6 +175,3 @@ On Windows, there is no "unzip" command built in by default. As a result, this p
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-[npm-url]: https://npmjs.org/package/node-webkit-updater
-[npm-image]: https://badge.fury.io/js/node-webkit-updater.png
