@@ -22,40 +22,41 @@
   "contributors": [
     {
       "name": "The nw-updater Authors",
-      "url": "https://github.com/tharatau/nw-updater/graphs/contributors"
+      "url": "https://github.com/nwutils/nw-updater/graphs/contributors"
     }
   ],
   "main": "./app/updater.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tharatau/nw-updater.git"
+    "url": "https://github.com/nwutils/nw-updater.git"
   },
   "bugs": {
-    "url": "https://github.com/tharatau/nw-updater/issues"
+    "url": "https://github.com/nwutils/nw-updater/issues"
   },
-  "homepage": "https://github.com/tharatau/nw-updater",
+  "homepage": "https://github.com/nwutils/nw-updater",
   "scripts": {
     "deps": "npm i && cd app && npm i && cd ..",
     "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
   },
   "dependencies": {
-    "ncp": "^2.0.0",
-    "request": "^2.64.0",
-    "del": "^7.0.0",
-    "semver": "^7.5.4"
+    "ncp": "2.0.0",
+    "request": "~2.64.0",
+    "tar.gz": "^0.1.1",
+    "del": "~0.1.2",
+    "semver": "^5.0.3"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
+    "chai": "^1.9.1",
     "express": "^4.3.1",
-    "get-port": "^7.0.0",
-    "grunt": "^1.6.1",
-    "grunt-cli": "^1.4.3",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-compress": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-jsdoc-to-markdown": "^6.0.0",
-    "grunt-mocha-test": "^0.13.3",
-    "grunt-nw-builder": "^4.0.0-beta.0",
-    "mocha": "^10.2.0"
+    "get-port": "^0.1.0",
+    "grunt": "~0.4.5",
+    "grunt-cli": "~0.1.13",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-compress": "^0.9.1",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-jsdoc-to-markdown": "~0.4.1",
+    "grunt-mocha-test": "^0.10.2",
+    "grunt-node-webkit-builder": "~0.2.2",
+    "mocha": "^1.19.0"
   }
 }
