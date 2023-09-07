@@ -39,23 +39,23 @@
     "test": "node node_modules/grunt-cli/bin/grunt clean mochaTest"
   },
   "dependencies": {
-    "ncp": "^2.0.0",
-    "request": "^2.64.0",
-    "del": "^7.0.0",
-    "semver": "^7.5.4"
+    "ncp": "2.0.0",
+    "request": "2.88.2",
+    "del": "7.1.0",
+    "semver": "7.5.4"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
-    "express": "^4.3.1",
-    "get-port": "^7.0.0",
-    "grunt": "^1.6.1",
-    "grunt-cli": "^1.4.3",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-compress": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-jsdoc-to-markdown": "^6.0.0",
-    "grunt-mocha-test": "^0.13.3",
-    "grunt-nw-builder": "^4.0.0-beta.2",
-    "mocha": "^10.2.0"
+    "chai": "4.3.8",
+    "express": "4.18.2",
+    "get-port": "7.0.0",
+    "grunt": "1.6.1",
+    "grunt-cli": "1.4.3",
+    "grunt-contrib-clean": "2.0.1",
+    "grunt-contrib-compress": "2.0.0",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-jsdoc-to-markdown": "6.0.0",
+    "grunt-mocha-test": "0.13.3",
+    "grunt-nw-builder": "4.0.0",
+    "mocha": "10.2.0"
   }
 }
