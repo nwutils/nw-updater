@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "app"
+  - package-ecosystem: "npm"
     directory: "./app"
     schedule:
       interval: "weekly"
