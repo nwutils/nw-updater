@@ -41,11 +41,11 @@
   "dependencies": {
     "ncp": "^2.0.0",
     "request": "^2.64.0",
-    "del": "^7.0.0",
+    "del": "^7.1.0",
     "semver": "^7.5.4"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
+    "chai": "^4.3.8",
     "express": "^4.3.1",
     "get-port": "^7.0.0",
     "grunt": "^1.6.1",
@@ -55,7 +55,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-jsdoc-to-markdown": "^6.0.0",
     "grunt-mocha-test": "^0.13.3",
-    "grunt-nw-builder": "^4.0.0-beta.2",
+    "grunt-nw-builder": "^4.0.0",
     "mocha": "^10.2.0"
   }
 }
