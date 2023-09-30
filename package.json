@@ -45,7 +45,7 @@
     "semver": "^7.5.4"
   },
   "devDependencies": {
-    "chai": "^4.3.8",
+    "chai": "^4.3.10",
     "express": "^4.3.1",
     "get-port": "^7.0.0",
     "grunt": "^1.6.1",
