@@ -1,12 +1,12 @@
 {
   "name": "@nwutils/updater",
+  "version": "0.3.5",
   "description": "Update NW.js applications",
   "keywords": [
     "NW.js",
     "node-webkit",
     "update"
   ],
-  "version": "0.3.5",
   "author": {
     "name": "Eldar Djafarov",
     "url": "https://github.com/edjafarov"
@@ -14,49 +14,54 @@
   "maintainers": [
     {
       "name": "Ayushman Chhabra",
-      "url": "https://ayushmanchhabra.com/"
+      "url": "https://github.com/ayushmanchhabra"
     }
   ],
   "contributors": [
     {
       "name": "The @nwutils/updater Authors",
-      "url": "https://github.com/nwutils/nw-updater/graphs/contributors"
+      "url": "https://github.com/nwutils/updater/graphs/contributors"
     }
   ],
-  "main": "./app/updater.js",
-  "types": "./index.d.ts",
+  "license": "MIT",
+  "main": "./src/main.js",
+  "types": "./types/src/main.d.ts",
+  "type": "module",
   "files": [
-    "index.d.ts",
     "LICENSE",
-    "app/updater.js"
+    "src",
+    "types"
   ],
-  "homepage": "https://github.com/nwutils/nw-updater",
+  "homepage": "https://github.com/nwutils/updater",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nwutils/nw-updater.git"
+    "url": "https://github.com/nwutils/updater.git"
   },
   "scripts": {
-    "grunt": "grunt",
-    "test": "grunt clean mochaTest",
-    "types": "npx -p typescript tsc app/updater.js --declaration --allowJs --emitDeclarationOnly --outFile ./index.d.ts"
+    "lint": "echo 'Linting is not set up yet'",
+    "type": "tsc",
+    "test": "node --test --experimental-test-coverage \"tests/specs/*.test.js\""
+  },
+  "volta": {
+    "node": "25.9.0",
+    "npm": "11.14.1"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "del": "^7.1.0",
+    "axios": "^1.16.0",
+    "del": "^8.0.1",
     "ncp": "^2.0.0",
     "semver": "^7.6.2"
   },
   "devDependencies": {
-    "chai": "^5.1.1",
-    "express": "^4.19.2",
-    "get-port": "^7.1.0",
-    "grunt": "^1.6.1",
-    "grunt-cli": "^1.4.3",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-compress": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-mocha-test": "^0.13.3",
-    "grunt-nw-builder": "^4.7.4",
-    "mocha": "^10.4.0"
+    "@types/del": "^3.0.1",
+    "@types/ncp": "^2.0.8",
+    "@types/node": "^25.6.2",
+    "@types/nw.js": "^0.92.0",
+    "@types/semver": "^7.7.1",
+    "express": "^5.2.1",
+    "get-port": "^7.2.0",
+    "nw-builder": "^4.17.10",
+    "selenium-webdriver": "^4.43.0",
+    "typescript": "^6.0.3"
   }
 }

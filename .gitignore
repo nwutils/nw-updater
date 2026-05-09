@@ -1,11 +1,8 @@
 node_modules
 
-# Test stuff
 cache
-test/app
-test/deploy0.1
-test/deploy0.2
 
-# JetBrains
-.idea
-*.iml
+*.zip
+
+tests/fixtures/releases/app-0.0.1-linux-x64
+tests/fixtures/app-current/updater.js

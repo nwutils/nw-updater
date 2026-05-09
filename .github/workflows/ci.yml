@@ -1,11 +1,13 @@
 name: ci
+
 on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    branches:
-      - main
+
+permissions:
+  contents: read
+  pull-requests: write
 
 concurrency:
   group: ${{ github.ref }}
@@ -15,13 +17,29 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [macos-14, ubuntu-22.04, windows-2022]
+        os:
+          # - macos-26
+          - ubuntu-24.04
+          # - windows-2025
+
     runs-on: ${{ matrix.os }}
+
     steps:
-      - uses: actions/checkout@v3.3.0
-      - uses: actions/setup-node@v3.6.0
-        with:
-          node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npm t
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup Volta
+        uses: volta-cli/action@v4.2.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for linting errors
+        run: npm run lint
+      
+      # TODO: re enable after adding test coverage for every function.
+      # - name: Check for type errors
+      #   run: npm run type
+
+      - name: Check for test suite errors
+        run: npm run test

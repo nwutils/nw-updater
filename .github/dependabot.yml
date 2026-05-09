@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "."
     schedule:
-      interval: "daily"
+      interval: "monthly"
     groups:
       npm:
         patterns:
@@ -11,7 +11,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: ".github/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
     groups:
       gha:
         patterns:

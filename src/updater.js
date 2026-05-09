@@ -4,10 +4,9 @@ import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 
-import del from 'del';
+import { deleteSync } from 'del';
 import ncp from 'ncp';
 import semver from 'semver';
-
 
 let platform = process.platform;
 platform = /^win/.test(platform) ? 'win' : /^darwin/.test(platform) ? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
@@ -39,37 +38,55 @@ platform = /^win/.test(platform) ? 'win' : /^darwin/.test(platform) ? 'mac' : 'l
  * @property {string} temporaryDirectory - The path to a directory to download the updates to and unpack them in. Defaults to [`os.tmpdir()`](https://nodejs.org/api/os.html#os_os_tmpdir)
  */
 
-class updater {
+class Updater {
+
+  #manifest = {
+    name: '',
+    version: '',
+    manifestUrl: '',
+    packages: {}
+  };
 
   /**
-   * Creates new instance of updater.
+   * Creates new instance of Updater.
    * 
    * @constructor
-   * @param {Manifest} manifest - See the [manifest schema](https://github.com/nwutils/nw-updater?tab=readme-ov-file#manifest-schema).
+   * @param {Manifest} manifest - See the [manifest schema](https://github.com/nwutils/updater?tab=readme-ov-file#manifest-schema).
    * @param {UpdaterOptions} options - Optional
    */
   constructor(manifest, options) {
-    this.manifest = manifest;
+    this.#manifest = manifest;
     this.options = {
       temporaryDirectory: options && options.temporaryDirectory || os.tmpdir()
     };
   }
 
   /**
-   * Check the latest available version of the application by requesting the manifest specified in `manifestUrl`.
-   * 
-   * @async
-   * @method
-   * @returns {Promise.<boolean>}
-   */
-  async checkNewVersion() {
-    const response = await axios({
-      method: 'get',
-      url: this.manifest.manifestUrl,
-      responseType: 'json'
-    });
+  * Check the latest available version of the application by requesting the manifest specified in `manifestUrl`.
+  *
+  * @async
+  * @method
+  * @param {(error: Error|null, newerVersionExists: boolean, remoteManifest: object|null) => void} cb
+  * @returns {void}
+  */
+  checkNewVersion(cb) {
+    const currentVersion = this.#manifest.version;
 
-    return semver.gt(response.data.version, this.manifest.version);
+    fetch(this.#manifest.manifestUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const latestVersion = data.version;
+
+        cb(null, semver.gt(latestVersion, currentVersion), data);
+      })
+      .catch((error) => {
+        cb(error, false, null);
+      });
   }
 
   /**
@@ -77,11 +94,11 @@ class updater {
    * 
    * @async
    * @method
-   * @param {Manifest} newManifest - see [manifest schema](https://github.com/nwutils/nw-updater?tab=readme-ov-file#manifest-schema) below
+   * @param {Manifest} newManifest - see [manifest schema](https://github.com/nwutils/updater?tab=readme-ov-file#manifest-schema) below
    * @returns {Promise.<void>}
    */
   async download(newManifest) {
-    const manifest = newManifest ?? this.manifest;
+    const manifest = newManifest ?? this.#manifest;
     const url = manifest.packages[platform].url;
     const filename = decodeURI(path.basename(url))
     const destinationPath = path.resolve(this.options.temporaryDirectory, filename);
@@ -130,7 +147,7 @@ class updater {
 
   /**
      * Will unpack the `filename` in temporary folder.
-     * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
+     * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/nwutils/updater/issues/68)).
      *
      * @param {string} filename
      * @param {function} cb - Callback arguments: error, unpacked directory
@@ -281,14 +298,7 @@ var pUnpack = {
 
     fs.stat(destinationDirectory, function (err, _) {
       if (!err) {
-        del(destinationDirectory, { force: true }, function (err) {
-          if (err) {
-            cb(err);
-          }
-          else {
-            unzip();
-          }
-        });
+        deleteSync(destinationDirectory, { force: true });
       }
       else {
         unzip();
@@ -413,4 +423,4 @@ var pInstall = {
 };
 pInstall.linux64 = pInstall.linux32;
 
-export default updater;
+export default Updater;
