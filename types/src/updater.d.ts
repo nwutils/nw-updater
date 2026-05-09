@@ -83,7 +83,6 @@ declare class Updater {
      * @param {UpdaterOptions} options - Optional
      */
     constructor(manifest: Manifest, options: UpdaterOptions);
-    manifest: Manifest;
     options: {
         temporaryDirectory: string;
     };
@@ -96,4 +95,58 @@ declare class Updater {
     * @returns {void}
     */
     checkNewVersion(cb: (error: Error | null, newerVersionExists: boolean, remoteManifest: object | null) => void): void;
+    /**
+     * Downloads the new app to a temorary folder.
+     *
+     * @async
+     * @method
+     * @param {Manifest} newManifest - see [manifest schema](https://github.com/nwutils/updater?tab=readme-ov-file#manifest-schema) below
+     * @returns {Promise.<void>}
+     */
+    download(newManifest: Manifest): Promise<void>;
+    /**
+     * Returns executed application path.
+     *
+     * @returns {string}
+     */
+    getAppPath(): string;
+    /**
+     * Returns current application executable.
+     *
+     * @returns {string}
+     */
+    getAppExec(): string;
+    /**
+       * Will unpack the `filename` in temporary folder.
+       * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/nwutils/updater/issues/68)).
+       *
+       * @param {string} filename
+       * @param {function} cb - Callback arguments: error, unpacked directory
+       * @param {object} manifest
+       */
+    unpack(filename: string, cb: Function, manifest: object): void;
+    /**
+       * Runs installer
+       * @param {string} appPath
+       * @param {array} args - Arguments which will be passed when running the new app
+       * @param {object} options - Optional
+       * @returns {function}
+       */
+    runInstaller(appPath: string, args: array, options: object, ...args: any[]): Function;
+    /**
+       * Installs the app (copies current application to `copyPath`)
+       * @param {string} copyPath
+       * @param {function} cb - Callback arguments: error
+       */
+    install(copyPath: string, cb: Function, ...args: any[]): void;
+    /**
+       * Runs the app from original app executable path.
+       * @param {string} execPath
+       * @param {array} args - Arguments passed to the app being ran.
+       * @param {object} options - Optional. See `spawn` from nodejs docs.
+       *
+       * Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit Shell](https://github.com/rogerwang/node-webkit/wiki/Shell)).
+       */
+    run(execPath: string, args: array, options: object, ...args: any[]): void;
+    #private;
 }
