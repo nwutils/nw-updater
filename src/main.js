@@ -1,4 +1,7 @@
+const fs = await import('node:fs');
 const os = await import('node:os');
+const path = await import('node:path');
+const stream = await import('node:stream');
 
 function semverGt(v1, v2) {
   const [major1, minor1, patch1] = v1.replace(/^v/i, '').split('.').map(Number);
@@ -81,6 +84,52 @@ class Updater {
       })
       .catch((error) => {
         cb(error, false, null);
+      });
+  }
+
+  /**
+   * Downloads the new app to a temporary folder.
+   *
+   * @async
+   * @method
+   * @param {(error: Error|null, filepath: string|null) => void} cb
+   * @param {Manifest} newManifest
+   * @returns {void}
+   */
+  download(cb, newManifest) {
+    const manifest = newManifest ?? this.manifest;
+    const url = manifest.packages[platform].url;
+
+    const filename = decodeURI(path.basename(url));
+
+    const destinationPath = path.resolve(
+      this.options.temporaryDirectory,
+      filename
+    );
+
+    const writeStream = fs.createWriteStream(destinationPath);
+
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Failed to download update: ${response.status} ${response.statusText}`
+          );
+        }
+
+        if (!response.body) {
+          throw new Error('Response body is not readable');
+        }
+
+        // Web ReadableStream -> Node.js Readable
+        const readable = stream.Readable.fromWeb(response.body);
+        return stream.promises.pipeline(readable, writeStream);
+      })
+      .then(() => {
+        cb(null, destinationPath);
+      })
+      .catch((err) => {
+        cb(err, null);
       });
   }
 }

@@ -1,9 +1,8 @@
 import Updater from "./updater.js";
-const manifest = nw.require("./package.json");
 
 let updater;
 document.addEventListener("DOMContentLoaded", () => {
-    updater = new Updater(manifest);
+    updater = new Updater(nw.App.manifest);
     document.getElementById("check-for-updates-button").addEventListener("click", handleCheckForUpdates);
 });
 
