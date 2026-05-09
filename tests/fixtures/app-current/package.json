@@ -1,6 +1,7 @@
 {
   "name": "demo",
   "version": "0.0.1",
+  "main": "index.html",
   "author": "NW.js Utils <contact@nwutils.io>",
   "license": "MIT",
   "manifestUrl": "http://localhost:3000/releases/manifest.json",
