@@ -77,7 +77,7 @@ This function assumes you use [Semantic Versioning](http://semver.org) and enfor
 
 #### updater.download(cb, newManifest)
 
-Downloads the new app to a template folder
+Downloads the new app to a temporary folder.
 
 **Params**
 

@@ -1,4 +1,7 @@
+const fs = await import('node:fs');
 const os = await import('node:os');
+const path = await import('node:path');
+const stream = await import('node:stream');
 
 function semverGt(v1, v2) {
   const [major1, minor1, patch1] = v1.replace(/^v/i, '').split('.').map(Number);
@@ -39,6 +42,32 @@ function semverGt(v1, v2) {
  * @typedef {object} UpdaterOptions
  * @property {string} temporaryDirectory - The path to a directory to download the updates to and unpack them in. Defaults to [`os.tmpdir()`](https://nodejs.org/api/os.html#os_os_tmpdir)
  */
+
+function getHost() {
+  let platform;
+
+  switch (process.platform) {
+    case 'win32':
+      platform = 'windows';
+      break;
+
+    case 'darwin':
+      platform = 'macos';
+      break;
+
+    case 'linux':
+      platform = 'linux';
+      break;
+
+    default:
+      throw new Error(`Unsupported platform: ${process.platform}`);
+  }
+
+  const arch = process.arch;
+
+  return `${platform}-${arch}`;
+
+}
 
 class Updater {
 
@@ -81,6 +110,54 @@ class Updater {
       })
       .catch((error) => {
         cb(error, false, null);
+      });
+  }
+
+  /**
+   * Downloads the new app to a temporary folder.
+   *
+   * @async
+   * @method
+   * @param {(error: Error|null, filepath: string|null) => void} cb
+   * @param {Manifest} newManifest
+   * @returns {void}
+   */
+  download(cb, newManifest) {
+    const manifest = newManifest ?? this.manifest;
+    const url = manifest.packages[getHost()].url;
+
+    const filename = decodeURI(path.basename(url));
+
+    fs.mkdirSync(this.options.temporaryDirectory, { recursive: true });
+    const destinationPath = path.resolve(
+      this.options.temporaryDirectory,
+      filename
+    );
+
+    const writeStream = fs.createWriteStream(destinationPath);
+
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Failed to download update: ${response.status} ${response.statusText}`
+          );
+        }
+
+        if (!response.body) {
+          throw new Error('Response body is not readable');
+        }
+
+        return stream.promises.pipeline(
+          response.body,
+          writeStream
+        );
+      })
+      .then(() => {
+        cb(null, destinationPath);
+      })
+      .catch((err) => {
+        cb(err, null);
       });
   }
 }

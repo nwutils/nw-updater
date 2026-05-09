@@ -43,6 +43,32 @@ function semverGt(v1, v2) {
  * @property {string} temporaryDirectory - The path to a directory to download the updates to and unpack them in. Defaults to [`os.tmpdir()`](https://nodejs.org/api/os.html#os_os_tmpdir)
  */
 
+function getHost() {
+  let platform;
+
+  switch (process.platform) {
+    case 'win32':
+      platform = 'windows';
+      break;
+
+    case 'darwin':
+      platform = 'macos';
+      break;
+
+    case 'linux':
+      platform = 'linux';
+      break;
+
+    default:
+      throw new Error(`Unsupported platform: ${process.platform}`);
+  }
+
+  const arch = process.arch;
+
+  return `${platform}-${arch}`;
+
+}
+
 class Updater {
 
   /**
@@ -98,10 +124,11 @@ class Updater {
    */
   download(cb, newManifest) {
     const manifest = newManifest ?? this.manifest;
-    const url = manifest.packages[platform].url;
+    const url = manifest.packages[getHost()].url;
 
     const filename = decodeURI(path.basename(url));
 
+    fs.mkdirSync(this.options.temporaryDirectory, { recursive: true });
     const destinationPath = path.resolve(
       this.options.temporaryDirectory,
       filename
@@ -121,9 +148,10 @@ class Updater {
           throw new Error('Response body is not readable');
         }
 
-        // Web ReadableStream -> Node.js Readable
-        const readable = stream.Readable.fromWeb(response.body);
-        return stream.promises.pipeline(readable, writeStream);
+        return stream.promises.pipeline(
+          response.body,
+          writeStream
+        );
       })
       .then(() => {
         cb(null, destinationPath);

@@ -96,4 +96,14 @@ declare class Updater {
     * @returns {void}
     */
     checkNewVersion(cb: (error: Error | null, newerVersionExists: boolean, remoteManifest: object | null) => void): void;
+    /**
+     * Downloads the new app to a temporary folder.
+     *
+     * @async
+     * @method
+     * @param {(error: Error|null, filepath: string|null) => void} cb
+     * @param {Manifest} newManifest
+     * @returns {void}
+     */
+    download(cb: (error: Error | null, filepath: string | null) => void, newManifest: Manifest): void;
 }

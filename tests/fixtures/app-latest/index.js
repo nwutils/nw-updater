@@ -1,10 +1,13 @@
+const path = await import("node:path");
+const process = await import("node:process");
+
 import Updater from "./updater.js";
-const manifest = nw.require("./package.json");
 
 let updater;
 document.addEventListener("DOMContentLoaded", () => {
-    updater = new Updater(manifest);
+    updater = new Updater(nw.App.manifest, { temporaryDirectory: path.resolve(nw.App.dataPath, "tmpDir") });
     document.getElementById("check-for-updates-button").addEventListener("click", handleCheckForUpdates);
+    document.getElementById("download-button").addEventListener("click", handleDownload);
 });
 
 function handleCheckForUpdates() {
@@ -17,8 +20,23 @@ function handleCheckForUpdates() {
         }
         if (newerVersionExists) {
             updateStatus.textContent = "A newer version is available.";
+            document.getElementById("update-data").textContent = JSON.stringify(remoteManifest, null, 2);
         } else {
             updateStatus.textContent = "No new version available.";
         }
     });
+}
+
+function handleDownload() {
+    const downloadStatus = document.getElementById("download-status");
+    const newManifest = document.getElementById("update-data").textContent ? JSON.parse(document.getElementById("update-data").textContent) : null;
+    downloadStatus.textContent = "Downloading update...";
+    updater.download((err, filePath) => {
+        if (err) {
+            downloadStatus.textContent = `Error downloading update: ${err.message}`;
+            return;
+        }
+        downloadStatus.textContent = "Update downloaded successfully at " + filePath;
+        document.getElementById("download-data").textContent = filePath;
+    }, newManifest);
 }
