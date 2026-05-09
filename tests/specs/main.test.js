@@ -26,7 +26,6 @@ describe("updater test suite", function () {
     options.addArguments(seleniumArguments);
     const chromeDriverPath = path.resolve("cache", "nwjs-sdk-v0.111.1-linux-x64", "chromedriver");
     const service = new chrome.ServiceBuilder(chromeDriverPath).build();
-    driver = chrome.Driver.createSession(options, service);
 
     before(async function () {
         fs.copyFileSync("./src/main.js", "./tests/fixtures/app-current/updater.js");
@@ -63,6 +62,9 @@ describe("updater test suite", function () {
         if (!fs.existsSync(`${nwOptions.outDir}.zip`)) {
             await nwbuild(nwOptions);
         }
+
+        /* Start Selenium WebDriver session after building NW.js test applications. */
+        driver = chrome.Driver.createSession(options, service);
 
         await new Promise((resolve) => {
             server.listen(3000, resolve);
