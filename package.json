@@ -14,13 +14,13 @@
   "maintainers": [
     {
       "name": "Ayushman Chhabra",
-      "url": "https://ayushmanchhabra.com/"
+      "url": "https://github.com/ayushmanchhabra"
     }
   ],
   "contributors": [
     {
       "name": "The @nwutils/updater Authors",
-      "url": "https://github.com/nwutils/nw-updater/graphs/contributors"
+      "url": "https://github.com/nwutils/updater/graphs/contributors"
     }
   ],
   "main": "./app/updater.js",
@@ -30,10 +30,10 @@
     "LICENSE",
     "app/updater.js"
   ],
-  "homepage": "https://github.com/nwutils/nw-updater",
+  "homepage": "https://github.com/nwutils/updater",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nwutils/nw-updater.git"
+    "url": "https://github.com/nwutils/updater.git"
   },
   "scripts": {
     "grunt": "grunt",
