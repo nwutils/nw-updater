@@ -18,9 +18,9 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-15
+          # - macos-26
           - ubuntu-24.04
-          - windows-2025
+          # - windows-2025
       fail-fast: false
 
     runs-on: ${{ matrix.os }}

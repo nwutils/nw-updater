@@ -25,7 +25,7 @@
   ],
   "license": "MIT",
   "main": "./src/main.js",
-  "types": "types/main.d.ts",
+  "types": "./types/src/main.d.ts",
   "type": "module",
   "files": [
     "LICENSE",
@@ -40,22 +40,26 @@
   "scripts": {
     "lint": "echo 'Linting is not set up yet'",
     "type": "tsc",
-    "test": "node --test --experimental-test-coverage \"test/specs/*.test.js\""
+    "test": "node --test --experimental-test-coverage \"tests/specs/*.test.js\""
   },
   "volta": {
     "node": "25.9.0",
     "npm": "11.14.1"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "del": "^7.1.0",
+    "axios": "^1.16.0",
+    "del": "^8.0.1",
     "ncp": "^2.0.0",
     "semver": "^7.6.2"
   },
   "devDependencies": {
+    "@types/del": "^3.0.1",
+    "@types/ncp": "^2.0.8",
     "@types/node": "^25.6.2",
-    "express": "^4.19.2",
-    "get-port": "^7.1.0",
+    "@types/nw.js": "^0.92.0",
+    "@types/semver": "^7.7.1",
+    "express": "^5.2.1",
+    "get-port": "^7.2.0",
     "nw-builder": "^4.17.10",
     "typescript": "^6.0.3"
   }

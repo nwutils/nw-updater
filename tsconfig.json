@@ -4,7 +4,7 @@
         "checkJs": true,
         "declaration": true,
         "emitDeclarationOnly": true,
-        "rootDir": "src",
+        "rootDir": ".",
         "outDir": "types",
         "strict": true,
         "target": "ES2020",
