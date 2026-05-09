@@ -31,8 +31,11 @@ jobs:
       - name: Setup Volta
         uses: volta-cli/action@v4.2.1
 
-      - name: Install dependencies
+      - name: Install third party dependencies
         run: npm ci
+
+      - name: Check for third party vulnerabilities
+        run: npm audit
 
       - name: Check for linting errors
         run: npm run lint

@@ -15,25 +15,32 @@ Update NW.js applications for Linux, MacOS and Windows platforms.
 
 ```js
 import Updater from "@nwutils/updater";
-const Manifest = nw.require("./package.json");
 
-const updater = new Updater(Manifest);
+const updater = new Updater(nw.App.manifest);
 
-let status = "";
+let updateStatus = "";
+let newManifest = "";
 updater.checkNewVersion((err, newerVersionExists, remoteManifest) => {
    if (err) {
-      status = `Error checking for updates: ${err.message}`;
+      updateStatus = `Error checking for updates: ${err.message}`;
       return;
    }
    if (newerVersionExists) {
-      status = "A newer version is available.";
+      updateStatus = "A newer version is available.";
+      newManifest = remoteManifest;
    } else {
-      status = "No new version available.";
+      updateStatus = "No new version available.";
    }
 });
 
-updater.download();
-
+let downloadStatus = "";
+updater.download((err, filePath) => {
+   if (err) {
+      downloadStatus = `Error downloading update: ${err.message}`;
+      return;
+   }
+   downloadStatus = "Update downloaded successfully at " + filePath;
+}, newManifest);
 ```
 
 It gives you low-level API to:
