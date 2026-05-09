@@ -21,7 +21,8 @@ describe("updater test suite", function () {
     let driver = undefined;
     const options = new chrome.Options();
     const seleniumArguments = [
-        "nwapp=" + path.resolve("tests", "fixtures", "app-current")
+        "nwapp=" + path.resolve("tests", "fixtures", "app-current"),
+        "user-data-dir=" + path.resolve("tests", "fixtures", "nwjs-user-data"),
     ];
     seleniumArguments.push("headless=new");
     options.addArguments(seleniumArguments);
@@ -97,7 +98,7 @@ describe("updater test suite", function () {
         assert.ok(finalText.startsWith("Update downloaded successfully"), "Expected download success message.");
 
         const downloadFilePath = await driver.findElement(selenium.By.id("download-data")).getText();
-        assert.strictEqual(downloadFilePath, path.resolve(os.homedir(), ".config", "demo", "tmpDir", "app-0.0.2-linux-x64.zip"));
+        assert.strictEqual(downloadFilePath, path.resolve(process.cwd(), "tests", "fixtures", "nwjs-user-data", "Default", "tmpDir", "app-0.0.2-linux-x64.zip"));
     });
 
     after(async function () {

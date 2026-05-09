@@ -6,3 +6,4 @@ cache
 
 tests/fixtures/releases/app-0.0.1-linux-x64
 tests/fixtures/app-current/updater.js
+tests/fixtures/nwjs-user-data
