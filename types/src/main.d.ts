@@ -51,29 +51,6 @@ export type UpdaterOptions = {
      */
     temporaryDirectory: string;
 };
-/**
- * @typedef {object} Platform
- * @property {string} url - The URL to the package
- * @property {string} execPath - The path to the executable
- */
-/**
- * @typedef {object} Packages
- * @property {Platform} win - The Windows package
- * @property {Platform} mac - The macOS package
- * @property {Platform} linux32 - The Linux 32-bit package
- * @property {Platform} linux64 - The Linux 64-bit package
- */
-/**
- * @typedef {object} Manifest
- * @property {string} name - The name of the application
- * @property {string} version - The current version of the application
- * @property {string} manifestUrl - The URL to the remote manifest file
- * @property {Packages} packages - The packages for the application
- */
-/**
- * @typedef {object} UpdaterOptions
- * @property {string} temporaryDirectory - The path to a directory to download the updates to and unpack them in. Defaults to [`os.tmpdir()`](https://nodejs.org/api/os.html#os_os_tmpdir)
- */
 declare class Updater {
     /**
      * Creates new instance of Updater.
@@ -96,4 +73,14 @@ declare class Updater {
     * @returns {void}
     */
     checkNewVersion(cb: (error: Error | null, newerVersionExists: boolean, remoteManifest: object | null) => void): void;
+    /**
+     * Downloads the new app to a temporary folder.
+     *
+     * @async
+     * @method
+     * @param {(error: Error|null, filepath: string|null) => void} cb
+     * @param {Manifest} newManifest
+     * @returns {void}
+     */
+    download(cb: (error: Error | null, filepath: string | null) => void, newManifest: Manifest): void;
 }

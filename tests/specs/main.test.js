@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
+import os from "node:os";
 import { after, before, describe, it } from "node:test";
 
 import express from "express";
@@ -20,7 +21,8 @@ describe("updater test suite", function () {
     let driver = undefined;
     const options = new chrome.Options();
     const seleniumArguments = [
-        "nwapp=" + path.resolve("tests", "fixtures", "app-current")
+        "nwapp=" + path.resolve("tests", "fixtures", "app-current"),
+        "user-data-dir=" + path.resolve("tests", "fixtures", "nwjs-user-data"),
     ];
     seleniumArguments.push("headless=new");
     options.addArguments(seleniumArguments);
@@ -79,13 +81,24 @@ describe("updater test suite", function () {
         const button = await driver.findElement(selenium.By.id("check-for-updates-button"));
         await button.click();
 
-        // const postButtonClick = await driver.findElement(statusLocator).getText();
-        // await driver.sleep(1000);
-        // assert.strictEqual(postButtonClick, "Checking for updates...");
-
-        // await driver.sleep(5000);
         const finalText = await driver.findElement(statusLocator).getText();
         assert.strictEqual(finalText, "A newer version is available.");
+    });
+
+    it("runs the application and downloads the update", async function () {
+        const downloadLocator = selenium.By.id("download-status");
+        const initialText = await driver.findElement(downloadLocator).getText();
+        assert.strictEqual(initialText, "");
+
+        const button = await driver.findElement(selenium.By.id("download-button"));
+        await button.click();
+        await driver.sleep(5000);
+
+        const finalText = await driver.findElement(downloadLocator).getText();
+        assert.ok(finalText.startsWith("Update downloaded successfully"), "Expected download success message.");
+
+        const downloadFilePath = await driver.findElement(selenium.By.id("download-data")).getText();
+        assert.strictEqual(downloadFilePath, path.resolve(process.cwd(), "tests", "fixtures", "nwjs-user-data", "Default", "tmpDir", "app-0.0.2-linux-x64.zip"));
     });
 
     after(async function () {
