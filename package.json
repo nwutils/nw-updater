@@ -1,12 +1,12 @@
 {
   "name": "@nwutils/updater",
+  "version": "0.3.5",
   "description": "Update NW.js applications",
   "keywords": [
     "NW.js",
     "node-webkit",
     "update"
   ],
-  "version": "0.3.5",
   "author": {
     "name": "Eldar Djafarov",
     "url": "https://github.com/edjafarov"
@@ -23,12 +23,14 @@
       "url": "https://github.com/nwutils/updater/graphs/contributors"
     }
   ],
-  "main": "./app/updater.js",
-  "types": "./index.d.ts",
+  "license": "MIT",
+  "main": "./src/main.js",
+  "types": "types/main.d.ts",
+  "type": "module",
   "files": [
-    "index.d.ts",
     "LICENSE",
-    "app/updater.js"
+    "src",
+    "types"
   ],
   "homepage": "https://github.com/nwutils/updater",
   "repository": {
@@ -36,9 +38,13 @@
     "url": "https://github.com/nwutils/updater.git"
   },
   "scripts": {
-    "grunt": "grunt",
-    "test": "grunt clean mochaTest",
-    "types": "npx -p typescript tsc app/updater.js --declaration --allowJs --emitDeclarationOnly --outFile ./index.d.ts"
+    "lint": "echo 'Linting is not set up yet'",
+    "type": "tsc",
+    "test": "node --test --experimental-test-coverage \"test/specs/*.test.js\""
+  },
+  "volta": {
+    "node": "25.9.0",
+    "npm": "11.14.1"
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -47,16 +53,10 @@
     "semver": "^7.6.2"
   },
   "devDependencies": {
-    "chai": "^5.1.1",
+    "@types/node": "^25.6.2",
     "express": "^4.19.2",
     "get-port": "^7.1.0",
-    "grunt": "^1.6.1",
-    "grunt-cli": "^1.4.3",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-compress": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-mocha-test": "^0.13.3",
-    "grunt-nw-builder": "^4.7.4",
-    "mocha": "^10.4.0"
+    "nw-builder": "^4.17.10",
+    "typescript": "^6.0.3"
   }
 }

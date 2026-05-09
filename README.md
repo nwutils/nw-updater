@@ -1,12 +1,20 @@
-> This repository is in maintainance mode. Bug fixes will be provided on a best effort basis. If you use this project, please consider contributing back.
 
 # @nwutils/updater
 
 [![npm](https://img.shields.io/npm/v/node-webkit-updater.svg?style=flat)](https://www.npmjs.com/package/node-webkit-updater)
 [![Join the chat at https://gitter.im/nwjs/nwjs](https://badges.gitter.im/nwjs/nwjs.svg)](https://gitter.im/nwjs/nwjs)
 
-```shell
-npm i @nwutils/updater
+Update NW.js applications for Linux, MacOS and Windows platforms.
+
+## Getting Started
+
+1. Install [Volta](https://volta.sh/).
+1. `npm i @nwutils/updater`
+
+## Usage
+
+```js
+import {}
 ```
 
 It gives you low-level API to:
@@ -177,3 +185,9 @@ On Windows, there is no "unzip" command built in by default. As a result, this p
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Roadmap
+
+- Build 2 applications (current and latest) using nw-builder (package as ZIP) and calculate their checksum.
+- Run Express server at /releases.
+- Using Selenium, run an application which checks for latest version, downloads and replaces it while running.

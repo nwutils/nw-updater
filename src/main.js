@@ -8,7 +8,6 @@ import del from 'del';
 import ncp from 'ncp';
 import semver from 'semver';
 
-
 let platform = process.platform;
 platform = /^win/.test(platform) ? 'win' : /^darwin/.test(platform) ? 'mac' : 'linux' + (process.arch == 'ia32' ? '32' : '64');
 
@@ -39,13 +38,13 @@ platform = /^win/.test(platform) ? 'win' : /^darwin/.test(platform) ? 'mac' : 'l
  * @property {string} temporaryDirectory - The path to a directory to download the updates to and unpack them in. Defaults to [`os.tmpdir()`](https://nodejs.org/api/os.html#os_os_tmpdir)
  */
 
-class updater {
+class Updater {
 
   /**
-   * Creates new instance of updater.
+   * Creates new instance of Updater.
    * 
    * @constructor
-   * @param {Manifest} manifest - See the [manifest schema](https://github.com/nwutils/nw-updater?tab=readme-ov-file#manifest-schema).
+   * @param {Manifest} manifest - See the [manifest schema](https://github.com/nwutils/updater?tab=readme-ov-file#manifest-schema).
    * @param {UpdaterOptions} options - Optional
    */
   constructor(manifest, options) {
@@ -77,7 +76,7 @@ class updater {
    * 
    * @async
    * @method
-   * @param {Manifest} newManifest - see [manifest schema](https://github.com/nwutils/nw-updater?tab=readme-ov-file#manifest-schema) below
+   * @param {Manifest} newManifest - see [manifest schema](https://github.com/nwutils/updater?tab=readme-ov-file#manifest-schema) below
    * @returns {Promise.<void>}
    */
   async download(newManifest) {
@@ -130,7 +129,7 @@ class updater {
 
   /**
      * Will unpack the `filename` in temporary folder.
-     * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
+     * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/nwutils/updater/issues/68)).
      *
      * @param {string} filename
      * @param {function} cb - Callback arguments: error, unpacked directory
@@ -413,4 +412,4 @@ var pInstall = {
 };
 pInstall.linux64 = pInstall.linux32;
 
-export default updater;
+export default Updater;

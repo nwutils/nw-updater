@@ -1,0 +1,11 @@
+{
+    "name": "demo",
+    "version": "0.0.2",
+    "author": "NW.js Utils",
+    "manifestUrl": "http://localhost:3000/releases/manifest.json",
+    "packages": {
+        "linux-x64": {
+           "url": "http://localhost:3000/releases/linux/x64/demo.zip"
+        }
+    }
+}

@@ -4,7 +4,7 @@
   "description": "",
   "author": "Eldar Djafarov <djkojb@gmail.com>",
   "license": "MIT",
-  "manifestUrl": "https://raw.githubusercontent.com/nwutils/nw-updater/main/package.json",
+  "manifestUrl": "https://raw.githubusercontent.com/nwutils/updater/main/package.json",
   "packages": {
     "mac": {
       "url": "https://github.com/nwutils/nw-updater/archive/refs/tags/0.2.1.tar.gz"
