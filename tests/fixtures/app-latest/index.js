@@ -1,19 +1,24 @@
-import Updater from './updater.js';
+import Updater from "./updater.js";
+const manifest = nw.require("./package.json");
 
-const updater = new Updater("http://localhost:3000/releases/manifest.json");
+let updater;
+document.addEventListener("DOMContentLoaded", () => {
+    updater = new Updater(manifest);
+    document.getElementById("check-for-updates-button").addEventListener("click", handleCheckForUpdates);
+});
 
-async function handleCheckForUpdates() {
-    const updateStatus = document.getElementById('update-status');
+function handleCheckForUpdates() {
+    const updateStatus = document.getElementById("update-status");
+    updateStatus.textContent = "Checking for updates...";
     updater.checkNewVersion((err, newerVersionExists, remoteManifest) => {
-            updateStatus.textContent = "Checking for updates...";
         if (err) {
             updateStatus.textContent = `Error checking for updates: ${err.message}`;
             return;
         }
         if (newerVersionExists) {
-            updateStatus.textContent = 'A newer version is available.';
+            updateStatus.textContent = "A newer version is available.";
         } else {
-            updateStatus.textContent = 'No new version available.';
+            updateStatus.textContent = "No new version available.";
         }
     });
 }

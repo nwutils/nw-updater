@@ -2,12 +2,13 @@
   "name": "demo",
   "version": "0.0.2",
   "main": "index.html",
+  "chromium-args": "--enable-features=NWESM,NWChainImportNode",
   "author": "NW.js Utils <contact@nwutils.io>",
   "license": "MIT",
-  "manifestUrl": "http://localhost:3000/releases/manifest.json",
+  "manifestUrl": "http://localhost:3000/manifest.json",
   "packages": {
     "linux-x64": {
-      "url": "http://localhost:3000/releases/app-0.0.1-linux-x64.zip"
+      "url": "http://localhost:3000/app-0.0.1-linux-x64.zip"
     }
   }
 }

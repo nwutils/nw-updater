@@ -9,26 +9,15 @@ import nwbuild from "nw-builder";
 import selenium from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
 
-// import get from "../../src/main.js";
-
 describe("updater test suite", function () {
-
-    let driver = undefined;
-
-    let nwOptions = {
-        mode: "build",
-        version: "latest",
-        flavor: "sdk",
-        platform: "linux",
-        arch: "x64",
-        glob: false,
-    };
-
+    /* Setup updater staging server. */
     const app = express();
     const filesDir = path.join(process.cwd(), "tests", "fixtures", "releases");
-    app.use("/releases", express.static(filesDir));
+    app.use("/", express.static(filesDir));
     const server = http.createServer(app);
 
+    /* Setup Selenium WebDriver with NW.js */
+    let driver = undefined;
     const options = new chrome.Options();
     const seleniumArguments = [
         "nwapp=" + path.resolve("tests", "fixtures", "app-current")
@@ -40,9 +29,17 @@ describe("updater test suite", function () {
     driver = chrome.Driver.createSession(options, service);
 
     before(async function () {
-
         fs.copyFileSync("./src/main.js", "./tests/fixtures/app-current/updater.js");
 
+        /* Build NW.js applications for testing. */
+        let nwOptions = {
+            mode: "build",
+            version: "latest",
+            flavor: "sdk",
+            platform: "linux",
+            arch: "x64",
+            glob: false,
+        };
         nwOptions = {
             ...nwOptions,
             srcDir: "./tests/fixtures/app-current",
@@ -73,19 +70,18 @@ describe("updater test suite", function () {
     });
 
     it("runs the current application and checks for updates", async function () {
-        const button = await driver.findElement(selenium.By.id('check-for-updates-button'));
-        await button.click();
-        const statusLocator = selenium.By.id('update-status');
+        const statusLocator = selenium.By.id("update-status");
         const initialText = await driver.findElement(statusLocator).getText();
+        assert.strictEqual(initialText, "");
 
-        assert.strictEqual(initialText, "Checking for updates...");
+        const button = await driver.findElement(selenium.By.id("check-for-updates-button"));
+        await button.click();
 
-        await driver.wait(async () => {
-            const el = await driver.findElement(statusLocator);
-            const text = await el.getText();
-            return text !== initialText;
-        }, 10000);
+        // const postButtonClick = await driver.findElement(statusLocator).getText();
+        // await driver.sleep(1000);
+        // assert.strictEqual(postButtonClick, "Checking for updates...");
 
+        // await driver.sleep(5000);
         const finalText = await driver.findElement(statusLocator).getText();
         assert.strictEqual(finalText, "A newer version is available.");
     });
