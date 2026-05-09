@@ -6,7 +6,7 @@
   "manifestUrl": "http://localhost:3000/releases/manifest.json",
   "packages": {
     "linux-x64": {
-      "url": "http://localhost:3000/releases/demo-0.0.1-linux-x64.zip"
+      "url": "http://localhost:3000/releases/app-0.0.1-linux-x64.zip"
     }
   }
 }

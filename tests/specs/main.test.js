@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import http from "node:http";
 import path from "node:path";
-import { before, describe, it } from "node:test";
+import { after, before, describe, it } from "node:test";
 
+import express from "express";
 import nwbuild from "nw-builder";
 
 // import get from "../../src/main.js";
@@ -18,6 +20,11 @@ describe("updater test suite", function () {
         glob: false,
         zip: "zip",
     };
+
+    const app = express();
+    const filesDir = path.join(process.cwd(), "tests", "fixtures", "releases");
+    app.use('/releases', express.static(filesDir));
+    const server = http.createServer(app);
 
     before(async function () {
         nwOptions = {
@@ -37,9 +44,22 @@ describe("updater test suite", function () {
         if (!fs.existsSync(`${nwOptions.outDir}.zip`)) {
             await nwbuild(nwOptions);
         }
+
+        await new Promise((resolve) => {
+            server.listen(3000, resolve);
+        });
     });
 
     it("updates the application", async function () {
         assert.strictEqual(1 === 1, true);
+    });
+
+    after(async function () {
+        await new Promise((resolve, reject) => {
+            server.close((err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
     });
 });
