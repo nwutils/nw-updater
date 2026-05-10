@@ -1,6 +1,7 @@
 const fs = await import('node:fs');
 const os = await import('node:os');
 const path = await import('node:path');
+const process = await import('node:process');
 const stream = await import('node:stream');
 
 function semverGt(v1, v2) {
@@ -25,7 +26,7 @@ function semverGt(v1, v2) {
 /**
  * @typedef {object} Packages
  * @property {Platform} win - The Windows package
- * @property {Platform} mac - The macOS package
+ * @property {Platform} osx - The macOS package
  * @property {Platform} linux32 - The Linux 32-bit package
  * @property {Platform} linux64 - The Linux 64-bit package
  */
@@ -159,6 +160,52 @@ class Updater {
       .catch((err) => {
         cb(err, null);
       });
+  }
+
+  /**
+     * Returns executed application path.
+     * 
+     * @returns {string}
+     */
+  getAppPath() {
+    /**
+     * @type {Object.<string, string>}
+     */
+    let appPath = {
+      osx: path.join(process.cwd(), '../../..'),
+      win: path.dirname(process.execPath)
+    };
+    appPath.linux32 = appPath.win;
+    appPath.linux64 = appPath.win;
+    return appPath[getHost()];
+  }
+
+  /**
+   * Returns current application executable.
+   * 
+   * @returns {string}
+   */
+  getAppExec() {
+    let execFolder = this.getAppPath();
+    let exec = {
+      osx: '',
+      win: path.basename(process.execPath),
+      linux32: path.basename(process.execPath),
+      linux64: path.basename(process.execPath)
+    };
+    return path.join(execFolder, exec[platform]);
+  }
+
+  /**
+     * Unpack the `filename` in temporary folder.
+     * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/nwutils/updater/issues/68)).
+     *
+     * @param {string} filename
+     * @param {function} cb - Callback arguments: error, unpacked directory
+     * @param {object} manifest
+     */
+  unpack(filename, cb, manifest) {
+    pUnpack[platform](filename, cb, manifest, this.options.temporaryDirectory);
   }
 }
 
