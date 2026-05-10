@@ -21,6 +21,8 @@ const updater = new Updater(nw.App.manifest);
 let updateStatus = "";
 let newManifest = "";
 let downloadedFilePath = "";
+
+// Check for new version via current running application.
 updater.checkNewVersion((err, newerVersionExists, remoteManifest) => {
    if (err) {
       updateStatus = `Error checking for updates: ${err.message}`;
@@ -34,6 +36,7 @@ updater.checkNewVersion((err, newerVersionExists, remoteManifest) => {
    }
 });
 
+// Download to temporary directory if new version is available. 
 let downloadStatus = "";
 updater.download((err, filePath) => {
    if (err) {
@@ -44,10 +47,17 @@ updater.download((err, filePath) => {
    downloadedFilePath = filePath;
 }, newManifest);
 
-updater.download();
+// Unpack the application in the temporary directory
+updater.unpack();
+
+// Run the new application from the temporary directory and kill the old one
+
+// The new application will copy itself from the temporary directory to the directory where the previous application was running.
+
+// The new application will run itself from the original directory and exit the process.
 ```
 
-## API
+## API Schema
 
 | Method | Arguments | Return Type | Description |
 | ------ | --------- | ----------- | ----------- |
@@ -100,29 +110,29 @@ Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit
 
 ## Manifest Schema
 
-An example manifest:
+Example usage:
 
 ```json
 {
-    "name": "updapp",
-    "version": "0.0.2",
-    "author": "Eldar Djafarov <djkojb@gmail.com>",
-    "manifestUrl": "http://localhost:3000/package.json",
+    "name": "demo",
+    "version": "0.0.1",
+    "author": "NW.js Utils <contact@nwutils.io>",
+    "manifestUrl": "http://localhost:3000/manifest.json",
     "packages": {
-        "mac": {
-           "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
+        "linux-x64": {
+           "url": "http://localhost:3000/demo-0.0.1-linux-x64.zip"
         },
-        "win": {
-           "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
+        "osx-arm64": {
+           "url": "http://localhost:3000/demo-0.0.1-osx-arm64.zip"
         },
-        "linux32": {
-           "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
-        }
+        "win-x64": {
+           "url": "http://localhost:3000/demo-0.0.1-win-x64.zip"
+        },
     }
 }
 ```
 
-The manifest could be a `package.json` of project, but doesn't have to be.
+> Note: The manifest could be a `package.json` of project, but doesn't have to be.
 
 ### manifest.name
 
@@ -149,15 +159,6 @@ Each package has to contain a `url` property pointing to where the app (for the 
 It's assumed your app is stored at the root of your package, use this to override that and specify a path (relative to the root of your package).
 
 This can also be used to override `manifest.name`; e.g. if your `manifest.name` is `helloWorld` (therefore `helloWorld.app` on Mac) but your Windows executable is named `nw.exe`. Then you'd set `execPath` to `nw.exe`
-
-## Roadmap
-
-1. Check the manifest for version (from your running "old" app).
-2. If the version is different from the running one, download new package to a temp directory.
-3. Unpack the package in temp.
-4. Run new app from temp and kill the old one (i.e. still all from the running app).
-5. The new app (in temp) will copy itself to the original folder, overwriting the old app.
-6. The new app will run itself from original folder and exit the process.
 
 ## Contributing
 
