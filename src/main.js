@@ -4,6 +4,8 @@ const path = await import('node:path');
 const process = await import('node:process');
 const stream = await import('node:stream');
 
+import util from './util';
+
 function semverGt(v1, v2) {
   const [major1, minor1, patch1] = v1.replace(/^v/i, '').split('.').map(Number);
   const [major2, minor2, patch2] = v2.replace(/^v/i, '').split('.').map(Number);
@@ -197,15 +199,40 @@ class Updater {
   }
 
   /**
+   * @private
+   * @param {Manifest} manifest
+   * @return {string}
+   */
+  getExecPathRelativeToPackage(manifest) {
+    const execPath = manifest.packages[platform] && manifest.packages[platform].execPath;
+
+    if (execPath) {
+      return execPath;
+    }
+    else {
+      const suffix = {
+        win: '.exe',
+        mac: '.app'
+      };
+      return manifest.name + (suffix[platform] || '');
+    }
+  };
+
+  /**
      * Unpack the `filename` in temporary folder.
-     * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/nwutils/updater/issues/68)).
-     *
+     * 
      * @param {string} filename
      * @param {function} cb - Callback arguments: error, unpacked directory
-     * @param {object} manifest
+     * @param {Manifest} manifest
      */
   unpack(filename, cb, manifest) {
-    pUnpack[platform](filename, cb, manifest, this.options.temporaryDirectory);
+    util.decompress(filename, this.options.temporaryDirectory)
+      .then(() => {
+        cb(null, path.join(this.options.temporaryDirectory, this.getExecPathRelativeToPackage(manifest)));
+      })
+      .catch((err) => {
+        cb(err, null);
+      });
   }
 }
 

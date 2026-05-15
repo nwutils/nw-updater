@@ -17,7 +17,7 @@ export type Packages = {
     /**
      * - The macOS package
      */
-    mac: Platform;
+    osx: Platform;
     /**
      * - The Linux 32-bit package
      */
@@ -83,4 +83,25 @@ declare class Updater {
      * @returns {void}
      */
     download(cb: (error: Error | null, filepath: string | null) => void, newManifest: Manifest): void;
+    /**
+       * Returns executed application path.
+       *
+       * @returns {string}
+       */
+    getAppPath(): string;
+    /**
+     * Returns current application executable.
+     *
+     * @returns {string}
+     */
+    getAppExec(): string;
+    /**
+       * Unpack the `filename` in temporary folder.
+       * For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/nwutils/updater/issues/68)).
+       *
+       * @param {string} filename
+       * @param {function} cb - Callback arguments: error, unpacked directory
+       * @param {object} manifest
+       */
+    unpack(filename: string, cb: Function, manifest: object): void;
 }
