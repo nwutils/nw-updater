@@ -53,11 +53,13 @@
     "semver": "^7.6.2"
   },
   "devDependencies": {
+    "@types/chrome": "^0.1.42",
     "@types/del": "^3.0.1",
     "@types/ncp": "^2.0.8",
     "@types/node": "^25.6.2",
     "@types/nw.js": "^0.92.0",
     "@types/semver": "^7.7.1",
+    "@types/yauzl-promise": "^4.0.1",
     "express": "^5.2.1",
     "get-port": "^7.2.0",
     "nw-builder": "^4.17.10",

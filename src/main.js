@@ -1,7 +1,10 @@
 const fs = await import('node:fs');
 const os = await import('node:os');
 const path = await import('node:path');
+const process = await import('node:process');
 const stream = await import('node:stream');
+
+import util from './util';
 
 function semverGt(v1, v2) {
   const [major1, minor1, patch1] = v1.replace(/^v/i, '').split('.').map(Number);
@@ -25,7 +28,7 @@ function semverGt(v1, v2) {
 /**
  * @typedef {object} Packages
  * @property {Platform} win - The Windows package
- * @property {Platform} mac - The macOS package
+ * @property {Platform} osx - The macOS package
  * @property {Platform} linux32 - The Linux 32-bit package
  * @property {Platform} linux64 - The Linux 64-bit package
  */
@@ -155,6 +158,77 @@ class Updater {
       })
       .then(() => {
         cb(null, destinationPath);
+      })
+      .catch((err) => {
+        cb(err, null);
+      });
+  }
+
+  /**
+     * Returns executed application path.
+     * 
+     * @returns {string}
+     */
+  getAppPath() {
+    /**
+     * @type {Object.<string, string>}
+     */
+    let appPath = {
+      osx: path.join(process.cwd(), '../../..'),
+      win: path.dirname(process.execPath)
+    };
+    appPath.linux32 = appPath.win;
+    appPath.linux64 = appPath.win;
+    return appPath[getHost()];
+  }
+
+  /**
+   * Returns current application executable.
+   * 
+   * @returns {string}
+   */
+  getAppExec() {
+    let execFolder = this.getAppPath();
+    let exec = {
+      osx: '',
+      win: path.basename(process.execPath),
+      linux32: path.basename(process.execPath),
+      linux64: path.basename(process.execPath)
+    };
+    return path.join(execFolder, exec[platform]);
+  }
+
+  /**
+   * @private
+   * @param {Manifest} manifest
+   * @return {string}
+   */
+  getExecPathRelativeToPackage(manifest) {
+    const execPath = manifest.packages[platform] && manifest.packages[platform].execPath;
+
+    if (execPath) {
+      return execPath;
+    }
+    else {
+      const suffix = {
+        win: '.exe',
+        mac: '.app'
+      };
+      return manifest.name + (suffix[platform] || '');
+    }
+  };
+
+  /**
+     * Unpack the `filename` in temporary folder.
+     * 
+     * @param {string} filename
+     * @param {function} cb - Callback arguments: error, unpacked directory
+     * @param {Manifest} manifest
+     */
+  unpack(filename, cb, manifest) {
+    util.decompress(filename, this.options.temporaryDirectory)
+      .then(() => {
+        cb(null, path.join(this.options.temporaryDirectory, this.getExecPathRelativeToPackage(manifest)));
       })
       .catch((err) => {
         cb(err, null);

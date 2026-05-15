@@ -156,6 +156,7 @@ class Updater {
   unpack(filename, cb, manifest) {
     pUnpack[platform](filename, cb, manifest, this.options.temporaryDirectory);
   }
+  
   /**
      * Runs installer
      * @param {string} appPath

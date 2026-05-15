@@ -20,6 +20,9 @@ const updater = new Updater(nw.App.manifest);
 
 let updateStatus = "";
 let newManifest = "";
+let downloadedFilePath = "";
+
+// Check for new version via current running application.
 updater.checkNewVersion((err, newerVersionExists, remoteManifest) => {
    if (err) {
       updateStatus = `Error checking for updates: ${err.message}`;
@@ -33,6 +36,7 @@ updater.checkNewVersion((err, newerVersionExists, remoteManifest) => {
    }
 });
 
+// Download to temporary directory if new version is available. 
 let downloadStatus = "";
 updater.download((err, filePath) => {
    if (err) {
@@ -40,84 +44,29 @@ updater.download((err, filePath) => {
       return;
    }
    downloadStatus = "Update downloaded successfully at " + filePath;
+   downloadedFilePath = filePath;
 }, newManifest);
+
+// Unpack the application in the temporary directory
+updater.unpack();
+
+// Run the new application from the temporary directory and kill the old one
+
+// The new application will copy itself from the temporary directory to the directory where the previous application was running.
+
+// The new application will run itself from the original directory and exit the process.
 ```
 
-It gives you low-level API to:
+## API Schema
 
-1. Check the manifest for version (from your running "old" app).
-2. If the version is different from the running one, download new package to a temp directory.
-3. Unpack the package in temp.
-4. Run new app from temp and kill the old one (i.e. still all from the running app).
-5. The new app (in temp) will copy itself to the original folder, overwriting the old app.
-6. The new app will run itself from original folder and exit the process.
-
-## API
-
-<a name="new_updater"></a>
-
-#### new updater(manifest, options)
-
-Creates new instance of updater. Manifest could be a `package.json` of project.
-
-Note that compressed apps are assumed to be downloaded in the format produced by [nw-builder](https://github.com/nwutils/nw-builder) (or [grunt-nw-builder](https://github.com/nwjs/grunt-nw-builder)).
-
-**Params**
-
-- manifest `object` - See the [manifest schema](#manifest-schema) below.  
-- options `object` - Optional  
-
-<a name="updater#checkNewVersion"></a>
-
-#### updater.checkNewVersion(cb)
-
-Will check the latest available version of the application by requesting the manifest specified in `manifestUrl`.
-
-The callback will always be called; the second parameter indicates whether or not there's a newer version.
-This function assumes you use [Semantic Versioning](http://semver.org) and enforces it; if your local version is `0.2.0` and the remote one is `0.1.23456` then the callback will be called with `false` as the second paramter. If on the off chance you don't use semantic versioning, you could manually download the remote manifest and call `download` if you're happy that the remote version is newer.
-
-**Params**
-
-- cb `function` - Callback arguments: error, newerVersionExists (`Boolean`), remoteManifest  
-
-<a name="updater#download"></a>
-
-#### updater.download(cb, newManifest)
-
-Downloads the new app to a temporary folder.
-
-**Params**
-
-- cb `function` - called when download completes. Callback arguments: error, downloaded filepath  
-- newManifest `Object` - see [manifest schema](#manifest-schema) below  
-
-**Returns**: `Request` - Request - stream, the stream contains `manifest` property with new manifest and 'content-length' property with the size of package.  
-<a name="updater#getAppPath"></a>
-
-#### updater.getAppPath()
-
-Returns executed application path
-
-**Returns**: `string`  
-<a name="updater#getAppExec"></a>
-
-#### updater.getAppExec()
-
-Returns current application executable
-
-**Returns**: `string`  
-<a name="updater#unpack"></a>
-
-#### updater.unpack(filename, cb, manifest)
-
-Will unpack the `filename` in temporary folder.
-For Windows, [unzip](https://www.mkssoftware.com/docs/man1/unzip.1.asp) is used (which is [not signed](https://github.com/edjafarov/node-webkit-updater/issues/68)).
-
-**Params**
-
-- filename `string`  
-- cb `function` - Callback arguments: error, unpacked directory  
-- manifest `object`  
+| Method | Arguments | Return Type | Description |
+| ------ | --------- | ----------- | ----------- |
+| new Updater | `manifest: object, options: object \| undefined` | `void` | Creates a new instance of Updater. See the [manifest schema](#manifest-schema) below. |
+| checkNewVersion | `cb: (error: Error, newerVersionExists: boolean, remoteManifest: object) => void` | `void` | Checks the latest version of the application by requesting manifest at `manifestUrl`. Semantic versioning is used when comparing versions. |
+| download | `cb: (error: Error, filepath: string) => void, newManifest: object` | `void` | Checks the latest version of the application by requesting manifest at `manifestUrl`. Downloads the new app to a temporary folder. |
+| getAppPath | | `string` | Returns the executed application path. |
+| getAppExec | | `string` | Returns the current application path. |
+| unpack | `filename: string, cb: (error: Error, unpackedDir: string) => void, manifest: object` | `string` | Returns the executed application path. |
 
 <a name="updater#runInstaller"></a>
 
@@ -161,29 +110,29 @@ Note: if this doesn't work, try `gui.Shell.openItem(execPath)` (see [node-webkit
 
 ## Manifest Schema
 
-An example manifest:
+Example usage:
 
 ```json
 {
-    "name": "updapp",
-    "version": "0.0.2",
-    "author": "Eldar Djafarov <djkojb@gmail.com>",
-    "manifestUrl": "http://localhost:3000/package.json",
+    "name": "demo",
+    "version": "0.0.1",
+    "author": "NW.js Utils <contact@nwutils.io>",
+    "manifestUrl": "http://localhost:3000/manifest.json",
     "packages": {
-        "mac": {
-           "url": "http://localhost:3000/releases/updapp/mac/updapp.zip"
+        "linux-x64": {
+           "url": "http://localhost:3000/demo-0.0.1-linux-x64.zip"
         },
-        "win": {
-           "url": "http://localhost:3000/releases/updapp/win/updapp.zip"
+        "osx-arm64": {
+           "url": "http://localhost:3000/demo-0.0.1-osx-arm64.zip"
         },
-        "linux32": {
-           "url": "http://localhost:3000/releases/updapp/linux32/updapp.tar.gz"
-        }
+        "win-x64": {
+           "url": "http://localhost:3000/demo-0.0.1-win-x64.zip"
+        },
     }
 }
 ```
 
-The manifest could be a `package.json` of project, but doesn't have to be.
+> Note: The manifest could be a `package.json` of project, but doesn't have to be.
 
 ### manifest.name
 
@@ -211,18 +160,14 @@ It's assumed your app is stored at the root of your package, use this to overrid
 
 This can also be used to override `manifest.name`; e.g. if your `manifest.name` is `helloWorld` (therefore `helloWorld.app` on Mac) but your Windows executable is named `nw.exe`. Then you'd set `execPath` to `nw.exe`
 
----
-
-## Troubleshooting
-
-### Mac
-
-If you get an error on Mac about too many files being open, run `ulimit -n 10240`
-
-### Windows
-
-On Windows, there is no "unzip" command built in by default. As a result, this project uses a third party "unzip.exe" in order to extract the downloaded update. On the NWJS site, in the "How to package and distribute your apps" file, one of the recommended methods of distribution is using EnigmaVirtualBox to package the app, nw.exe, and required DLLs into a single EXE file. This method works great for distribution, but unfortunately breaks node-webkit-updater, because it wraps the required unzip.exe file inside of the created EnigmaVirtualBox EXE. As a result, *it is not possible to use EnigmaVirtualBox to distribute your app if you plan on using node-webkit-updater*. Try using InnoSetup instead.
-
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+### External contributor
+
+- Use Node.js standard libraries whenever possible.
+- Prefer to use syncronous APIs over modern APIs which have been introduced in later versions.
+
+### Maintainer
+
+- npm trusted publishing is used for releases
+- a package is released when a maintainer creates a release note for a specific version
