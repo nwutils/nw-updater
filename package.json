@@ -1,7 +1,7 @@
 {
   "name": "@nwutils/updater",
   "version": "0.5.0",
-  "description": "Update NW.js applications",
+  "description": "Self update NW.js applications packaged as AppImages, NSIS installers and DMGs",
   "keywords": [
     "NW.js",
     "node-webkit",
@@ -46,22 +46,9 @@
     "node": "25.9.0",
     "npm": "11.14.1"
   },
-  "dependencies": {
-    "axios": "^1.16.0",
-    "ncp": "^2.0.0",
-    "semver": "^7.6.2"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/chrome": "^0.3.4",
-    "@types/ncp": "^2.0.8",
     "@types/node": "^26.6.3",
-    "@types/nw.js": "^0.115.0",
-    "@types/semver": "^7.7.1",
-    "@types/yauzl-promise": "^4.0.1",
-    "express": "^5.2.1",
-    "get-port": "^7.2.0",
-    "nw-builder": "^4.17.10",
-    "selenium-webdriver": "^4.43.0",
     "typescript": "^7.0.2"
   }
 }

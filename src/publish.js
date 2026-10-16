@@ -105,14 +105,14 @@ function parseYaml(contents) {
 /**
  * Name of the update info file for `arch` on `platform`, matching
  * `@nwutils/packager` and electron-builder: `x64` gets the bare
- * `latest-linux.yml` (Linux) or `latest.yml` (Windows), every other
- * architecture gets an `-<arch>` suffix.
+ * `latest-linux.yml` (Linux), `latest.yml` (Windows) or `latest-mac.yml`
+ * (MacOS), every other architecture gets an `-<arch>` suffix.
  * @param {string} arch
- * @param {'linux' | 'win'} [platform='linux']
+ * @param {'linux' | 'win' | 'osx'} [platform='linux']
  * @returns {string}
  */
 function updateInfoFileName(arch, platform = 'linux') {
-  const base = platform === 'win' ? 'latest' : 'latest-linux';
+  const base = platform === 'win' ? 'latest' : platform === 'osx' ? 'latest-mac' : 'latest-linux';
   return arch === 'x64' ? `${base}.yml` : `${base}-${arch}.yml`;
 }
 

@@ -20,8 +20,5 @@
     },
     "include": [
         "src/**/*.js"
-    ],
-    "exclude": [
-        "src/updater.js"
     ]
 }
