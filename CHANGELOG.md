@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/nwutils/updater/compare/v0.5.0...v0.6.0) (2026-10-16)
+
+
+### Features
+
+* support DMG installer ([#196](https://github.com/nwutils/updater/issues/196)) ([4a972d7](https://github.com/nwutils/updater/commit/4a972d78a228ae0dc9d694087a785c572546e159))
+
 ## [0.5.0](https://github.com/nwutils/updater/compare/v0.4.0...v0.5.0) (2026-10-16)
 
 
