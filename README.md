@@ -12,7 +12,7 @@ Self update NW.js applications packaged by
 | Windows  | NSIS installer | `NsisUpdater`     |
 | MacOS    | DMG            | `MacUpdater`      |
 
-All three follow electron-updater's approach. The packager ships an
+All three work the same way. The packager ships an
 `app-update.yml` (where releases are published) with the app, and writes an
 update info file (version, file name, size, SHA-512) next to each release.
 Upload both to every release. The updater reads `app-update.yml`, downloads the
@@ -44,7 +44,7 @@ NW.js' [ES module support](https://nwjs.io/blog/v0.98.2) in your app's
 
 `AppImageUpdater` updates a Linux app packaged as an AppImage by
 [`@nwutils/packager`](https://www.npmjs.com/package/@nwutils/packager) with
-`publish` set. It follows electron-updater's approach: the packager embeds an
+`publish` set. The packager embeds an
 `app-update.yml` (where releases are published) in the AppImage and writes a
 `latest-linux.yml` update info file (version, file name, size, SHA-512) next to
 it. Upload both the AppImage and `latest-linux.yml` to every release.

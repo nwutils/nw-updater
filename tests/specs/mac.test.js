@@ -182,7 +182,7 @@ describe(
             assert.strictEqual(findAppBundle("/usr/local/bin/node"), undefined);
         });
 
-        it("uses latest-mac.yml, like @nwutils/packager and electron-builder", function () {
+        it("uses latest-mac.yml, like @nwutils/packager", function () {
             assert.strictEqual(updateInfoFileName("x64", "osx"), "latest-mac.yml");
             assert.strictEqual(updateInfoFileName("arm64", "osx"), "latest-mac-arm64.yml");
         });

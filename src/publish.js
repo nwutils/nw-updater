@@ -27,7 +27,7 @@ import semver from './version.js';
  */
 
 /**
- * Parse a YAML scalar as written by `@nwutils/packager` or electron-builder.
+ * Parse a YAML scalar as written by `@nwutils/packager`, quoted or not.
  * @param {string} value
  * @returns {string | number | boolean}
  */
@@ -49,8 +49,8 @@ function parseYamlScalar(value) {
 
 /**
  * Parse the subset of YAML update info and `app-update.yml` files use: a map
- * of scalars, and lists of maps of scalars. This covers files written by
- * `@nwutils/packager` and electron-builder without pulling in a YAML library.
+ * of scalars, and lists of maps of scalars. This covers the files
+ * `@nwutils/packager` writes without pulling in a YAML library.
  * @param {string} contents
  * @returns {Record<string, string | number | boolean | Record<string, string | number | boolean>[]>}
  */
@@ -104,7 +104,7 @@ function parseYaml(contents) {
 
 /**
  * Name of the update info file for `arch` on `platform`, matching
- * `@nwutils/packager` and electron-builder: `x64` gets the bare
+ * `@nwutils/packager`: `x64` gets the bare
  * `latest-linux.yml` (Linux), `latest.yml` (Windows) or `latest-mac.yml`
  * (MacOS), every other architecture gets an `-<arch>` suffix.
  * @param {string} arch

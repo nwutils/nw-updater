@@ -109,7 +109,7 @@ describe("NsisUpdater", function () {
         return calls;
     }
 
-    it("uses latest.yml, like @nwutils/packager and electron-builder", function () {
+    it("uses latest.yml, like @nwutils/packager", function () {
         assert.strictEqual(updateInfoFileName("x64", "win"), "latest.yml");
         assert.strictEqual(updateInfoFileName("arm64", "win"), "latest-arm64.yml");
     });

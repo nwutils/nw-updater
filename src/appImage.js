@@ -14,7 +14,7 @@ import { checkUpdateInfo, downloadVerified, parseYaml, quitApp, updateInfoFileNa
 
 /**
  * @typedef {object} AppImageUpdaterOptions
- * @property {'manifest' | 'zsync'} [method='manifest'] - `'manifest'` uses the `latest-linux.yml` update info file published next to the AppImage, the same way electron-updater does. `'zsync'` delegates to `appimageupdatetool` and the update information embedded in the AppImage.
+ * @property {'manifest' | 'zsync'} [method='manifest'] - `'manifest'` uses the `latest-linux.yml` update info file published next to the AppImage. `'zsync'` delegates to `appimageupdatetool` and the update information embedded in the AppImage.
  * @property {string} [currentVersion] - Version of the running application, eg. `nw.App.manifest.version`. Required by the `'manifest'` method.
  * @property {string} [appImagePath] - Path to the running AppImage. Defaults to the `APPIMAGE` environment variable the AppImage runtime sets.
  * @property {string} [configPath] - Path to `app-update.yml`. Defaults to the file next to the NW.js executable.

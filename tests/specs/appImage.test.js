@@ -92,7 +92,7 @@ describe("AppImageUpdater", function () {
             });
         });
 
-        it("parses files written by electron-builder", function () {
+        it("parses unquoted and single quoted values, and keys it doesn't use", function () {
             const contents = [
                 "version: 1.2.0",
                 "files:",
