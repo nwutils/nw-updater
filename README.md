@@ -151,6 +151,51 @@ if (update.updateAvailable) {
 | temporaryDirectory | `string`                | `os.tmpdir()`                            | Directory updates are downloaded to             |
 | appImageUpdateTool | `string`                | `"appimageupdatetool"`                   | `appimageupdatetool` executable for `"zsync"`   |
 
+## Self updating NSIS installs
+
+`NsisUpdater` updates a Windows app installed by an NSIS installer built by
+[`@nwutils/packager`](https://www.npmjs.com/package/@nwutils/packager) with
+`publish` set. The installer puts an `app-update.yml` next to the app's
+executable, and the packager writes a `latest.yml` update info file next to
+the installer. Upload both the installer and `latest.yml` to every release.
+
+```js
+import { NsisUpdater } from "@nwutils/updater";
+
+const updater = new NsisUpdater({ currentVersion: nw.App.manifest.version });
+
+const update = await updater.checkForUpdates();
+if (update.updateAvailable) {
+  const filePath = await updater.downloadUpdate(update, {
+    onProgress: ({ transferred, total }) => console.log(transferred, total),
+  });
+  await updater.install(filePath);
+  updater.restart();
+}
+```
+
+1. `checkForUpdates()` reads `app-update.yml` and downloads `latest.yml`
+   (`latest-<arch>.yml` for architectures other than `x64`), the same way
+   `AppImageUpdater` does.
+1. `downloadUpdate()` downloads the new installer to `temporaryDirectory` and
+   checks its size and SHA-512 digest.
+1. `install()` starts the installer in the background with `/S /UPDATE`.
+   Windows can't replace the files of a running app, so it waits up to 60
+   seconds for the app to exit.
+1. `restart()` quits the app. The installer then updates it silently and starts
+   the new version. Arguments can't be passed to the new version this way.
+
+The installer installs for the current user, so updating never asks for
+administrator rights. Build the published installer with a version of
+`@nwutils/packager` that supports `/UPDATE`. An older one asks the user to close
+the app, which nobody sees in silent mode, so the update is cancelled.
+
+| Option             | Type     | Default                                 | Description                         |
+| ------------------ | -------- | --------------------------------------- | ----------------------------------- |
+| currentVersion     | `string` |                                         | Running app's version. Required     |
+| configPath         | `string` | `app-update.yml` next to the executable | Path to `app-update.yml`            |
+| temporaryDirectory | `string` | `os.tmpdir()`                           | Directory updates are downloaded to |
+
 ## API Schema
 
 | Method | Arguments | Return Type | Description |

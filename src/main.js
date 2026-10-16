@@ -317,3 +317,4 @@ async function removeWithRetries(dirPath, attempts, delay) {
 
 export default Updater;
 export { default as AppImageUpdater } from './appImage.js';
+export { default as NsisUpdater } from './nsis.js';

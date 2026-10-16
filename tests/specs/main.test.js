@@ -37,6 +37,8 @@ describe("updater test suite", function () {
         /* Modules imported by main.js. */
         fs.copyFileSync("./src/util.js", "./tests/fixtures/app-current/util.js");
         fs.copyFileSync("./src/appImage.js", "./tests/fixtures/app-current/appImage.js");
+        fs.copyFileSync("./src/nsis.js", "./tests/fixtures/app-current/nsis.js");
+        fs.copyFileSync("./src/publish.js", "./tests/fixtures/app-current/publish.js");
         fs.copyFileSync("./src/version.js", "./tests/fixtures/app-current/version.js");
 
         /* Build NW.js applications for testing. */
